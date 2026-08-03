@@ -5,6 +5,7 @@ import { Player } from './models/player.model';
 import { Blade } from './models/blade.model';
 import { Rubber } from './models/rubber.model';
 import { Brand } from './models/brand.model';
+import { PlayerTag } from './models/player-tag.model';
 import { environment } from '../environments/environment';
 
 @Injectable({
@@ -37,5 +38,9 @@ export class ApiService {
 
   getBrands(): Observable<Brand[]> {
     return this.http.get<Brand[]>(`${this.baseUrl}/equipment/brands`);
+  }
+
+  getTags(): Observable<PlayerTag[]> {
+    return this.http.get<PlayerTag[]>(`${this.baseUrl}/tags`);
   }
 }

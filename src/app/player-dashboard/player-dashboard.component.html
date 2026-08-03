@@ -1,52 +1,137 @@
-<div *ngIf="player" class="admin-container player-admin-page">
-  <header class="form-header">
-    <h1>Bonjour, {{ player.login }} !</h1>
-    <p>Mon Classement : {{ player.ranking }}</p>
-  </header>
-
-  <form (ngSubmit)="saveRacket()" class="admin-form">
-    <section class="form-card">
-      <h2 class="card-title">Ma Raquette</h2>
-      
-      <!-- La classe .form-row de l'ancien projet aligne les champs -->
-      <div class="form-row">
-          <div class="form-group">
-            <label>Mon Bois :</label>
-            <select *ngIf="player.racket" [(ngModel)]="player.racket.blade" name="blade" [compareWith]="compareBlades">
-              <option [ngValue]="null">-- Sélectionner un bois --</option>
-              <option *ngFor="let blade of blades" [ngValue]="blade">
-                {{ blade.name }} ({{ blade.brand.name }})
-              </option>
-            </select>
-          </div>
-      </div>
-
-      <div class="form-row">
-          <div class="form-group">
-            <label>Mon Coup Droit :</label>
-            <select *ngIf="player.racket" [(ngModel)]="player.racket.forehandRubber" name="forehandRubber" [compareWith]="compareRubbers">
-              <option [ngValue]="null">-- Sélectionner un revêtement --</option>
-              <option *ngFor="let rubber of rubbers" [ngValue]="rubber">
-                {{ rubber.name }} ({{ rubber.brand.name }})
-              </option>
-            </select>
-          </div>
-
-          <div class="form-group">
-            <label>Mon Revers :</label>
-            <select *ngIf="player.racket" [(ngModel)]="player.racket.backhandRubber" name="backhandRubber" [compareWith]="compareRubbers">
-              <option [ngValue]="null">-- Sélectionner un revêtement --</option>
-              <option *ngFor="let rubber of rubbers" [ngValue]="rubber">
-                {{ rubber.name }} ({{ rubber.brand.name }})
-              </option>
-            </select>
-          </div>
-      </div>
-    </section>
-
-    <!-- La classe .form-actions est standard dans table-tennis-frontend -->
-    <div class="form-actions">
-        <button type="submit" class="btn-primary">Enregistrer ma raquette</button>
+<div class="dashboard-page" *ngIf="player">
+  <div class="dashboard-header">
+    <h2>Mon Profil : {{ player.login }}</h2>
+    <div class="dashboard-actions">
+      <button class="btn btn-primary" (click)="saveProfile()">Enregistrer les modifications</button>
     </div>
-  </form>
+  </div>
+
+  <div class="dashboard-content">
+    
+    <!-- SECTION RAQUETTE (Custom Dropdowns) -->
+    <div class="section-card racket-section">
+      <h3>Ma Raquette</h3>
+      
+      <div class="equipment-form">
+        <!-- BOIS -->
+        <div class="form-group">
+          <label>Bois (Blade)</label>
+          <div class="custom-select-container">
+            <div class="custom-select-trigger" (click)="toggleBladeDropdown()">
+              <ng-container *ngIf="player.racket?.blade; else noBlade">
+                <img [src]="player.racket!.blade!.image" class="item-img" *ngIf="player.racket!.blade!.image">
+                <span class="item-name">{{ player.racket!.blade!.name }}</span>
+              </ng-container>
+              <ng-template #noBlade><span class="placeholder">Sélectionner un bois...</span></ng-template>
+              <span class="arrow" [class.open]="bladeDropdownOpen">▼</span>
+            </div>
+            <div class="custom-select-options" *ngIf="bladeDropdownOpen">
+              <div class="custom-option" *ngFor="let blade of blades" (click)="selectBlade(blade)">
+                <img [src]="blade.image" class="item-img" *ngIf="blade.image">
+                <span class="item-name">{{ blade.name }}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- COUP DROIT -->
+        <div class="form-group">
+          <label>Coup Droit (Forehand)</label>
+          <div class="custom-select-container">
+            <div class="custom-select-trigger" (click)="toggleFhDropdown()">
+              <ng-container *ngIf="player.racket?.forehandRubber; else noFh">
+                <img [src]="player.racket!.forehandRubber!.image" class="item-img" *ngIf="player.racket!.forehandRubber!.image">
+                <span class="item-name">{{ player.racket!.forehandRubber!.name }}</span>
+              </ng-container>
+              <ng-template #noFh><span class="placeholder">Sélectionner un revêtement...</span></ng-template>
+              <span class="arrow" [class.open]="fhDropdownOpen">▼</span>
+            </div>
+            <div class="custom-select-options" *ngIf="fhDropdownOpen">
+              <div class="custom-option" *ngFor="let rubber of rubbers" (click)="selectFhRubber(rubber)">
+                <img [src]="rubber.image" class="item-img" *ngIf="rubber.image">
+                <span class="item-name">{{ rubber.name }}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- REVERS -->
+        <div class="form-group">
+          <label>Revers (Backhand)</label>
+          <div class="custom-select-container">
+            <div class="custom-select-trigger" (click)="toggleBhDropdown()">
+              <ng-container *ngIf="player.racket?.backhandRubber; else noBh">
+                <img [src]="player.racket!.backhandRubber!.image" class="item-img" *ngIf="player.racket!.backhandRubber!.image">
+                <span class="item-name">{{ player.racket!.backhandRubber!.name }}</span>
+              </ng-container>
+              <ng-template #noBh><span class="placeholder">Sélectionner un revêtement...</span></ng-template>
+              <span class="arrow" [class.open]="bhDropdownOpen">▼</span>
+            </div>
+            <div class="custom-select-options" *ngIf="bhDropdownOpen">
+              <div class="custom-option" *ngFor="let rubber of rubbers" (click)="selectBhRubber(rubber)">
+                <img [src]="rubber.image" class="item-img" *ngIf="rubber.image">
+                <span class="item-name">{{ rubber.name }}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SECTION ETIQUETTES (Tags) Drag & Drop -->
+    <div class="section-card tags-section">
+      <h3>Mon Style de Jeu (Étiquettes)</h3>
+      <p class="section-desc">Faites glisser les étiquettes dans les colonnes correspondantes pour définir votre profil de joueur.</p>
+
+      <div class="tags-dnd-container">
+        
+        <!-- Colonne JE SUIS -->
+        <div class="tag-column positive-col">
+          <h4>✅ Je suis</h4>
+          <div cdkDropList
+               #positiveList="cdkDropList"
+               [cdkDropListData]="positiveTags"
+               [cdkDropListConnectedTo]="[neutralList, negativeList]"
+               class="tag-list"
+               (cdkDropListDropped)="drop($event)">
+            <div class="tag-item" *ngFor="let item of positiveTags" cdkDrag>
+              {{item.name}}
+            </div>
+          </div>
+        </div>
+
+        <!-- Colonne NEUTRE -->
+        <div class="tag-column neutral-col">
+          <h4>❔ Neutre</h4>
+          <div cdkDropList
+               #neutralList="cdkDropList"
+               [cdkDropListData]="neutralTags"
+               [cdkDropListConnectedTo]="[positiveList, negativeList]"
+               class="tag-list"
+               (cdkDropListDropped)="drop($event)">
+            <div class="tag-item" *ngFor="let item of neutralTags" cdkDrag>
+              {{item.name}}
+            </div>
+          </div>
+        </div>
+
+        <!-- Colonne JE NE SUIS PAS -->
+        <div class="tag-column negative-col">
+          <h4>❌ Je ne suis pas</h4>
+          <div cdkDropList
+               #negativeList="cdkDropList"
+               [cdkDropListData]="negativeTags"
+               [cdkDropListConnectedTo]="[positiveList, neutralList]"
+               class="tag-list"
+               (cdkDropListDropped)="drop($event)">
+            <div class="tag-item" *ngFor="let item of negativeTags" cdkDrag>
+              {{item.name}}
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+  </div>
 </div>

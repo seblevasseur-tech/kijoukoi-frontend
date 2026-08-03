@@ -1,5 +1,5 @@
 import { Racket } from './racket.model';
-import { PlayerTag } from './player-tag.model';
+import { PlayerTagAssignment } from './player-tag-assignment.model';
 
 export interface Player {
   id: number;
@@ -11,5 +11,5 @@ export interface Player {
   lastRacketUpdateDate?: string;
   avatar?: string;
   racket?: Racket;
-  tags?: PlayerTag[];
+  tagAssignments?: PlayerTagAssignment[];
 }

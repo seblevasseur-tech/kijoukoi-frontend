@@ -45,7 +45,7 @@
 
         <!-- Sidebar Bottom Auth/Profile section -->
         <div class="sidebar-profile">
-            <ng-container *ngIf="currentUser(); else loggedOut">
+            <ng-container *ngIf="currentUser()">
                 <div class="user-profile-info">
                     <div class="user-avatar">{{ currentUser()?.login?.charAt(0) | uppercase }}</div>
                     <span class="user-name" *ngIf="!isSidebarCollapsed">{{ currentUser()?.login }}</span>
@@ -58,12 +58,6 @@
                     </button>
                 </div>
             </ng-container>
-            <ng-template #loggedOut>
-                <a routerLink="/login" class="nav-item auth-login-btn" (click)="closeSidebarOnMobile()">
-                    <svg class="nav-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
-                    <span class="nav-label">Se connecter</span>
-                </a>
-            </ng-template>
         </div>
     </aside>
 

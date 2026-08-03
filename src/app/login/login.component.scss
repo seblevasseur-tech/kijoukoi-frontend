@@ -86,39 +86,27 @@
   }
 }
 
-.auth-tabs {
-  display: flex;
-  margin-bottom: 24px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+.auth-switch {
+  margin-top: 20px;
+  text-align: center;
 }
 
-.auth-tab {
-  flex: 1;
-  background: none;
-  border: none;
+.switch-link {
   color: var(--color-text-secondary, #a1a1aa);
-  padding: 12px 0;
-  font-size: 1rem;
-  font-weight: 600;
+  font-size: 0.9rem;
   cursor: pointer;
-  position: relative;
   transition: color 0.2s;
+  
+  strong {
+    color: var(--color-primary, #4ade80);
+    font-weight: 600;
+  }
   
   &:hover {
     color: white;
-  }
-  
-  &.active {
-    color: var(--color-primary, #4ade80);
     
-    &::after {
-      content: '';
-      position: absolute;
-      bottom: -1px;
-      left: 0;
-      right: 0;
-      height: 2px;
-      background: var(--color-primary, #4ade80);
+    strong {
+      text-decoration: underline;
     }
   }
 }

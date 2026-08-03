@@ -1,42 +1,52 @@
-<div *ngIf="player" class="dashboard-container">
-  <h2>Bonjour, {{ player.login }} !</h2>
-  <p>Mon Classement : {{ player.ranking }}</p>
+<div *ngIf="player" class="admin-container player-admin-page">
+  <header class="form-header">
+    <h1>Bonjour, {{ player.login }} !</h1>
+    <p>Mon Classement : {{ player.ranking }}</p>
+  </header>
 
-  <div class="racket-form card">
-    <h3>Ma Raquette</h3>
-    <form (ngSubmit)="saveRacket()">
+  <form (ngSubmit)="saveRacket()" class="admin-form">
+    <section class="form-card">
+      <h2 class="card-title">Ma Raquette</h2>
       
-      <div class="form-group">
-        <label>Mon Bois :</label>
-        <select *ngIf="player.racket" [(ngModel)]="player.racket.blade" name="blade" [compareWith]="compareBlades">
-          <option [ngValue]="null">-- Sélectionner un bois --</option>
-          <option *ngFor="let blade of blades" [ngValue]="blade">
-            {{ blade.name }} ({{ blade.brand.name }})
-          </option>
-        </select>
+      <!-- La classe .form-row de l'ancien projet aligne les champs -->
+      <div class="form-row">
+          <div class="form-group">
+            <label>Mon Bois :</label>
+            <select *ngIf="player.racket" [(ngModel)]="player.racket.blade" name="blade" [compareWith]="compareBlades">
+              <option [ngValue]="null">-- Sélectionner un bois --</option>
+              <option *ngFor="let blade of blades" [ngValue]="blade">
+                {{ blade.name }} ({{ blade.brand.name }})
+              </option>
+            </select>
+          </div>
       </div>
 
-      <div class="form-group">
-        <label>Mon Coup Droit :</label>
-        <select *ngIf="player.racket" [(ngModel)]="player.racket.forehandRubber" name="forehandRubber" [compareWith]="compareRubbers">
-          <option [ngValue]="null">-- Sélectionner un revêtement --</option>
-          <option *ngFor="let rubber of rubbers" [ngValue]="rubber">
-            {{ rubber.name }} ({{ rubber.brand.name }})
-          </option>
-        </select>
-      </div>
+      <div class="form-row">
+          <div class="form-group">
+            <label>Mon Coup Droit :</label>
+            <select *ngIf="player.racket" [(ngModel)]="player.racket.forehandRubber" name="forehandRubber" [compareWith]="compareRubbers">
+              <option [ngValue]="null">-- Sélectionner un revêtement --</option>
+              <option *ngFor="let rubber of rubbers" [ngValue]="rubber">
+                {{ rubber.name }} ({{ rubber.brand.name }})
+              </option>
+            </select>
+          </div>
 
-      <div class="form-group">
-        <label>Mon Revers :</label>
-        <select *ngIf="player.racket" [(ngModel)]="player.racket.backhandRubber" name="backhandRubber" [compareWith]="compareRubbers">
-          <option [ngValue]="null">-- Sélectionner un revêtement --</option>
-          <option *ngFor="let rubber of rubbers" [ngValue]="rubber">
-            {{ rubber.name }} ({{ rubber.brand.name }})
-          </option>
-        </select>
+          <div class="form-group">
+            <label>Mon Revers :</label>
+            <select *ngIf="player.racket" [(ngModel)]="player.racket.backhandRubber" name="backhandRubber" [compareWith]="compareRubbers">
+              <option [ngValue]="null">-- Sélectionner un revêtement --</option>
+              <option *ngFor="let rubber of rubbers" [ngValue]="rubber">
+                {{ rubber.name }} ({{ rubber.brand.name }})
+              </option>
+            </select>
+          </div>
       </div>
+    </section>
 
-      <button type="submit" class="pill">Enregistrer ma raquette</button>
-    </form>
-  </div>
+    <!-- La classe .form-actions est standard dans table-tennis-frontend -->
+    <div class="form-actions">
+        <button type="submit" class="btn-primary">Enregistrer ma raquette</button>
+    </div>
+  </form>
 </div>

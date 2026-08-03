@@ -1,8 +1,22 @@
-<h2>Liste des Revêtements</h2>
-<div class="card-grid">
-  <div class="card" *ngFor="let rubber of rubbers">
-    <img *ngIf="rubber.image" [src]="rubber.image" alt="Image de {{rubber.name}}" class="equipment-image">
-    <h3>{{ rubber.name }}</h3>
-    <p><strong>Marque :</strong> {{ rubber.brand.name }}</p>
+<div class="catalog-list-page">
+  <h2>Liste des Revêtements</h2>
+  <div class="rubbers-grid" *ngIf="rubbers.length > 0; else noRubbers">
+    <a class="rubber-card" *ngFor="let rubber of rubbers">
+      <div class="card-avatar">
+        <img *ngIf="rubber.image; else noImage" [src]="rubber.image" [alt]="rubber.name" />
+        <ng-template #noImage>
+            <div style="width:100%;height:100%;background:var(--color-surface-raised);display:flex;align-items:center;justify-content:center;">🔴</div>
+        </ng-template>
+      </div>
+
+      <div class="card-info">
+        <h3 class="rubber-brand">{{ rubber.brand.name }}</h3>
+        <h3 class="rubber-name">{{ rubber.name }}</h3>
+      </div>
+    </a>
   </div>
+  
+  <ng-template #noRubbers>
+      <p class="no-rubbers">Aucun revêtement enregistré pour le moment.</p>
+  </ng-template>
 </div>

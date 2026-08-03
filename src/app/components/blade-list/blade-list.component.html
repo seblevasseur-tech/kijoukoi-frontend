@@ -1,9 +1,23 @@
-<h2>Liste des Bois</h2>
-<div class="card-grid">
-  <div class="card" *ngFor="let blade of blades">
-    <img *ngIf="blade.image" [src]="blade.image" alt="Image de {{blade.name}}" class="equipment-image">
-    <h3>{{ blade.name }}</h3>
-    <p><strong>Marque :</strong> {{ blade.brand.name }}</p>
-    <p><strong>Poids :</strong> {{ blade.weight }} g</p>
+<div class="catalog-list-page">
+  <h2>Liste des Bois</h2>
+  <div class="blades-grid" *ngIf="blades.length > 0; else noBlades">
+    <a class="blade-card" *ngFor="let blade of blades">
+      <div class="card-avatar">
+        <img *ngIf="blade.image; else noImage" [src]="blade.image" [alt]="blade.name" />
+        <ng-template #noImage>
+            <div style="width:100%;height:100%;background:var(--color-surface-raised);display:flex;align-items:center;justify-content:center;">🏓</div>
+        </ng-template>
+      </div>
+
+      <div class="card-info">
+        <h3 class="blade-brand">{{ blade.brand.name }}</h3>
+        <h3 class="blade-name">{{ blade.name }}</h3>
+        <p style="color: var(--color-text-secondary); margin-top: 8px; font-size: 0.85em;">Poids: {{ blade.weight }}g</p>
+      </div>
+    </a>
   </div>
+  
+  <ng-template #noBlades>
+      <p class="no-blades">Aucun bois enregistré pour le moment.</p>
+  </ng-template>
 </div>

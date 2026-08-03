@@ -5,13 +5,15 @@ import { Player } from './models/player.model';
 import { Blade } from './models/blade.model';
 import { Rubber } from './models/rubber.model';
 import { Brand } from './models/brand.model';
+import { environment } from '../environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ApiService {
   private http = inject(HttpClient);
-  private baseUrl = 'http://localhost:8080/api';
+  // Utilisation de l'URL du fichier d'environnement
+  private baseUrl = `${environment.backendUrl}/api`;
 
   getPlayers(): Observable<Player[]> {
     return this.http.get<Player[]>(`${this.baseUrl}/players`);

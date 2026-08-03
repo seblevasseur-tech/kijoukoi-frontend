@@ -1,15 +1,26 @@
-<h2>Liste des Joueurs</h2>
-<div class="card-grid">
-  <div class="card" *ngFor="let player of players">
-    <h3>{{ player.login }}</h3>
-    <p><strong>Classement :</strong> {{ player.ranking }}</p>
-    <div *ngIf="player.racket">
-      <h4>Raquette :</h4>
-      <ul>
-        <li *ngIf="player.racket.blade">Bois : {{ player.racket.blade.name }} ({{ player.racket.blade.brand.name }})</li>
-        <li *ngIf="player.racket.forehandRubber">Coup droit : {{ player.racket.forehandRubber.name }}</li>
-        <li *ngIf="player.racket.backhandRubber">Revers : {{ player.racket.backhandRubber.name }}</li>
-      </ul>
-    </div>
+<div class="catalog-list-page">
+  <h2>Liste des Joueurs</h2>
+  <div class="players-grid" *ngIf="players.length > 0; else noPlayers">
+    <a class="player-card" *ngFor="let player of players">
+      <div class="card-avatar">
+        <!-- Générateur d'avatar aléatoire basé sur le login si pas d'avatar -->
+        <img [src]="player.avatar || 'https://api.dicebear.com/7.x/avataaars/svg?seed=' + player.login" [alt]="player.login" />
+      </div>
+
+      <div class="card-info">
+        <h3 class="player-name">{{ player.login }}</h3>
+        <p style="color: var(--color-text-secondary); margin-top: 4px; font-size: 0.9em;">Classement: {{ player.ranking }}</p>
+        
+        <div *ngIf="player.racket" style="margin-top: 12px; font-size: 0.85em; color: var(--color-text-secondary);">
+          <div *ngIf="player.racket.blade"><strong>Bois:</strong> {{ player.racket.blade.name }}</div>
+          <div *ngIf="player.racket.forehandRubber"><strong>CD:</strong> {{ player.racket.forehandRubber.name }}</div>
+          <div *ngIf="player.racket.backhandRubber"><strong>RV:</strong> {{ player.racket.backhandRubber.name }}</div>
+        </div>
+      </div>
+    </a>
   </div>
+  
+  <ng-template #noPlayers>
+      <p class="no-players">Aucun joueur enregistré pour le moment.</p>
+  </ng-template>
 </div>

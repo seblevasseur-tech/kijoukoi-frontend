@@ -23,6 +23,7 @@ export class PlayerDashboardComponent implements OnInit {
   blades: Blade[] = [];
   rubbers: Rubber[] = [];
   allTags: PlayerTag[] = [];
+  isAuthenticated = false;
 
   // Dropdown states
   bladeDropdownOpen = false;
@@ -59,14 +60,14 @@ export class PlayerDashboardComponent implements OnInit {
           this.isAuthenticated = true;
           this.player = player;
           if (!this.player.racket) {
-            this.player.racket = { id: 0, blade: null, forehandRubber: null, backhandRubber: null };
+            this.player.racket = { id: 0, blade: undefined, forehandRubber: undefined, backhandRubber: undefined };
           }
           this.distributeTags();
         },
         error: (err) => {
           this.isAuthenticated = false;
           // Set a fake player to render the UI greyed out
-          this.player = { id: 0, login: 'Visiteur', password: '', racket: { id: 0, blade: null, forehandRubber: null, backhandRubber: null }, tagAssignments: [] };
+          this.player = { id: 0, login: 'Visiteur', password: '', racket: { id: 0, blade: undefined, forehandRubber: undefined, backhandRubber: undefined }, tagAssignments: [] };
           this.distributeTags();
         }
       });

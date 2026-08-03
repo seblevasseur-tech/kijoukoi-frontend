@@ -14,7 +14,7 @@
   border-radius: var(--radius-lg, 12px);
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
   position: relative;
-  margin-top: 80px; /* Space for the yeti popping out */
+  margin-top: 100px; /* Space for the yeti popping out */
 }
 
 .yeti-wrapper {
@@ -22,33 +22,32 @@
   top: -100px;
   left: 50%;
   transform: translateX(-50%);
-  width: 150px;
-  height: 150px;
-  overflow: hidden;
+  width: 200px;
+  height: 200px;
   border-radius: 50%;
-  background: transparent;
-}
-
-.yeti-svg {
-  width: 100%;
-  height: 100%;
   
-  .eye {
-    transition: transform 0.2s;
+  .svgContainer {
+    position: relative; width: 200px; height: 200px; margin: 0 auto;
+    border-radius: 50%;
+    pointer-events: none;
+    
+    div {
+      position: relative; width: 100%; height: 0; overflow: hidden; border-radius: 50%;
+      padding-bottom: 100%;
+    }
+    
+    .mySVG {
+      position: absolute; left: 0; top: 0; width: 100%; height: 100%;
+      pointer-events: none;
+    }
+    
+    /* Blue border circle */
+    &:after {
+      content: ""; position: absolute; top: 0; left: 0; z-index: 10; 
+      width: inherit; height: inherit; box-sizing: border-box;
+      border: solid 2.5px #217093; border-radius: 50%;
+    }
   }
-  
-  .arms {
-    transform: translateY(100px); /* Hidden below */
-    transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-  }
-}
-
-/* When password field is focused */
-.hide-eyes .arms {
-  transform: translateY(0); /* Arms go up */
-}
-.hide-eyes .eye {
-  transform: scaleY(0.1); /* Squint eyes */
 }
 
 .login-form {
@@ -61,6 +60,7 @@
 
 .form-group {
   margin-bottom: 20px;
+  position: relative;
   
   label {
     display: block;
@@ -78,8 +78,61 @@
     color: white;
     outline: none;
     transition: border-color 0.2s;
+    font-size: 1rem;
     
     &:focus {
+      border-color: var(--color-primary, #4ade80);
+    }
+  }
+}
+
+/* Show Password Toggle Checkbox */
+.inputGroup2 {
+  #showPasswordToggle {
+    display: block;
+    padding: 0 0 0 1.45em;
+    position: absolute;
+    top: 0;
+    right: 0;
+    font-size: 0.85rem;
+    cursor: pointer;
+    color: var(--color-text-secondary);
+    
+    input {
+      position: absolute;
+      z-index: -1;
+      opacity: 0;
+    }
+    
+    .indicator {
+      position: absolute;
+      top: 0;
+      left: 0;
+      height: 1.1em;
+      width: 1.1em;
+      background-color: rgba(0, 0, 0, 0.3);
+      border: solid 2px var(--color-text-secondary);
+      border-radius: 3px;
+      transition: border-color 0.2s;
+      
+      &:after {
+        content: "";
+        position: absolute;
+        left: 0.2em;
+        top: 0.05em;
+        width: 0.3em;
+        height: 0.6em;
+        border: solid var(--color-primary, #4ade80);
+        border-width: 0 2px 2px 0;
+        transform: rotate(45deg);
+        visibility: hidden;
+      }
+    }
+    
+    input:checked ~ .indicator:after {
+      visibility: visible;
+    }
+    input:focus ~ .indicator, input:hover ~ .indicator {
       border-color: var(--color-primary, #4ade80);
     }
   }

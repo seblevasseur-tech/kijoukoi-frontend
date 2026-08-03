@@ -46,6 +46,26 @@
 
     <!-- Main Content Area -->
     <main class="main-content">
+        <header class="topbar">
+            <div class="spacer"></div>
+            <div class="auth-section">
+                <ng-container *ngIf="currentUser(); else loggedOut">
+                    <div class="user-profile">
+                        <span class="user-name">{{ currentUser()?.login }}</span>
+                        <button class="btn btn-logout" (click)="logout()">Déconnexion</button>
+                    </div>
+                </ng-container>
+                <ng-template #loggedOut>
+                    <a routerLink="/login" class="auth-icon" title="Se connecter">
+                        <svg viewBox="0 0 24 24" width="28" height="28" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                            <circle cx="12" cy="7" r="4"></circle>
+                        </svg>
+                    </a>
+                </ng-template>
+            </div>
+        </header>
+
         <router-outlet></router-outlet>
     </main>
 </div>

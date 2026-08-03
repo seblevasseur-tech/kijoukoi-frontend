@@ -1,0 +1,53 @@
+<div class="login-page">
+  <div class="login-container">
+    
+    <div class="yeti-wrapper" [class.hide-eyes]="isPasswordFocused">
+      <!-- Simple SVG Yeti approximation -->
+      <svg class="yeti-svg" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+        <!-- Body/Face Background -->
+        <circle cx="100" cy="100" r="80" fill="#E6E6E6" />
+        
+        <!-- Face -->
+        <path d="M 60 90 Q 100 130 140 90 Q 100 150 60 90" fill="#F0C7A6" />
+        <circle cx="100" cy="90" r="40" fill="#F0C7A6" />
+        
+        <!-- Eyes -->
+        <circle cx="85" cy="80" r="5" fill="#333" class="eye left-eye" />
+        <circle cx="115" cy="80" r="5" fill="#333" class="eye right-eye" />
+        
+        <!-- Nose -->
+        <ellipse cx="100" cy="95" rx="8" ry="4" fill="#E89B84" />
+        
+        <!-- Mouth -->
+        <path d="M 90 110 Q 100 120 110 110" stroke="#333" stroke-width="2" fill="none" />
+        
+        <!-- Arms (hidden initially, raised when hiding eyes) -->
+        <g class="arms">
+          <path d="M 40 180 Q 70 80 85 80" stroke="#E6E6E6" stroke-width="20" stroke-linecap="round" fill="none" class="arm left-arm" />
+          <path d="M 160 180 Q 130 80 115 80" stroke="#E6E6E6" stroke-width="20" stroke-linecap="round" fill="none" class="arm right-arm" />
+        </g>
+      </svg>
+    </div>
+
+    <form class="login-form" (ngSubmit)="onSubmit()">
+      <h2>Connexion</h2>
+      
+      <div class="error-banner" *ngIf="errorMessage">
+        {{ errorMessage }}
+      </div>
+
+      <div class="form-group">
+        <label for="login">Identifiant</label>
+        <input type="text" id="login" name="login" [(ngModel)]="loginData.login" required placeholder="ex: sebastien.pong">
+      </div>
+
+      <div class="form-group">
+        <label for="password">Mot de passe</label>
+        <input type="password" id="password" name="password" [(ngModel)]="loginData.password" required 
+               (focus)="onPasswordFocus()" (blur)="onPasswordBlur()" placeholder="Votre mot de passe">
+      </div>
+
+      <button type="submit" class="btn btn-primary btn-block">Se connecter</button>
+    </form>
+  </div>
+</div>

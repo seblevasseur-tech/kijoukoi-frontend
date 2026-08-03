@@ -1,6 +1,8 @@
 import { Component, OnInit, inject } from '@angular/core';
+import { forkJoin } from 'rxjs';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { RouterModule } from '@angular/router';
 import { CdkDragDrop, DragDropModule, moveItemInArray, transferArrayItem } from '@angular/cdk/drag-drop';
 import { ApiService } from '../api.service';
 import { Player } from '../models/player.model';
@@ -12,7 +14,7 @@ import { PlayerTagAssignment } from '../models/player-tag-assignment.model';
 @Component({
   selector: 'app-player-dashboard',
   standalone: true,
-  imports: [CommonModule, FormsModule, DragDropModule],
+  imports: [CommonModule, FormsModule, DragDropModule, RouterModule],
   templateUrl: './player-dashboard.component.html',
   styleUrl: './player-dashboard.component.scss'
 })
@@ -34,27 +36,40 @@ export class PlayerDashboardComponent implements OnInit {
 
   private api = inject(ApiService);
 
+  constructor() {}
+
   ngOnInit(): void {
-    this.api.getBlades().subscribe(data => this.blades = data);
-    this.api.getRubbers().subscribe(data => this.rubbers = data);
-    
-    // Load tags and player
-    this.api.getTags().subscribe(tags => {
-      this.allTags = tags;
-      this.loadPlayer();
-    });
+    this.loadData();
   }
 
-  loadPlayer(): void {
-    this.api.getPlayer(1).subscribe(data => {
-      this.player = data;
-      if (!this.player.racket) {
-        this.player.racket = {};
-      }
-      if (!this.player.tagAssignments) {
-        this.player.tagAssignments = [];
-      }
-      this.distributeTags();
+  loadData(): void {
+    // 1. Fetch available equipment and tags
+    forkJoin({
+      blades: this.api.getBlades(),
+      rubbers: this.api.getRubbers(),
+      tags: this.api.getTags()
+    }).subscribe(res => {
+      this.blades = res.blades;
+      this.rubbers = res.rubbers;
+      this.allTags = res.tags;
+      
+      // 2. Fetch logged-in user profile
+      this.api.getMe().subscribe({
+        next: (player) => {
+          this.isAuthenticated = true;
+          this.player = player;
+          if (!this.player.racket) {
+            this.player.racket = { id: 0, blade: null, forehandRubber: null, backhandRubber: null };
+          }
+          this.distributeTags();
+        },
+        error: (err) => {
+          this.isAuthenticated = false;
+          // Set a fake player to render the UI greyed out
+          this.player = { id: 0, login: 'Visiteur', password: '', racket: { id: 0, blade: null, forehandRubber: null, backhandRubber: null }, tagAssignments: [] };
+          this.distributeTags();
+        }
+      });
     });
   }
 

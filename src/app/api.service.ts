@@ -20,6 +20,10 @@ export class ApiService {
     return this.http.get<Player[]>(`${this.baseUrl}/players`);
   }
 
+  getMe(): Observable<Player> {
+    return this.http.get<Player>(`${this.baseUrl}/players/me`);
+  }
+
   getPlayer(id: number): Observable<Player> {
     return this.http.get<Player>(`${this.baseUrl}/players/${id}`);
   }

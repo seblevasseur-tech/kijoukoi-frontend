@@ -5,13 +5,14 @@ import { RubberListComponent } from './components/rubber-list/rubber-list.compon
 import { PlayerDashboardComponent } from './player-dashboard/player-dashboard.component';
 import { AdminDashboardComponent } from './admin-dashboard/admin-dashboard.component';
 import { LoginComponent } from './login/login.component';
+import { authGuard } from './guards/auth.guard';
 
 export const routes: Routes = [
-  { path: '', redirectTo: '/players', pathMatch: 'full' },
+  { path: '', redirectTo: '/profile', pathMatch: 'full' },
   { path: 'login', component: LoginComponent },
-  { path: 'players', component: PlayerListComponent },
-  { path: 'blades', component: BladeListComponent },
-  { path: 'rubbers', component: RubberListComponent },
-  { path: 'profile', component: PlayerDashboardComponent },
-  { path: 'admin', component: AdminDashboardComponent },
+  { path: 'players', component: PlayerListComponent, canActivate: [authGuard] },
+  { path: 'blades', component: BladeListComponent, canActivate: [authGuard] },
+  { path: 'rubbers', component: RubberListComponent, canActivate: [authGuard] },
+  { path: 'profile', component: PlayerDashboardComponent, canActivate: [authGuard] },
+  { path: 'admin', component: AdminDashboardComponent, canActivate: [authGuard] },
 ];

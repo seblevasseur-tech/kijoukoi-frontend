@@ -106,35 +106,54 @@
       </div>
     </div>
 
-    <form class="login-form" (ngSubmit)="onSubmit()">
-      <h2>Connexion</h2>
+    <div class="login-form">
+      <!-- Tabs -->
+      <div class="auth-tabs">
+        <button type="button" class="auth-tab" [class.active]="isLoginMode" (click)="setMode(true)">Se connecter</button>
+        <button type="button" class="auth-tab" [class.active]="!isLoginMode" (click)="setMode(false)">Créer un compte</button>
+      </div>
       
-      <div class="error-banner" *ngIf="errorMessage">
+      <h2>{{ isLoginMode ? 'Bienvenue !' : 'Rejoignez-nous !' }}</h2>
+      <div *ngIf="errorMessage" class="error-banner">
         {{ errorMessage }}
       </div>
-
-      <div class="form-group inputGroup1">
-        <label for="login">Identifiant (Email)</label>
-        <input #emailInput type="email" id="login" name="login" [(ngModel)]="loginData.login" required placeholder="ex: sebastien.pong"
-               (focus)="onEmailFocus()" (blur)="onEmailBlur()" (input)="onEmailInput()">
-      </div>
-
-      <div class="form-group inputGroup2">
-        <label for="password">Mot de passe</label>
-        <input #passwordInput [type]="isPasswordVisible ? 'text' : 'password'" id="password" name="password" [(ngModel)]="loginData.password" required 
-               (focus)="onPasswordFocus()" (blur)="onPasswordBlur()" placeholder="Votre mot de passe">
-        <label id="showPasswordToggle" for="showPasswordCheck">Voir
-          <input id="showPasswordCheck" type="checkbox" [(ngModel)]="isPasswordVisible" name="showPasswordCheck" 
-                 (change)="onPasswordToggleChange($event)"
-                 (focus)="onPasswordToggleFocus()" 
-                 (blur)="onPasswordToggleBlur()"
-                 (mousedown)="onPasswordToggleMouseDown()"
-                 (mouseup)="onPasswordToggleMouseUp()">
-          <div class="indicator"></div>
-        </label>
-      </div>
-
-      <button type="submit" class="btn btn-primary btn-block">Se connecter</button>
-    </form>
+      <form (ngSubmit)="onSubmit()">
+        <div class="form-group">
+          <label for="login">Identifiant</label>
+          <input 
+            #emailInput
+            type="email" 
+            id="login" 
+            name="login" 
+            [(ngModel)]="loginData.login" 
+            (input)="onEmailInput()"
+            (focus)="onEmailFocus()"
+            (blur)="onEmailBlur()"
+            required>
+        </div>
+        <div class="form-group">
+          <label for="password">Mot de passe</label>
+          <div class="password-wrapper">
+            <input 
+              #passwordInput
+              [type]="isPasswordVisible ? 'text' : 'password'" 
+              id="password" 
+              name="password" 
+              [(ngModel)]="loginData.password" 
+              (focus)="onPasswordFocus()"
+              (blur)="onPasswordBlur()"
+              required>
+            <label class="eye-toggle" (mousedown)="onPasswordToggleMouseDown()" (mouseup)="onPasswordToggleMouseUp()" (touchstart)="onPasswordToggleMouseDown()" (touchend)="onPasswordToggleMouseUp()">
+              <input type="checkbox" id="showPasswordToggle" [(ngModel)]="isPasswordVisible" name="showPasswordToggle" (change)="onPasswordToggleChange($event)" (focus)="onPasswordToggleFocus()" (blur)="onPasswordToggleBlur()">
+              <svg *ngIf="!isPasswordVisible" class="eye-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+              <svg *ngIf="isPasswordVisible" class="eye-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path><line x1="1" y1="1" x2="23" y2="23"></line></svg>
+            </label>
+          </div>
+        </div>
+        <button type="submit" class="btn btn-primary btn-block">
+          {{ isLoginMode ? 'Se connecter' : 'Créer mon compte' }}
+        </button>
+      </form>
+    </div>
   </div>
 </div>

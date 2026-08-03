@@ -54,6 +54,7 @@ export class LoginComponent implements OnInit, AfterViewInit, OnDestroy {
   private eyeScale = 1;
   private eyesCovered = false;
   private showPasswordClicked = false;
+  isLoginMode = true;
   
   private screenCenter = 0;
   private svgCoords = { x: 0, y: 0 };
@@ -68,6 +69,11 @@ export class LoginComponent implements OnInit, AfterViewInit, OnDestroy {
 
   ngOnInit() {
     // Basic setup if needed
+  }
+
+  setMode(isLogin: boolean) {
+    this.isLoginMode = isLogin;
+    this.errorMessage = '';
   }
 
   ngAfterViewInit() {
@@ -373,13 +379,24 @@ export class LoginComponent implements OnInit, AfterViewInit, OnDestroy {
       return;
     }
     
-    this.authService.login(this.loginData.login, this.loginData.password).subscribe({
-      next: () => {
-        this.router.navigate(['/dashboard']);
-      },
-      error: (err) => {
-        this.errorMessage = 'Identifiants incorrects';
-      }
-    });
+    if (this.isLoginMode) {
+      this.authService.login(this.loginData.login, this.loginData.password).subscribe({
+        next: () => {
+          this.router.navigate(['/dashboard']);
+        },
+        error: (err) => {
+          this.errorMessage = 'Mot de passe et/ou login invalide';
+        }
+      });
+    } else {
+      this.authService.register(this.loginData.login, this.loginData.password).subscribe({
+        next: () => {
+          this.router.navigate(['/dashboard']);
+        },
+        error: (err) => {
+          this.errorMessage = 'Erreur lors de la création du compte';
+        }
+      });
+    }
   }
 }

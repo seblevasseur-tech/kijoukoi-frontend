@@ -102,6 +102,7 @@ app-root {
 
 .spotify-layout {
   display: flex;
+  height: 100%;
   min-height: 100vh;
   gap: var(--spacing-sm);
   padding: var(--spacing-sm);
@@ -113,6 +114,7 @@ app-root {
   padding: 24px 16px;
   border-radius: 8px;
   background: #121212;
+  height: calc(100vh - 2 * var(--spacing-sm));
 
   .logo {
     display: flex;

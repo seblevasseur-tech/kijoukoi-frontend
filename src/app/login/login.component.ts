@@ -19,6 +19,17 @@ export class LoginComponent {
   private authService = inject(AuthService);
   private router = inject(Router);
 
+  // Calcule la position des pupilles en fonction de la taille du texte
+  get eyeTranslation(): string {
+    if (this.isPasswordFocused) return 'translate(0, 0)';
+    const length = this.loginData.login.length;
+    // On bouge les yeux de 0px à 12px vers la droite max
+    const moveX = Math.min(length * 0.8, 12); 
+    // On bouge légèrement vers le bas
+    const moveY = Math.min(length * 0.2, 4);
+    return `translate(${moveX}px, ${moveY}px)`;
+  }
+
   onPasswordFocus() {
     this.isPasswordFocused = true;
   }

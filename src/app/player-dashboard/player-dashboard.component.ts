@@ -67,7 +67,7 @@ export class PlayerDashboardComponent implements OnInit {
         error: (err) => {
           this.isAuthenticated = false;
           // Set a fake player to render the UI greyed out
-          this.player = { id: 0, login: 'Visiteur', password: '', racket: { blade: undefined, forehandRubber: undefined, backhandRubber: undefined }, tagAssignments: [] };
+          this.player = { id: 0, login: 'Visiteur', racket: { blade: undefined, forehandRubber: undefined, backhandRubber: undefined }, tagAssignments: [] };
           this.distributeTags();
         }
       });

@@ -1,45 +1,66 @@
-.topbar {
+/* Sidebar profile / Auth */
+.sidebar-profile {
+  margin-top: auto; /* Pushes it to the bottom */
+  padding: 16px;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
   display: flex;
-  padding: 16px 32px;
-  background: rgba(0,0,0,0.2);
-  align-items: center;
-  justify-content: flex-end;
+  flex-direction: column;
 }
 
-.auth-section {
-  display: flex;
-  align-items: center;
-}
-
-.auth-icon {
-  color: var(--color-text);
-  transition: color 0.3s;
-}
-
-.auth-icon:hover {
-  color: var(--color-primary);
-}
-
-.user-profile {
+.user-profile-info {
   display: flex;
   align-items: center;
-  gap: 16px;
+  gap: 12px;
+}
+
+.user-avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: var(--color-primary, #4ade80);
+  color: #000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 1rem;
+  flex-shrink: 0;
 }
 
 .user-name {
   font-weight: 600;
+  font-size: 0.9rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
-.btn-logout {
-  background: rgba(255,255,255,0.1);
+.btn-logout-icon {
+  background: transparent;
   border: none;
-  padding: 8px 16px;
-  border-radius: 4px;
-  color: white;
+  color: var(--color-text-secondary, #a1a1aa);
   cursor: pointer;
-  transition: background 0.3s;
+  margin-left: auto;
+  padding: 4px;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
 }
 
-.btn-logout:hover {
-  background: rgba(255,255,255,0.2);
+.btn-logout-icon:hover {
+  background: rgba(255, 255, 255, 0.1);
+  color: var(--color-text, #fff);
+}
+
+.auth-login-btn {
+  margin: 0 !important;
+  color: var(--color-primary, #4ade80) !important;
+}
+
+/* Make sure the sidebar takes full height and flexes */
+:host {
+  display: block;
+  height: 100vh;
 }

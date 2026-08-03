@@ -42,30 +42,36 @@
                 <span class="nav-label">Admin</span>
             </a>
         </nav>
+
+        <!-- Sidebar Bottom Auth/Profile section -->
+        <div class="sidebar-profile">
+            <ng-container *ngIf="currentUser(); else loggedOut">
+                <div class="user-profile-info">
+                    <div class="user-avatar">{{ currentUser()?.login?.charAt(0) | uppercase }}</div>
+                    <span class="user-name" *ngIf="!isSidebarCollapsed">{{ currentUser()?.login }}</span>
+                    <button class="btn-logout-icon" (click)="logout()" title="Déconnexion" *ngIf="!isSidebarCollapsed">
+                        <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="2" fill="none"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>
+                    </button>
+                    <!-- Mobile / Collapsed mode logout -->
+                    <button class="btn-logout-icon" (click)="logout()" title="Déconnexion" *ngIf="isSidebarCollapsed" style="margin-top: 12px; margin-left: 0;">
+                        <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="2" fill="none"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>
+                    </button>
+                </div>
+            </ng-container>
+            <ng-template #loggedOut>
+                <a routerLink="/login" class="nav-item auth-login-btn" (click)="closeSidebarOnMobile()">
+                    <svg class="nav-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+                    <span class="nav-label">Se connecter</span>
+                </a>
+            </ng-template>
+        </div>
     </aside>
 
     <!-- Main Content Area -->
     <main class="main-content">
-        <header class="topbar">
-            <div class="spacer"></div>
-            <div class="auth-section">
-                <ng-container *ngIf="currentUser(); else loggedOut">
-                    <div class="user-profile">
-                        <span class="user-name">{{ currentUser()?.login }}</span>
-                        <button class="btn btn-logout" (click)="logout()">Déconnexion</button>
-                    </div>
-                </ng-container>
-                <ng-template #loggedOut>
-                    <a routerLink="/login" class="auth-icon" title="Se connecter">
-                        <svg viewBox="0 0 24 24" width="28" height="28" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round">
-                            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
-                            <circle cx="12" cy="7" r="4"></circle>
-                        </svg>
-                    </a>
-                </ng-template>
-            </div>
-        </header>
-
         <router-outlet></router-outlet>
     </main>
 </div>
+
+<!-- Global Toaster -->
+<app-toast></app-toast>

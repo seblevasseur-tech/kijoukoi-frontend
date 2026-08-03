@@ -88,6 +88,7 @@ export class PlayerDashboardComponent implements OnInit {
         event.currentIndex,
       );
     }
+    this.saveProfile();
   }
 
   saveProfile(): void {
@@ -104,7 +105,6 @@ export class PlayerDashboardComponent implements OnInit {
 
     this.api.updatePlayer(this.player.id, this.player).subscribe(updated => {
       this.player = updated;
-      alert('Profil mis à jour avec succès !');
     });
   }
 
@@ -116,13 +116,16 @@ export class PlayerDashboardComponent implements OnInit {
   selectBlade(blade: Blade) {
     this.player.racket!.blade = blade;
     this.bladeDropdownOpen = false;
+    this.saveProfile();
   }
   selectFhRubber(rubber: Rubber) {
     this.player.racket!.forehandRubber = rubber;
     this.fhDropdownOpen = false;
+    this.saveProfile();
   }
   selectBhRubber(rubber: Rubber) {
     this.player.racket!.backhandRubber = rubber;
     this.bhDropdownOpen = false;
+    this.saveProfile();
   }
 }

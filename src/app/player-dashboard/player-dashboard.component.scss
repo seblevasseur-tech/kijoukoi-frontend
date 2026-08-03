@@ -35,14 +35,19 @@
 /* CUSTOM DROPDOWNS */
 .equipment-form {
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   gap: 20px;
+  
+  @media (max-width: 768px) {
+    flex-direction: column;
+  }
 }
 
 .form-group {
   display: flex;
   flex-direction: column;
   gap: 8px;
+  flex: 1;
   
   label {
     font-size: 0.95rem;

@@ -156,42 +156,23 @@ export class LoginComponent implements OnInit, AfterViewInit, OnDestroy {
     const emailEl = this.emailInput.nativeElement;
     let carPos = emailEl.selectionEnd || emailEl.value.length;
     
-    // Create dummy div to measure text width
-    const div = document.createElement('div');
-    const span = document.createElement('span');
-    const copyStyle = window.getComputedStyle(emailEl);
-    
-    Array.from(copyStyle).forEach((prop) => {
-      (div.style as any)[prop] = copyStyle.getPropertyValue(prop);
-    });
-    div.style.position = 'absolute';
-    div.style.visibility = 'hidden';
-    document.body.appendChild(div);
-    
-    div.textContent = emailEl.value.substr(0, carPos);
-    span.textContent = emailEl.value.substr(carPos) || '.';
-    div.appendChild(span);
-    
-    let caretCoords = { x: 0, y: 0 };
-    let eyeLAngle, eyeRAngle, noseAngle, mouthAngle, dFromC;
-
-    if (emailEl.scrollWidth <= this.emailScrollMax) {
-      const spanRect = span.getBoundingClientRect();
-      caretCoords = { x: spanRect.left, y: spanRect.top };
-      dFromC = this.screenCenter - caretCoords.x;
-      eyeLAngle = this.getAngle(this.eyeLCoords.x, this.eyeLCoords.y, caretCoords.x, caretCoords.y + 25);
-      eyeRAngle = this.getAngle(this.eyeRCoords.x, this.eyeRCoords.y, caretCoords.x, caretCoords.y + 25);
-      noseAngle = this.getAngle(this.noseCoords.x, this.noseCoords.y, caretCoords.x, caretCoords.y + 25);
-      mouthAngle = this.getAngle(this.mouthCoords.x, this.mouthCoords.y, caretCoords.x, caretCoords.y + 25);
-    } else {
-      eyeLAngle = this.getAngle(this.eyeLCoords.x, this.eyeLCoords.y, this.emailCoords.x + this.emailScrollMax, this.emailCoords.y + 25);
-      eyeRAngle = this.getAngle(this.eyeRCoords.x, this.eyeRCoords.y, this.emailCoords.x + this.emailScrollMax, this.emailCoords.y + 25);
-      noseAngle = this.getAngle(this.noseCoords.x, this.noseCoords.y, this.emailCoords.x + this.emailScrollMax, this.emailCoords.y + 25);
-      mouthAngle = this.getAngle(this.mouthCoords.x, this.mouthCoords.y, this.emailCoords.x + this.emailScrollMax, this.emailCoords.y + 25);
-      dFromC = 0; // rough fallback
+    // Approximate caret position to avoid buggy DOM injection
+    const charWidth = 9; // average pixels per char
+    let textWidth = carPos * charWidth;
+    if (textWidth > emailEl.clientWidth - 20) {
+      textWidth = emailEl.clientWidth - 20;
     }
     
-    document.body.removeChild(div);
+    // Absolute caret coordinates on screen
+    const caretAbsoluteX = this.emailCoords.x + textWidth;
+    const caretAbsoluteY = this.emailCoords.y + (emailEl.clientHeight / 2);
+
+    const dFromC = this.screenCenter - caretAbsoluteX;
+
+    const eyeLAngle = this.getAngle(this.eyeLCoords.x, this.eyeLCoords.y, caretAbsoluteX, caretAbsoluteY);
+    const eyeRAngle = this.getAngle(this.eyeRCoords.x, this.eyeRCoords.y, caretAbsoluteX, caretAbsoluteY);
+    const noseAngle = this.getAngle(this.noseCoords.x, this.noseCoords.y, caretAbsoluteX, caretAbsoluteY);
+    const mouthAngle = this.getAngle(this.mouthCoords.x, this.mouthCoords.y, caretAbsoluteX, caretAbsoluteY);
 
     const eyeLX = Math.cos(eyeLAngle) * 20;
     const eyeLY = Math.sin(eyeLAngle) * 10;

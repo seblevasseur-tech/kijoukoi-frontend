@@ -22,7 +22,12 @@ export class PlayerDashboardComponent implements OnInit {
   ngOnInit(): void {
     // Simulation : on récupère toujours le joueur ID 1 (sebastien.pong) pour tester.
     // Dans une vraie appli, on utiliserait le token JWT de l'utilisateur connecté.
-    this.api.getPlayer(1).subscribe(data => this.player = data);
+    this.api.getPlayer(1).subscribe(data => {
+      this.player = data;
+      if (!this.player.racket) {
+        this.player.racket = {};
+      }
+    });
     this.api.getBlades().subscribe(data => this.blades = data);
     this.api.getRubbers().subscribe(data => this.rubbers = data);
   }

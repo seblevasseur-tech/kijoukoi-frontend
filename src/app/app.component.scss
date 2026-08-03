@@ -64,3 +64,9 @@
   display: block;
   height: 100vh;
 }
+
+.sidebar {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}

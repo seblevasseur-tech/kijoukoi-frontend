@@ -1,17 +1,4 @@
-<!-- Modal separated from the grayscaled content so position: fixed works on viewport -->
-<div class="auth-overlay" *ngIf="!isAuthenticated">
-  <div class="auth-modal">
-    <svg class="auth-icon-large" viewBox="0 0 24 24" width="48" height="48" stroke="currentColor" stroke-width="2" fill="none">
-      <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
-      <circle cx="12" cy="7" r="4"></circle>
-    </svg>
-    <h3>Accès restreint</h3>
-    <p>Veuillez vous connecter ou créer un compte pour modifier votre profil, votre équipement et votre style de jeu.</p>
-    <a routerLink="/login" class="btn btn-primary">Se connecter</a>
-  </div>
-</div>
-
-<div class="dashboard-page" *ngIf="player" [class.disabled-view]="!isAuthenticated">
+<div class="dashboard-page" *ngIf="player">
   <div class="dashboard-header">
     <h2>Mon Profil : {{ player.login }}</h2>
   </div>

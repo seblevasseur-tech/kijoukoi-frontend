@@ -1,0 +1,9 @@
+<h2>Liste des Bois</h2>
+<div class="card-grid">
+  <div class="card" *ngFor="let blade of blades">
+    <img *ngIf="blade.image" [src]="blade.image" alt="Image de {{blade.name}}" class="equipment-image">
+    <h3>{{ blade.name }}</h3>
+    <p><strong>Marque :</strong> {{ blade.brand.name }}</p>
+    <p><strong>Poids :</strong> {{ blade.weight }} g</p>
+  </div>
+</div>

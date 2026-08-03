@@ -1,0 +1,15 @@
+import { Racket } from './racket.model';
+import { PlayerTag } from './player-tag.model';
+
+export interface Player {
+  id: number;
+  login: string;
+  age?: number;
+  nationality?: string;
+  ranking?: number;
+  registrationDate?: string;
+  lastRacketUpdateDate?: string;
+  avatar?: string;
+  racket?: Racket;
+  tags?: PlayerTag[];
+}

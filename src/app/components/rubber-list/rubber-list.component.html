@@ -1,0 +1,8 @@
+<h2>Liste des Revêtements</h2>
+<div class="card-grid">
+  <div class="card" *ngFor="let rubber of rubbers">
+    <img *ngIf="rubber.image" [src]="rubber.image" alt="Image de {{rubber.name}}" class="equipment-image">
+    <h3>{{ rubber.name }}</h3>
+    <p><strong>Marque :</strong> {{ rubber.brand.name }}</p>
+  </div>
+</div>

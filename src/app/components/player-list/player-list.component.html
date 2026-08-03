@@ -1,0 +1,15 @@
+<h2>Liste des Joueurs</h2>
+<div class="card-grid">
+  <div class="card" *ngFor="let player of players">
+    <h3>{{ player.login }}</h3>
+    <p><strong>Classement :</strong> {{ player.ranking }}</p>
+    <div *ngIf="player.racket">
+      <h4>Raquette :</h4>
+      <ul>
+        <li *ngIf="player.racket.blade">Bois : {{ player.racket.blade.name }} ({{ player.racket.blade.brand.name }})</li>
+        <li *ngIf="player.racket.forehandRubber">Coup droit : {{ player.racket.forehandRubber.name }}</li>
+        <li *ngIf="player.racket.backhandRubber">Revers : {{ player.racket.backhandRubber.name }}</li>
+      </ul>
+    </div>
+  </div>
+</div>

@@ -1,1 +1,49 @@
-<p>player-dashboard works!</p>
+<div *ngIf="player" class="dashboard-container">
+  <h2>Bonjour, {{ player.login }} !</h2>
+  <p>Mon Classement : {{ player.ranking }}</p>
+
+  <div class="racket-form card">
+    <h3>Ma Raquette</h3>
+    <!-- Initialisation de l'objet racket s'il est null -->
+    <ng-container *ngIf="!player.racket; else racketFormTemplate">
+      {{ player.racket = {} }}
+    </ng-container>
+
+    <ng-template #racketFormTemplate>
+      <form (ngSubmit)="saveRacket()">
+        
+        <div class="form-group">
+          <label>Mon Bois :</label>
+          <select [(ngModel)]="player.racket.blade" name="blade" [compareWith]="compareBlades">
+            <option [ngValue]="null">-- Sélectionner un bois --</option>
+            <option *ngFor="let blade of blades" [ngValue]="blade">
+              {{ blade.name }} ({{ blade.brand.name }})
+            </option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label>Mon Coup Droit :</label>
+          <select [(ngModel)]="player.racket.forehandRubber" name="forehandRubber" [compareWith]="compareRubbers">
+            <option [ngValue]="null">-- Sélectionner un revêtement --</option>
+            <option *ngFor="let rubber of rubbers" [ngValue]="rubber">
+              {{ rubber.name }} ({{ rubber.brand.name }})
+            </option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label>Mon Revers :</label>
+          <select [(ngModel)]="player.racket.backhandRubber" name="backhandRubber" [compareWith]="compareRubbers">
+            <option [ngValue]="null">-- Sélectionner un revêtement --</option>
+            <option *ngFor="let rubber of rubbers" [ngValue]="rubber">
+              {{ rubber.name }} ({{ rubber.brand.name }})
+            </option>
+          </select>
+        </div>
+
+        <button type="submit" class="pill">Enregistrer ma raquette</button>
+      </form>
+    </ng-template>
+  </div>
+</div>

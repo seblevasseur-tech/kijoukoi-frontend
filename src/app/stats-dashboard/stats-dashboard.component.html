@@ -115,7 +115,6 @@
           <h3 class="category-title">Bois</h3>
           <div class="filter-row">
             <div class="filter-group">
-              <label>Marque</label>
               <div class="custom-dropdown" (click)="toggleDropdown('bladeBrand', $event)">
                 <div class="dropdown-trigger" [class.active]="activeDropdown === 'bladeBrand'">
                   <span class="placeholder" *ngIf="!displayBladeBrand">Toutes les marques</span>
@@ -132,7 +131,6 @@
             </div>
             
             <div class="filter-group">
-              <label>Mod&egrave;le</label>
               <div class="custom-dropdown" (click)="toggleDropdown('bladeModel', $event)">
                 <div class="dropdown-trigger" [class.active]="activeDropdown === 'bladeModel'">
                   <span class="placeholder" *ngIf="!displayBlade">Tous les mod&egrave;les</span>
@@ -157,7 +155,6 @@
             </div>
             
             <div class="filter-group">
-              <label>Type</label>
               <div class="custom-dropdown" (click)="toggleDropdown('bladeType', $event)">
                 <div class="dropdown-trigger" [class.active]="activeDropdown === 'bladeType'">
                   <span class="placeholder" *ngIf="!displayBladeType">Tous les types</span>
@@ -180,7 +177,6 @@
           <h3 class="category-title">Rev&ecirc;tement Coup Droit</h3>
           <div class="filter-row">
             <div class="filter-group">
-              <label>Marque</label>
               <div class="custom-dropdown" (click)="toggleDropdown('fhBrand', $event)">
                 <div class="dropdown-trigger" [class.active]="activeDropdown === 'fhBrand'">
                   <span class="placeholder" *ngIf="!displayFhBrand">Toutes les marques</span>
@@ -197,7 +193,6 @@
             </div>
 
             <div class="filter-group">
-              <label>Mod&egrave;le</label>
               <div class="custom-dropdown" (click)="toggleDropdown('fhModel', $event)">
                 <div class="dropdown-trigger" [class.active]="activeDropdown === 'fhModel'">
                   <span class="placeholder" *ngIf="!displayFhRubber">Tous les mod&egrave;les</span>
@@ -220,12 +215,20 @@
               </div>
             </div>
 
-            <div class="filter-group hardness-slider-group" style="flex: 1.5;">
-              <label>Duret&eacute; ({{ minHardnessFh }}&deg; - {{ maxHardnessFh }}&deg;)</label>
-              <mat-slider [min]="minHardnessLimit" [max]="maxHardnessLimit" step="0.5">
-                <input matSliderStartThumb [(ngModel)]="minHardnessFh" (change)="sliderSubject.next()">
-                <input matSliderEndThumb [(ngModel)]="maxHardnessFh" (change)="sliderSubject.next()">
-              </mat-slider>
+            <div class="filter-group hardness-slider-group" style="flex: 1.5; justify-content: center;">
+              <div class="slider-container" style="margin: 0;">
+                <div class="label-group left" style="min-width: 60px;">
+                  <span class="label-title">Duret&eacute;</span>
+                  <span class="label-value">{{ minHardnessFh }}&deg;</span>
+                </div>
+                <mat-slider [min]="minHardnessLimit" [max]="maxHardnessLimit" step="0.5" style="margin: 0 10px;">
+                  <input matSliderStartThumb [(ngModel)]="minHardnessFh" (change)="sliderSubject.next()">
+                  <input matSliderEndThumb [(ngModel)]="maxHardnessFh" (change)="sliderSubject.next()">
+                </mat-slider>
+                <div class="label-group right" style="min-width: 40px;">
+                  <span class="label-value">{{ maxHardnessFh }}&deg;</span>
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -235,7 +238,6 @@
           <h3 class="category-title">Rev&ecirc;tement Revers</h3>
           <div class="filter-row">
             <div class="filter-group">
-              <label>Marque</label>
               <div class="custom-dropdown" (click)="toggleDropdown('bhBrand', $event)">
                 <div class="dropdown-trigger" [class.active]="activeDropdown === 'bhBrand'">
                   <span class="placeholder" *ngIf="!displayBhBrand">Toutes les marques</span>
@@ -252,7 +254,6 @@
             </div>
 
             <div class="filter-group">
-              <label>Mod&egrave;le</label>
               <div class="custom-dropdown" (click)="toggleDropdown('bhModel', $event)">
                 <div class="dropdown-trigger" [class.active]="activeDropdown === 'bhModel'">
                   <span class="placeholder" *ngIf="!displayBhRubber">Tous les mod&egrave;les</span>
@@ -275,12 +276,20 @@
               </div>
             </div>
 
-            <div class="filter-group hardness-slider-group" style="flex: 1.5;">
-              <label>Duret&eacute; ({{ minHardnessBh }}&deg; - {{ maxHardnessBh }}&deg;)</label>
-              <mat-slider [min]="minHardnessLimit" [max]="maxHardnessLimit" step="0.5">
-                <input matSliderStartThumb [(ngModel)]="minHardnessBh" (change)="sliderSubject.next()">
-                <input matSliderEndThumb [(ngModel)]="maxHardnessBh" (change)="sliderSubject.next()">
-              </mat-slider>
+            <div class="filter-group hardness-slider-group" style="flex: 1.5; justify-content: center;">
+              <div class="slider-container" style="margin: 0;">
+                <div class="label-group left" style="min-width: 60px;">
+                  <span class="label-title">Duret&eacute;</span>
+                  <span class="label-value">{{ minHardnessBh }}&deg;</span>
+                </div>
+                <mat-slider [min]="minHardnessLimit" [max]="maxHardnessLimit" step="0.5" style="margin: 0 10px;">
+                  <input matSliderStartThumb [(ngModel)]="minHardnessBh" (change)="sliderSubject.next()">
+                  <input matSliderEndThumb [(ngModel)]="maxHardnessBh" (change)="sliderSubject.next()">
+                </mat-slider>
+                <div class="label-group right" style="min-width: 40px;">
+                  <span class="label-value">{{ maxHardnessBh }}&deg;</span>
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -290,7 +299,6 @@
           <h3 class="category-title">&Eacute;tiquettes</h3>
           <div class="filter-row">
             <div class="filter-group">
-              <label>&Eacute;tiquettes</label>
               <div class="custom-dropdown" (click)="toggleDropdown('tags', $event)">
                 <div class="dropdown-trigger" [class.active]="activeDropdown === 'tags'">
                   <span class="placeholder" *ngIf="displayTags.length === 0">Toutes les &eacute;tiquettes</span>

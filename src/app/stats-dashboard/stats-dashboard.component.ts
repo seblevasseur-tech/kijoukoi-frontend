@@ -10,6 +10,8 @@ import { Brand } from '../models/brand.model';
 import { Rubber } from '../models/rubber.model';
 import { PlayerTag } from '../models/player-tag.model';
 import { Blade } from '../models/blade.model';
+import { BladeType } from '../models/blade-type.model';
+import { RubberType } from '../models/rubber-type.model';
 import { MatSliderModule } from '@angular/material/slider';
 
 @Component({
@@ -33,20 +35,26 @@ export class StatsDashboardComponent implements OnInit, AfterViewInit, OnDestroy
   minAgeLimit: number = 5;
   maxAgeLimit: number = 99;
 
-  minHardness: number = 30;
-  maxHardness: number = 60;
+  minHardnessFh: number = 30;
+  maxHardnessFh: number = 60;
+  minHardnessBh: number = 30;
+  maxHardnessBh: number = 60;
   minHardnessLimit: number = 30;
   maxHardnessLimit: number = 60;
   
   // Filter Options Data
   brands: Brand[] = [];
   blades: Blade[] = [];
+  bladeTypes: BladeType[] = [];
   rubbers: Rubber[] = [];
+  rubberTypes: RubberType[] = [];
   tags: PlayerTag[] = [];
   
   // Selected Filters
   selectedBladeBrandId: number | null = null;
   selectedBladeId: number | null = null;
+  selectedBladeTypeId: number | null = null;
+  selectedGender: string = 'ALL';
   selectedFhBrandId: number | null = null;
   selectedFhRubberId: number | null = null;
   selectedBhBrandId: number | null = null;
@@ -60,10 +68,14 @@ export class StatsDashboardComponent implements OnInit, AfterViewInit, OnDestroy
   outputOptions = [
     { label: 'Marque du Bois', value: 'racket.blade.brand.name' },
     { label: 'Modèle du Bois', value: 'racket.blade.name' },
+    { label: 'Type de bois', value: 'racket.blade.bladeType.name' },
+    { label: 'Sexe', value: 'gender' },
     { label: 'Marque Revêtement CD', value: 'racket.forehandRubber.brand.name' },
     { label: 'Modèle Revêtement CD', value: 'racket.forehandRubber.name' },
+    { label: 'Type Revêtement CD', value: 'racket.forehandRubber.rubberType.name' },
     { label: 'Marque Revêtement RV', value: 'racket.backhandRubber.brand.name' },
     { label: 'Revêtement Revers', value: 'racket.backhandRubber.name' },
+    { label: 'Type Revêtement RV', value: 'racket.backhandRubber.rubberType.name' },
     { label: 'Étiquettes (Tags)', value: 'tags.name' },
     { label: 'Âge du joueur', value: 'age' },
     { label: 'Dureté revêtement CD', value: 'racket.forehandRubber.hardness' },
@@ -82,6 +94,7 @@ export class StatsDashboardComponent implements OnInit, AfterViewInit, OnDestroy
   // Helpers for displaying selected values
   get displayBladeBrand() { return this.brands.find(b => b.id === this.selectedBladeBrandId) || null; }
   get displayBlade() { return this.blades.find(b => b.id === this.selectedBladeId) || null; }
+  get displayBladeType() { return this.bladeTypes.find(bt => bt.id === this.selectedBladeTypeId) || null; }
   get displayFhBrand() { return this.brands.find(b => b.id === this.selectedFhBrandId) || null; }
   get displayFhRubber() { return this.rubbers.find(r => r.id === this.selectedFhRubberId) || null; }
   get displayBhBrand() { return this.brands.find(b => b.id === this.selectedBhBrandId) || null; }
@@ -124,12 +137,16 @@ export class StatsDashboardComponent implements OnInit, AfterViewInit, OnDestroy
     forkJoin({
       brands: this.api.getBrands(),
       blades: this.api.getBlades(),
+      bladeTypes: this.api.getBladeTypes(),
       rubbers: this.api.getRubbers(),
+      rubberTypes: this.api.getRubberTypes(),
       tags: this.api.getTags()
     }).subscribe(data => {
       this.brands = data.brands;
       this.blades = data.blades;
+      this.bladeTypes = data.bladeTypes;
       this.rubbers = data.rubbers;
+      this.rubberTypes = data.rubberTypes;
       this.tags = data.tags;
     });
   }
@@ -235,12 +252,24 @@ export class StatsDashboardComponent implements OnInit, AfterViewInit, OnDestroy
     if (this.minAge > this.minAgeLimit) filters.push({ field: 'age', operator: 'GTE', value: this.minAge });
     if (this.maxAge < this.maxAgeLimit) filters.push({ field: 'age', operator: 'LTE', value: this.maxAge });
     
-    if (this.minHardness > this.minHardnessLimit) {
-      filters.push({ field: 'racket.forehandRubber.hardness', operator: 'GTE', value: this.minHardness });
+    if (this.minHardnessFh > this.minHardnessLimit) {
+      filters.push({ field: 'racket.forehandRubber.hardness', operator: 'GTE', value: this.minHardnessFh });
     }
-    if (this.maxHardness < this.maxHardnessLimit) {
-      filters.push({ field: 'racket.forehandRubber.hardness', operator: 'LTE', value: this.maxHardness });
+    if (this.maxHardnessFh < this.maxHardnessLimit) {
+      filters.push({ field: 'racket.forehandRubber.hardness', operator: 'LTE', value: this.maxHardnessFh });
     }
+    if (this.minHardnessBh > this.minHardnessLimit) {
+      filters.push({ field: 'racket.backhandRubber.hardness', operator: 'GTE', value: this.minHardnessBh });
+    }
+    if (this.maxHardnessBh < this.maxHardnessLimit) {
+      filters.push({ field: 'racket.backhandRubber.hardness', operator: 'LTE', value: this.maxHardnessBh });
+    }
+
+    if (this.selectedGender !== 'ALL') {
+      filters.push({ field: 'gender', operator: 'EQ', value: this.selectedGender });
+    }
+
+    if (this.selectedBladeTypeId) filters.push({ field: 'racket.blade.bladeType.id', operator: 'EQ', value: Number(this.selectedBladeTypeId) });
 
     if (this.selectedBladeBrandId) filters.push({ field: 'racket.blade.brand.id', operator: 'EQ', value: Number(this.selectedBladeBrandId) });
     if (this.selectedBladeId) filters.push({ field: 'racket.blade.id', operator: 'EQ', value: Number(this.selectedBladeId) });

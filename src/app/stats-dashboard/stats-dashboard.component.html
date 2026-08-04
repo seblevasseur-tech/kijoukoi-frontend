@@ -48,20 +48,17 @@
 
       <div class="slider-container" style="margin-top: 10px;">
         <div class="label-group left">
-          <span class="label-title">Duret&eacute; Min (CD)</span>
-          <span class="label-value">{{ minHardness }}&deg;</span>
+          <span class="label-title">Sexe</span>
         </div>
-        
-        <mat-slider [min]="minHardnessLimit" [max]="maxHardnessLimit" step="0.5">
-          <input matSliderStartThumb [(ngModel)]="minHardness" (change)="sliderSubject.next()">
-          <input matSliderEndThumb [(ngModel)]="maxHardness" (change)="sliderSubject.next()">
-        </mat-slider>
-
-        <div class="label-group right">
-          <span class="label-title">Duret&eacute; Max (CD)</span>
-          <span class="label-value">{{ maxHardness }}&deg;</span>
+        <div class="gender-toggle-dashboard" style="flex: 1; display: flex; justify-content: center; gap: 20px; align-items: center;">
+          <label><input type="radio" name="dash-gender" [(ngModel)]="selectedGender" value="ALL" (change)="sliderSubject.next()"> Tous</label>
+          <label><input type="radio" name="dash-gender" [(ngModel)]="selectedGender" value="M" (change)="sliderSubject.next()"> Homme</label>
+          <label><input type="radio" name="dash-gender" [(ngModel)]="selectedGender" value="F" (change)="sliderSubject.next()"> Femme</label>
         </div>
+        <div class="label-group right"></div>
       </div>
+
+
 
       <!-- Advanced Filters -->
       <div class="advanced-filters">
@@ -105,6 +102,24 @@
                       <span class="item-brand">{{ b.brand.name }}</span>
                       <span class="item-name">{{ b.name }}</span>
                     </div>
+                  </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            
+            <div class="filter-group">
+              <label>Type</label>
+              <div class="custom-dropdown" (click)="toggleDropdown('bladeType', $event)">
+                <div class="dropdown-trigger" [class.active]="activeDropdown === 'bladeType'">
+                  <span class="placeholder" *ngIf="!displayBladeType">Tous les types</span>
+                  <span class="selected-text" *ngIf="displayBladeType">{{ displayBladeType.name }}</span>
+                  <span class="chevron">▼</span>
+                </div>
+                <div class="dropdown-menu" *ngIf="activeDropdown === 'bladeType'">
+                  <div class="dropdown-item" (click)="selectFilter('selectedBladeTypeId', null)">Tous les types</div>
+                  <div class="dropdown-item" *ngFor="let bt of bladeTypes" (click)="selectFilter('selectedBladeTypeId', bt.id)">
+                    {{ bt.name }}
                   </div>
                 </div>
               </div>
@@ -156,6 +171,14 @@
                 </div>
               </div>
             </div>
+
+            <div class="filter-group hardness-slider-group" style="flex: 1.5;">
+              <label>Duret&eacute; ({{ minHardnessFh }}&deg; - {{ maxHardnessFh }}&deg;)</label>
+              <mat-slider [min]="minHardnessLimit" [max]="maxHardnessLimit" step="0.5">
+                <input matSliderStartThumb [(ngModel)]="minHardnessFh" (change)="sliderSubject.next()">
+                <input matSliderEndThumb [(ngModel)]="maxHardnessFh" (change)="sliderSubject.next()">
+              </mat-slider>
+            </div>
           </div>
         </div>
 
@@ -202,6 +225,14 @@
                   </div>
                 </div>
               </div>
+            </div>
+
+            <div class="filter-group hardness-slider-group" style="flex: 1.5;">
+              <label>Duret&eacute; ({{ minHardnessBh }}&deg; - {{ maxHardnessBh }}&deg;)</label>
+              <mat-slider [min]="minHardnessLimit" [max]="maxHardnessLimit" step="0.5">
+                <input matSliderStartThumb [(ngModel)]="minHardnessBh" (change)="sliderSubject.next()">
+                <input matSliderEndThumb [(ngModel)]="maxHardnessBh" (change)="sliderSubject.next()">
+              </mat-slider>
             </div>
           </div>
         </div>

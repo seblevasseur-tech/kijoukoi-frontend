@@ -3,6 +3,8 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { Player } from './models/player.model';
 import { Blade } from './models/blade.model';
+import { BladeType } from './models/blade-type.model';
+import { RubberType } from './models/rubber-type.model';
 import { Rubber } from './models/rubber.model';
 import { Brand } from './models/brand.model';
 import { PlayerTag } from './models/player-tag.model';
@@ -39,6 +41,14 @@ export class ApiService {
 
   getRubbers(): Observable<Rubber[]> {
     return this.http.get<Rubber[]>(`${this.baseUrl}/equipment/rubbers`);
+  }
+
+  getBladeTypes(): Observable<BladeType[]> {
+    return this.http.get<BladeType[]>(this.apiUrl + '/equipment/blade-types');
+  }
+
+  getRubberTypes(): Observable<RubberType[]> {
+    return this.http.get<RubberType[]>(this.apiUrl + '/equipment/rubber-types');
   }
 
   getBrands(): Observable<Brand[]> {

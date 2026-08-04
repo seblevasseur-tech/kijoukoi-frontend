@@ -33,8 +33,8 @@ export class AuthService {
     );
   }
 
-  register(login: string, password: string): Observable<JwtResponse> {
-    return this.http.post<JwtResponse>(`${this.baseUrl}/register`, { login, password }).pipe(
+  register(login: string, password: string, gender: string): Observable<any> {
+    return this.http.post<any>(`${this.baseUrl}/register`, { login, password, gender }).pipe(
       tap(res => {
         localStorage.setItem('auth-token', res.token);
         localStorage.setItem('auth-user', JSON.stringify({ id: res.id, login: res.login }));

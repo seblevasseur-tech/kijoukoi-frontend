@@ -14,7 +14,7 @@ import { gsap } from 'gsap';
   styleUrls: ['./login.component.scss']
 })
 export class LoginComponent implements OnInit, AfterViewInit, OnDestroy {
-  loginData = { login: '', password: '' };
+  loginData = { login: '', password: '', gender: 'M' };
   errorMessage = '';
   
   isPasswordFocused = false;
@@ -371,7 +371,7 @@ export class LoginComponent implements OnInit, AfterViewInit, OnDestroy {
         }
       });
     } else {
-      this.authService.register(this.loginData.login, this.loginData.password).subscribe({
+      this.authService.register(this.loginData.login, this.loginData.password, this.loginData.gender).subscribe({
         next: () => {
           this.toastService.show('Inscription réussie', 'success');
           this.router.navigate(['/profile']);

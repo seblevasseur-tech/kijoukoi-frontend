@@ -11,16 +11,16 @@
   width: 100%;
   max-width: 400px;
   background: var(--color-surface, #1e1e1e);
-  padding: 40px;
+  padding: 80px 40px 40px 40px; /* Increased top padding to 80px */
   border-radius: var(--radius-lg, 12px);
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
   position: relative;
-  margin-top: 130px; /* Space for the yeti popping out */
+  margin-top: 100px;
 }
 
 .yeti-wrapper {
   position: absolute;
-  top: -130px;
+  top: -100px; /* Reverted to -100px to sit perfectly in the new padding space */
   left: 50%;
   transform: translateX(-50%);
   width: 200px;

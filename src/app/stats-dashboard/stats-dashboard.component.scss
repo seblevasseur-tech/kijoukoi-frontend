@@ -208,6 +208,18 @@
   width: 100%;
   margin: 0 15px;
   flex: 1;
+
+  ::ng-deep {
+    --mdc-slider-handle-width: 24px;
+    --mdc-slider-handle-height: 24px;
+    --mdc-slider-handle-color: #818cf8;
+    
+    .mdc-slider__thumb-knob {
+      width: 24px !important;
+      height: 24px !important;
+      border-width: 6px !important;
+    }
+  }
 }
 
 .custom-dropdown {
@@ -378,19 +390,5 @@
         }
       }
     }
-  }
-}
-.filter-category {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-  
-  .category-title {
-    font-size: 1.1rem;
-    color: #e2e8f0;
-    font-weight: 600;
-    margin: 0;
-    padding-bottom: 6px;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
   }
 }

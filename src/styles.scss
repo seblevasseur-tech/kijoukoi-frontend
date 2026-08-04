@@ -1,6 +1,17 @@
 // Global styles
 @import '@angular/material/prebuilt-themes/pink-bluegrey.css';
 
+mat-slider {
+  --mdc-slider-handle-color: var(--color-primary);
+  --mdc-slider-focus-handle-color: var(--color-primary);
+  --mdc-slider-hover-handle-color: var(--color-primary);
+  --mdc-slider-active-track-color: var(--color-primary);
+  --mdc-slider-inactive-track-color: rgba(30, 215, 96, 0.24);
+  --mat-mdc-slider-ripple-color: var(--color-primary);
+  --mat-mdc-slider-hover-ripple-color: rgba(30, 215, 96, 0.05);
+  --mat-mdc-slider-focus-ripple-color: rgba(30, 215, 96, 0.2);
+}
+
 :root {
   --color-primary: #1ed760;
   --color-primary-dark: #1fdf64;

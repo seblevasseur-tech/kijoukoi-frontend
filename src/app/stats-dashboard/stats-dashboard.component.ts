@@ -72,7 +72,7 @@ export class StatsDashboardComponent implements OnInit, AfterViewInit, OnDestroy
   outputOptions = [
     { label: 'Marque du Bois', value: 'racket.blade.brand.name' },
     { label: 'Modèle du Bois', value: 'racket.blade.name' },
-    { label: 'Type de bois', value: 'racket.blade.type.name' },
+    { label: 'Type de bois', value: 'racket.blade.bladeType.name' },
     { label: 'Genre', value: 'gender' },
     { label: 'Nationalité', value: 'nationality' },
     { label: 'Marque Revêtement CD', value: 'racket.forehandRubber.brand.name' },
@@ -299,7 +299,7 @@ export class StatsDashboardComponent implements OnInit, AfterViewInit, OnDestroy
       filters.push({ field: 'nationality', operator: 'EQ', value: this.selectedCountryCode });
     }
 
-    if (this.selectedBladeTypeId) filters.push({ field: 'racket.blade.type.id', operator: 'EQ', value: Number(this.selectedBladeTypeId) });
+    if (this.selectedBladeTypeId) filters.push({ field: 'racket.blade.bladeType.id', operator: 'EQ', value: Number(this.selectedBladeTypeId) });
 
     if (this.selectedBladeBrandId) filters.push({ field: 'racket.blade.brand.id', operator: 'EQ', value: Number(this.selectedBladeBrandId) });
     if (this.selectedBladeId) filters.push({ field: 'racket.blade.id', operator: 'EQ', value: Number(this.selectedBladeId) });

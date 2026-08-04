@@ -81,7 +81,7 @@ export class StatsDashboardComponent implements OnInit, AfterViewInit, OnDestroy
     { label: 'Marque Revêtement RV', value: 'racket.backhandRubber.brand.name' },
     { label: 'Revêtement Revers', value: 'racket.backhandRubber.name' },
     { label: 'Type Revêtement RV', value: 'racket.backhandRubber.rubberType.name' },
-    { label: 'Étiquettes (Tags)', value: 'tags.name' },
+    { label: 'Étiquettes', value: 'tags.name' },
     { label: 'Âge du joueur', value: 'age' },
     { label: 'Dureté revêtement CD', value: 'racket.forehandRubber.hardness' },
     { label: 'Dureté revêtement Revers', value: 'racket.backhandRubber.hardness' }

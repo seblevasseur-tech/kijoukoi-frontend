@@ -33,7 +33,7 @@ export class PlayerDashboardComponent implements OnInit {
 
   // Tag lists for Drag & Drop
   positiveTags: PlayerTag[] = [];
-  neutralTags: PlayerTag[] = [];
+  availableTags: PlayerTag[] = [];
   negativeTags: PlayerTag[] = [];
 
   private api = inject(ApiService);
@@ -79,12 +79,12 @@ export class PlayerDashboardComponent implements OnInit {
   distributeTags(): void {
     this.positiveTags = [];
     this.negativeTags = [];
-    this.neutralTags = [...this.allTags];
+    this.availableTags = [...this.allTags];
 
     if (this.player.tagAssignments) {
       for (const assignment of this.player.tagAssignments) {
         // Remove from neutral
-        this.neutralTags = this.neutralTags.filter(t => t.id !== assignment.tag.id);
+        this.availableTags = this.availableTags.filter(t => t.id !== assignment.tag.id);
         
         if (assignment.isPositive) {
           this.positiveTags.push(assignment.tag);

@@ -88,7 +88,7 @@
           <div cdkDropList
                #positiveList="cdkDropList"
                [cdkDropListData]="positiveTags"
-               [cdkDropListConnectedTo]="[neutralList, negativeList]"
+               [cdkDropListConnectedTo]="[availableList, negativeList]"
                class="tag-list"
                (cdkDropListDropped)="drop($event)">
             <div class="tag-item" *ngFor="let item of positiveTags" cdkDrag>
@@ -98,15 +98,15 @@
         </div>
 
         <!-- Colonne NEUTRE -->
-        <div class="tag-column neutral-col">
+        <div class="tag-column available-col">
           <h4>❔ Neutre</h4>
           <div cdkDropList
-               #neutralList="cdkDropList"
-               [cdkDropListData]="neutralTags"
+               #availableList="cdkDropList"
+               [cdkDropListData]="availableTags"
                [cdkDropListConnectedTo]="[positiveList, negativeList]"
                class="tag-list"
                (cdkDropListDropped)="drop($event)">
-            <div class="tag-item" *ngFor="let item of neutralTags" cdkDrag>
+            <div class="tag-item" *ngFor="let item of availableTags" cdkDrag>
               {{item.name}}
             </div>
           </div>
@@ -118,7 +118,7 @@
           <div cdkDropList
                #negativeList="cdkDropList"
                [cdkDropListData]="negativeTags"
-               [cdkDropListConnectedTo]="[positiveList, neutralList]"
+               [cdkDropListConnectedTo]="[positiveList, availableList]"
                class="tag-list"
                (cdkDropListDropped)="drop($event)">
             <div class="tag-item" *ngFor="let item of negativeTags" cdkDrag>

@@ -10,7 +10,6 @@ import { Player } from '../models/player.model';
 import { Blade } from '../models/blade.model';
 import { Rubber } from '../models/rubber.model';
 import { PlayerTag } from '../models/player-tag.model';
-import { PlayerTagAssignment } from '../models/player-tag-assignment.model';
 
 @Component({
   selector: 'app-player-dashboard',
@@ -33,7 +32,6 @@ export class PlayerDashboardComponent implements OnInit {
 
   // Tag lists for Drag & Drop
   positiveTags: PlayerTag[] = [];
-  availableTags: PlayerTag[] = [];
   negativeTags: PlayerTag[] = [];
 
   private api = inject(ApiService);
@@ -69,7 +67,7 @@ export class PlayerDashboardComponent implements OnInit {
         error: (err) => {
           this.isAuthenticated = false;
           // Set a fake player to render the UI greyed out
-          this.player = { id: 0, login: 'Visiteur', racket: { blade: undefined, forehandRubber: undefined, backhandRubber: undefined }, tagAssignments: [] };
+          this.player = { id: 0, login: 'Visiteur', racket: { blade: undefined, forehandRubber: undefined, backhandRubber: undefined }, tags: [] };
           this.distributeTags();
         }
       });
@@ -77,22 +75,9 @@ export class PlayerDashboardComponent implements OnInit {
   }
 
   distributeTags(): void {
-    this.positiveTags = [];
-    this.negativeTags = [];
-    this.availableTags = [...this.allTags];
-
-    if (this.player.tagAssignments) {
-      for (const assignment of this.player.tagAssignments) {
-        // Remove from neutral
-        this.availableTags = this.availableTags.filter(t => t.id !== assignment.tag.id);
-        
-        if (assignment.isPositive) {
-          this.positiveTags.push(assignment.tag);
-        } else {
-          this.negativeTags.push(assignment.tag);
-        }
-      }
-    }
+    this.positiveTags = this.player.tags || [];
+    const positiveIds = this.positiveTags.map(t => t.id);
+    this.negativeTags = this.allTags.filter(t => !positiveIds.includes(t.id));
   }
 
   drop(event: CdkDragDrop<PlayerTag[]>): void {
@@ -118,16 +103,8 @@ export class PlayerDashboardComponent implements OnInit {
       this.toastService.show("Veuillez vous connecter pour modifier votre profil.", "error");
       return;
     }
-    // Reconstruct tagAssignments
-    this.player.tagAssignments = [];
     
-    this.positiveTags.forEach(tag => {
-      this.player.tagAssignments!.push({ tag: tag, isPositive: true });
-    });
-    
-    this.negativeTags.forEach(tag => {
-      this.player.tagAssignments!.push({ tag: tag, isPositive: false });
-    });
+    this.player.tags = this.positiveTags;
 
     this.api.updatePlayer(this.player.id, this.player).subscribe(updated => {
       this.player = updated;

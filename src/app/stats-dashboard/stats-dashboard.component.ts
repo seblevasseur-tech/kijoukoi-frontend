@@ -10,11 +10,12 @@ import { Brand } from '../models/brand.model';
 import { Rubber } from '../models/rubber.model';
 import { PlayerTag } from '../models/player-tag.model';
 import { Blade } from '../models/blade.model';
+import { MatSliderModule } from '@angular/material/slider';
 
 @Component({
   selector: 'app-stats-dashboard',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, MatSliderModule],
   templateUrl: './stats-dashboard.component.html',
   styleUrl: './stats-dashboard.component.scss'
 })
@@ -161,30 +162,6 @@ export class StatsDashboardComponent implements OnInit, AfterViewInit, OnDestroy
     this.activeDropdown = null;
     this.sliderSubject.next();
   }
-
-  onEloChange(isMin: boolean) {
-    if (this.minElo >= this.maxElo) { isMin ? this.minElo = this.maxElo - 10 : this.maxElo = this.minElo + 10; }
-    this.sliderSubject.next();
-  }
-
-  onAgeChange(isMin: boolean) {
-    if (this.minAge >= this.maxAge) { isMin ? this.minAge = this.maxAge - 1 : this.maxAge = this.minAge + 1; }
-    this.sliderSubject.next();
-  }
-
-  onHardnessChange(isMin: boolean) {
-    if (this.minHardness >= this.maxHardness) { isMin ? this.minHardness = this.maxHardness - 1 : this.maxHardness = this.minHardness + 1; }
-    this.sliderSubject.next();
-  }
-
-  get eloLeft() { return ((this.minElo - this.minLimit) / (this.maxLimit - this.minLimit)) * 100; }
-  get eloWidth() { return ((this.maxElo - this.minLimit) / (this.maxLimit - this.minLimit)) * 100 - this.eloLeft; }
-  
-  get ageLeft() { return ((this.minAge - this.minAgeLimit) / (this.maxAgeLimit - this.minAgeLimit)) * 100; }
-  get ageWidth() { return ((this.maxAge - this.minAgeLimit) / (this.maxAgeLimit - this.minAgeLimit)) * 100 - this.ageLeft; }
-  
-  get hardnessLeft() { return ((this.minHardness - this.minHardnessLimit) / (this.maxHardnessLimit - this.minHardnessLimit)) * 100; }
-  get hardnessWidth() { return ((this.maxHardness - this.minHardnessLimit) / (this.maxHardnessLimit - this.minHardnessLimit)) * 100 - this.hardnessLeft; }
 
   initChart() {
     const ctx = this.brandChartRef.nativeElement.getContext('2d');

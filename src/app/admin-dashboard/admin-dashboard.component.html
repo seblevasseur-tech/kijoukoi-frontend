@@ -43,17 +43,61 @@
           <span class="label-value">{{ maxElo }}</span>
         </div>
       </div>
+
+      <!-- Advanced Filters -->
+      <div class="advanced-filters">
+        <div class="filter-group">
+          <label>Marque</label>
+          <select [(ngModel)]="selectedBrandId" (change)="onFilterChange()">
+            <option [ngValue]="null">Toutes</option>
+            <option *ngFor="let b of brands" [value]="b.id">{{ b.name }}</option>
+          </select>
+        </div>
+        <div class="filter-group">
+          <label>Modèle Bois</label>
+          <select [(ngModel)]="selectedBladeId" (change)="onFilterChange()">
+            <option [ngValue]="null">Tous</option>
+            <option *ngFor="let b of blades" [value]="b.id">{{ b.name }}</option>
+          </select>
+        </div>
+        <div class="filter-group">
+          <label>Revêtement CD</label>
+          <select [(ngModel)]="selectedFhRubberId" (change)="onFilterChange()">
+            <option [ngValue]="null">Tous</option>
+            <option *ngFor="let r of rubbers" [value]="r.id">{{ r.name }}</option>
+          </select>
+        </div>
+        <div class="filter-group">
+          <label>Revêtement RV</label>
+          <select [(ngModel)]="selectedBhRubberId" (change)="onFilterChange()">
+            <option [ngValue]="null">Tous</option>
+            <option *ngFor="let r of rubbers" [value]="r.id">{{ r.name }}</option>
+          </select>
+        </div>
+        <div class="filter-group">
+          <label>Étiquette (Tag)</label>
+          <select [(ngModel)]="selectedTagId" (change)="onFilterChange()">
+            <option [ngValue]="null">Tous</option>
+            <option *ngFor="let t of tags" [value]="t.id">{{ t.name }}</option>
+          </select>
+        </div>
+      </div>
     </div>
 
-    <!-- Graphique -->
-    <div class="chart-card">
-      <div class="card-header">
-        <h2>Répartition par Marque de Bois</h2>
+    <!-- Output Selection & Graphique -->
+    <div class="chart-section">
+      <div class="chart-header">
+        <div class="output-selector">
+          <label for="outputSelect">Résultat à afficher :</label>
+          <select id="outputSelect" [(ngModel)]="selectedOutput" (change)="onFilterChange()">
+            <option *ngFor="let opt of outputOptions" [value]="opt.value">{{ opt.label }}</option>
+          </select>
+        </div>
       </div>
       <div class="chart-container">
         <canvas #brandChart></canvas>
         <div class="empty-state" *ngIf="!chartInstance?.data?.labels?.length">
-          <p>Aucune donnée disponible pour cette tranche de points.</p>
+          <p>Aucune donnée disponible pour ces critères.</p>
         </div>
       </div>
     </div>

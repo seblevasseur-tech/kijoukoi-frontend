@@ -3,9 +3,12 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ApiService } from '../api.service';
 import Chart from 'chart.js/auto';
-import { Subject, Subscription } from 'rxjs';
+import { Subject, Subscription, forkJoin } from 'rxjs';
 import { debounceTime } from 'rxjs/operators';
-import { AggregationRequestDTO } from '../models/aggregation.model';
+import { AggregationRequestDTO, FilterDTO } from '../models/aggregation.model';
+import { Brand } from '../models/brand.model';
+import { Rubber } from '../models/rubber.model';
+import { PlayerTag } from '../models/player-tag.model';
 
 @Component({
   selector: 'app-admin-dashboard',
@@ -23,6 +26,31 @@ export class AdminDashboardComponent implements OnInit, AfterViewInit, OnDestroy
   minLimit: number = 300;
   maxLimit: number = 5000;
   
+  // Filter Options Data
+  brands: Brand[] = [];
+  blades: any[] = [];
+  rubbers: Rubber[] = [];
+  tags: PlayerTag[] = [];
+  
+  // Selected Filters
+  selectedBrandId: number | null = null;
+  selectedBladeId: number | null = null;
+  selectedFhRubberId: number | null = null;
+  selectedBhRubberId: number | null = null;
+  selectedTagId: number | null = null;
+
+  // Output Selection
+  outputOptions = [
+    { label: 'Marque du Bois', value: 'racket.blade.brand.name' },
+    { label: 'Modèle du Bois', value: 'racket.blade.name' },
+    { label: 'Marque Revêtement CD', value: 'racket.forehandRubber.brand.name' },
+    { label: 'Modèle Revêtement CD', value: 'racket.forehandRubber.name' },
+    { label: 'Marque Revêtement RV', value: 'racket.backhandRubber.brand.name' },
+    { label: 'Modèle Revêtement RV', value: 'racket.backhandRubber.name' },
+    { label: 'Étiquettes (Tags)', value: 'tags.name' }
+  ];
+  selectedOutput = 'racket.blade.brand.name';
+
   // Debounce subject for API calls
   private sliderSubject = new Subject<void>();
   private sliderSub!: Subscription;
@@ -33,6 +61,8 @@ export class AdminDashboardComponent implements OnInit, AfterViewInit, OnDestroy
   chartInstance: any;
 
   ngOnInit() {
+    this.loadFilterOptions();
+
     this.sliderSub = this.sliderSubject.pipe(
       debounceTime(300) // 300ms debounce
     ).subscribe(() => {
@@ -53,6 +83,24 @@ export class AdminDashboardComponent implements OnInit, AfterViewInit, OnDestroy
     if (this.chartInstance) {
       this.chartInstance.destroy();
     }
+  }
+
+  loadFilterOptions() {
+    forkJoin({
+      brands: this.api.getBrands(),
+      blades: this.api.getBlades(),
+      rubbers: this.api.getRubbers(),
+      tags: this.api.getTags()
+    }).subscribe(data => {
+      this.brands = data.brands;
+      this.blades = data.blades;
+      this.rubbers = data.rubbers;
+      this.tags = data.tags;
+    });
+  }
+
+  onFilterChange() {
+    this.sliderSubject.next();
   }
 
   onSliderChange(isMin: boolean) {
@@ -140,13 +188,21 @@ export class AdminDashboardComponent implements OnInit, AfterViewInit, OnDestroy
   }
 
   fetchChartData() {
+    const filters: FilterDTO[] = [
+      { field: 'ranking', operator: 'GTE', value: this.minElo },
+      { field: 'ranking', operator: 'LTE', value: this.maxElo }
+    ];
+
+    if (this.selectedBrandId) filters.push({ field: 'racket.blade.brand.id', operator: 'EQ', value: Number(this.selectedBrandId) });
+    if (this.selectedBladeId) filters.push({ field: 'racket.blade.id', operator: 'EQ', value: Number(this.selectedBladeId) });
+    if (this.selectedFhRubberId) filters.push({ field: 'racket.forehandRubber.id', operator: 'EQ', value: Number(this.selectedFhRubberId) });
+    if (this.selectedBhRubberId) filters.push({ field: 'racket.backhandRubber.id', operator: 'EQ', value: Number(this.selectedBhRubberId) });
+    if (this.selectedTagId) filters.push({ field: 'tags.id', operator: 'EQ', value: Number(this.selectedTagId) });
+
     const request: AggregationRequestDTO = {
-      groupBy: 'racket.blade.brand.name',
+      groupBy: this.selectedOutput,
       metric: 'COUNT',
-      filters: [
-        { field: 'ranking', operator: 'GTE', value: this.minElo },
-        { field: 'ranking', operator: 'LTE', value: this.maxElo }
-      ]
+      filters: filters
     };
 
     this.api.postAggregation(request).subscribe(stats => {

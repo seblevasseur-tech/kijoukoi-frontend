@@ -1,1 +1,62 @@
-<p>admin-dashboard works!</p>
+<div class="dashboard-page">
+  <div class="dashboard-header">
+    <h1>Tableau de bord</h1>
+    <p class="subtitle">Statistiques globales sur le matériel des joueurs</p>
+  </div>
+
+  <div class="dashboard-content">
+    
+    <!-- Filtres -->
+    <div class="filter-card">
+      <div class="card-header">
+        <h2>Filtres</h2>
+        <p>Ajustez le classement pour voir la répartition des marques de bois.</p>
+      </div>
+      
+      <div class="slider-container">
+        <div class="label-group left">
+          <span class="label-title">Elo Min</span>
+          <span class="label-value">{{ minElo }}</span>
+        </div>
+        
+        <div class="range-slider">
+          <div class="track-bg"></div>
+          <div class="track-fill" #sliderTrack></div>
+          <input 
+            type="range" 
+            [min]="minLimit" 
+            [max]="maxLimit" 
+            [(ngModel)]="minElo" 
+            (input)="onSliderChange(true)" 
+            class="thumb min-thumb">
+          <input 
+            type="range" 
+            [min]="minLimit" 
+            [max]="maxLimit" 
+            [(ngModel)]="maxElo" 
+            (input)="onSliderChange(false)" 
+            class="thumb max-thumb">
+        </div>
+
+        <div class="label-group right">
+          <span class="label-title">Elo Max</span>
+          <span class="label-value">{{ maxElo }}</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Graphique -->
+    <div class="chart-card">
+      <div class="card-header">
+        <h2>Répartition par Marque de Bois</h2>
+      </div>
+      <div class="chart-container">
+        <canvas #brandChart></canvas>
+        <div class="empty-state" *ngIf="players.length === 0">
+          <p>Chargement des données...</p>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>

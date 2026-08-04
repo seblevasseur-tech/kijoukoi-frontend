@@ -98,9 +98,11 @@
 
   .filter-row {
     display: flex;
+    flex-direction: row;
     flex-wrap: nowrap;
     gap: 10px;
     flex: 1;
+    align-items: center;
   }
 
   .filter-group {

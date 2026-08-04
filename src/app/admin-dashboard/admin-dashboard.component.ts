@@ -3,9 +3,12 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ApiService } from '../api.service';
 import Chart from 'chart.js/auto';
+import ChartDataLabels from 'chartjs-plugin-datalabels';
 import { Subject, Subscription } from 'rxjs';
 import { debounceTime } from 'rxjs/operators';
 import { AggregationRequestDTO } from '../models/aggregation.model';
+
+Chart.register(ChartDataLabels);
 
 @Component({
   selector: 'app-admin-dashboard',
@@ -101,6 +104,21 @@ export class AdminDashboardComponent implements OnInit, AfterViewInit, OnDestroy
         responsive: true,
         maintainAspectRatio: false,
         plugins: {
+          datalabels: {
+            color: '#fff',
+            font: {
+              weight: 'bold',
+              size: 14
+            },
+            formatter: (value: number, context: any) => {
+              const dataset = context.chart.data.datasets[0];
+              const dataArr = dataset.data as number[];
+              const total = dataArr.reduce((acc: number, current: number) => acc + current, 0);
+              const percentage = total > 0 ? Math.round((value / total) * 100) : 0;
+              // Only show if >= 5% to avoid clutter on small slices
+              return percentage >= 5 ? percentage + '%' : null;
+            }
+          },
           legend: {
             position: 'right',
             labels: {

@@ -53,24 +53,20 @@
 
 /* Custom Dual Range Slider */
 .slider-container {
-  background: #1a1a24; /* match image background roughly */
+  background: #1a1a24;
   padding: 20px 30px;
   border-radius: 12px;
   border: 1px solid rgba(255,255,255,0.05);
   display: flex;
   align-items: center;
+  flex-wrap: nowrap;
   gap: 30px;
-  
-}
-
-/* Dual Range Slider styling */
-.slider-container {
   position: relative;
   
   .label-group {
     display: flex;
     flex-direction: column;
-    min-width: 60px;
+    min-width: 80px;
     
     &.right {
       align-items: flex-end;

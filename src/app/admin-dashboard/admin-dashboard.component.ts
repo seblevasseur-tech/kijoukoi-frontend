@@ -1,4 +1,4 @@
-import { Component, OnInit, ElementRef, ViewChild, inject, AfterViewInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, ElementRef, ViewChild, inject, AfterViewInit, OnDestroy, HostListener } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ApiService } from '../api.service';
@@ -9,6 +9,7 @@ import { AggregationRequestDTO, FilterDTO } from '../models/aggregation.model';
 import { Brand } from '../models/brand.model';
 import { Rubber } from '../models/rubber.model';
 import { PlayerTag } from '../models/player-tag.model';
+import { Blade } from '../models/blade.model';
 
 @Component({
   selector: 'app-admin-dashboard',
@@ -28,16 +29,21 @@ export class AdminDashboardComponent implements OnInit, AfterViewInit, OnDestroy
   
   // Filter Options Data
   brands: Brand[] = [];
-  blades: any[] = [];
+  blades: Blade[] = [];
   rubbers: Rubber[] = [];
   tags: PlayerTag[] = [];
   
   // Selected Filters
-  selectedBrandId: number | null = null;
+  selectedBladeBrandId: number | null = null;
   selectedBladeId: number | null = null;
+  selectedFhBrandId: number | null = null;
   selectedFhRubberId: number | null = null;
+  selectedBhBrandId: number | null = null;
   selectedBhRubberId: number | null = null;
   selectedTagId: number | null = null;
+
+  // Dropdown States
+  activeDropdown: string | null = null;
 
   // Output Selection
   outputOptions = [
@@ -52,7 +58,7 @@ export class AdminDashboardComponent implements OnInit, AfterViewInit, OnDestroy
   selectedOutput = 'racket.blade.brand.name';
 
   // Debounce subject for API calls
-  private sliderSubject = new Subject<void>();
+  sliderSubject = new Subject<void>();
   private sliderSub!: Subscription;
   
   // Chart
@@ -60,11 +66,28 @@ export class AdminDashboardComponent implements OnInit, AfterViewInit, OnDestroy
   @ViewChild('sliderTrack') sliderTrackRef!: ElementRef<HTMLDivElement>;
   chartInstance: any;
 
+  // Helpers for displaying selected values
+  get displayBladeBrand() { return this.brands.find(b => b.id === this.selectedBladeBrandId) || null; }
+  get displayBlade() { return this.blades.find(b => b.id === this.selectedBladeId) || null; }
+  get displayFhBrand() { return this.brands.find(b => b.id === this.selectedFhBrandId) || null; }
+  get displayFhRubber() { return this.rubbers.find(r => r.id === this.selectedFhRubberId) || null; }
+  get displayBhBrand() { return this.brands.find(b => b.id === this.selectedBhBrandId) || null; }
+  get displayBhRubber() { return this.rubbers.find(r => r.id === this.selectedBhRubberId) || null; }
+  get displayTag() { return this.tags.find(t => t.id === this.selectedTagId) || null; }
+
+  @HostListener('document:click', ['$event'])
+  onDocumentClick(event: MouseEvent) {
+    const target = event.target as HTMLElement;
+    if (!target.closest('.custom-dropdown')) {
+      this.activeDropdown = null;
+    }
+  }
+
   ngOnInit() {
     this.loadFilterOptions();
 
     this.sliderSub = this.sliderSubject.pipe(
-      debounceTime(300) // 300ms debounce
+      debounceTime(300)
     ).subscribe(() => {
       this.fetchChartData();
     });
@@ -73,7 +96,7 @@ export class AdminDashboardComponent implements OnInit, AfterViewInit, OnDestroy
   ngAfterViewInit() {
     this.initChart();
     this.updateSliderTrack();
-    this.fetchChartData(); // initial fetch
+    this.fetchChartData();
   }
   
   ngOnDestroy() {
@@ -99,7 +122,14 @@ export class AdminDashboardComponent implements OnInit, AfterViewInit, OnDestroy
     });
   }
 
-  onFilterChange() {
+  toggleDropdown(dropdownName: string, event: Event) {
+    event.stopPropagation();
+    this.activeDropdown = this.activeDropdown === dropdownName ? null : dropdownName;
+  }
+
+  selectFilter(filterName: string, id: number | null) {
+    (this as any)[filterName] = id;
+    this.activeDropdown = null;
     this.sliderSubject.next();
   }
 
@@ -112,7 +142,7 @@ export class AdminDashboardComponent implements OnInit, AfterViewInit, OnDestroy
       }
     }
     this.updateSliderTrack();
-    this.sliderSubject.next(); // trigger debounce
+    this.sliderSubject.next();
   }
 
   updateSliderTrack() {
@@ -193,10 +223,15 @@ export class AdminDashboardComponent implements OnInit, AfterViewInit, OnDestroy
       { field: 'ranking', operator: 'LTE', value: this.maxElo }
     ];
 
-    if (this.selectedBrandId) filters.push({ field: 'racket.blade.brand.id', operator: 'EQ', value: Number(this.selectedBrandId) });
+    if (this.selectedBladeBrandId) filters.push({ field: 'racket.blade.brand.id', operator: 'EQ', value: Number(this.selectedBladeBrandId) });
     if (this.selectedBladeId) filters.push({ field: 'racket.blade.id', operator: 'EQ', value: Number(this.selectedBladeId) });
+    
+    if (this.selectedFhBrandId) filters.push({ field: 'racket.forehandRubber.brand.id', operator: 'EQ', value: Number(this.selectedFhBrandId) });
     if (this.selectedFhRubberId) filters.push({ field: 'racket.forehandRubber.id', operator: 'EQ', value: Number(this.selectedFhRubberId) });
+    
+    if (this.selectedBhBrandId) filters.push({ field: 'racket.backhandRubber.brand.id', operator: 'EQ', value: Number(this.selectedBhBrandId) });
     if (this.selectedBhRubberId) filters.push({ field: 'racket.backhandRubber.id', operator: 'EQ', value: Number(this.selectedBhRubberId) });
+    
     if (this.selectedTagId) filters.push({ field: 'tags.id', operator: 'EQ', value: Number(this.selectedTagId) });
 
     const request: AggregationRequestDTO = {

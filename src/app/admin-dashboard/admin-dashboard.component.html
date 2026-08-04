@@ -1,7 +1,7 @@
 <div class="dashboard-page">
   <div class="dashboard-header">
     <h1>Tableau de bord</h1>
-    <p class="subtitle">Statistiques globales sur le matériel des joueurs</p>
+    <p class="subtitle">Statistiques globales sur le mat&eacute;riel des joueurs</p>
   </div>
 
   <div class="dashboard-content">
@@ -10,7 +10,7 @@
     <div class="filter-card">
       <div class="card-header">
         <h2>Filtres</h2>
-        <p>Ajustez le classement pour voir la répartition des marques de bois.</p>
+        <p>Ajustez le classement pour voir la r&eacute;partition des marques de bois.</p>
       </div>
       
       <div class="slider-container">
@@ -46,40 +46,156 @@
 
       <!-- Advanced Filters -->
       <div class="advanced-filters">
-        <div class="filter-group">
-          <label>Marque</label>
-          <select [(ngModel)]="selectedBrandId" (change)="onFilterChange()">
-            <option [ngValue]="null">Toutes</option>
-            <option *ngFor="let b of brands" [value]="b.id">{{ b.name }}</option>
-          </select>
+        <!-- Ligne 1 : Bois -->
+        <div class="filter-row">
+          <div class="filter-group">
+            <label>Marque du Bois</label>
+            <div class="custom-dropdown" (click)="toggleDropdown('bladeBrand', $event)">
+              <div class="dropdown-trigger" [class.active]="activeDropdown === 'bladeBrand'">
+                <span class="placeholder" *ngIf="!displayBladeBrand">Toutes les marques</span>
+                <span class="selected-text" *ngIf="displayBladeBrand">{{ displayBladeBrand.name }}</span>
+                <span class="chevron">?</span>
+              </div>
+              <div class="dropdown-menu" *ngIf="activeDropdown === 'bladeBrand'">
+                <div class="dropdown-item" (click)="selectFilter('selectedBladeBrandId', null)">Toutes les marques</div>
+                <div class="dropdown-item" *ngFor="let b of brands" (click)="selectFilter('selectedBladeBrandId', b.id)">
+                  {{ b.name }}
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <div class="filter-group">
+            <label>Mod&egrave;le du Bois</label>
+            <div class="custom-dropdown" (click)="toggleDropdown('bladeModel', $event)">
+              <div class="dropdown-trigger" [class.active]="activeDropdown === 'bladeModel'">
+                <span class="placeholder" *ngIf="!displayBlade">Tous les mod&egrave;les</span>
+                <div class="selected-item" *ngIf="displayBlade">
+                  <img [src]="displayBlade.image || 'assets/default-blade.png'" alt="">
+                  <span>{{ displayBlade.name }}</span>
+                </div>
+                <span class="chevron">?</span>
+              </div>
+              <div class="dropdown-menu" *ngIf="activeDropdown === 'bladeModel'">
+                <div class="dropdown-item" (click)="selectFilter('selectedBladeId', null)">Tous les mod&egrave;les</div>
+                <div class="dropdown-item with-image" *ngFor="let b of blades" (click)="selectFilter('selectedBladeId', b.id)">
+                  <img [src]="b.image || 'assets/default-blade.png'" alt="">
+                  <div class="item-details">
+                    <span class="item-brand">{{ b.brand.name }}</span>
+                    <span class="item-name">{{ b.name }}</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
-        <div class="filter-group">
-          <label>Modèle Bois</label>
-          <select [(ngModel)]="selectedBladeId" (change)="onFilterChange()">
-            <option [ngValue]="null">Tous</option>
-            <option *ngFor="let b of blades" [value]="b.id">{{ b.name }}</option>
-          </select>
+
+        <!-- Ligne 2 : CD -->
+        <div class="filter-row">
+          <div class="filter-group">
+            <label>Marque Plaque CD</label>
+            <div class="custom-dropdown" (click)="toggleDropdown('fhBrand', $event)">
+              <div class="dropdown-trigger" [class.active]="activeDropdown === 'fhBrand'">
+                <span class="placeholder" *ngIf="!displayFhBrand">Toutes les marques</span>
+                <span class="selected-text" *ngIf="displayFhBrand">{{ displayFhBrand.name }}</span>
+                <span class="chevron">?</span>
+              </div>
+              <div class="dropdown-menu" *ngIf="activeDropdown === 'fhBrand'">
+                <div class="dropdown-item" (click)="selectFilter('selectedFhBrandId', null)">Toutes les marques</div>
+                <div class="dropdown-item" *ngFor="let b of brands" (click)="selectFilter('selectedFhBrandId', b.id)">
+                  {{ b.name }}
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="filter-group">
+            <label>Mod&egrave;le Plaque CD</label>
+            <div class="custom-dropdown" (click)="toggleDropdown('fhModel', $event)">
+              <div class="dropdown-trigger" [class.active]="activeDropdown === 'fhModel'">
+                <span class="placeholder" *ngIf="!displayFhRubber">Tous les mod&egrave;les</span>
+                <div class="selected-item" *ngIf="displayFhRubber">
+                  <img [src]="displayFhRubber.image || 'assets/default-rubber.png'" alt="">
+                  <span>{{ displayFhRubber.name }}</span>
+                </div>
+                <span class="chevron">?</span>
+              </div>
+              <div class="dropdown-menu" *ngIf="activeDropdown === 'fhModel'">
+                <div class="dropdown-item" (click)="selectFilter('selectedFhRubberId', null)">Tous les mod&egrave;les</div>
+                <div class="dropdown-item with-image" *ngFor="let r of rubbers" (click)="selectFilter('selectedFhRubberId', r.id)">
+                  <img [src]="r.image || 'assets/default-rubber.png'" alt="">
+                  <div class="item-details">
+                    <span class="item-brand">{{ r.brand.name }}</span>
+                    <span class="item-name">{{ r.name }}</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
-        <div class="filter-group">
-          <label>Revêtement CD</label>
-          <select [(ngModel)]="selectedFhRubberId" (change)="onFilterChange()">
-            <option [ngValue]="null">Tous</option>
-            <option *ngFor="let r of rubbers" [value]="r.id">{{ r.name }}</option>
-          </select>
+
+        <!-- Ligne 3 : RV -->
+        <div class="filter-row">
+          <div class="filter-group">
+            <label>Marque Plaque RV</label>
+            <div class="custom-dropdown" (click)="toggleDropdown('bhBrand', $event)">
+              <div class="dropdown-trigger" [class.active]="activeDropdown === 'bhBrand'">
+                <span class="placeholder" *ngIf="!displayBhBrand">Toutes les marques</span>
+                <span class="selected-text" *ngIf="displayBhBrand">{{ displayBhBrand.name }}</span>
+                <span class="chevron">?</span>
+              </div>
+              <div class="dropdown-menu" *ngIf="activeDropdown === 'bhBrand'">
+                <div class="dropdown-item" (click)="selectFilter('selectedBhBrandId', null)">Toutes les marques</div>
+                <div class="dropdown-item" *ngFor="let b of brands" (click)="selectFilter('selectedBhBrandId', b.id)">
+                  {{ b.name }}
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="filter-group">
+            <label>Mod&egrave;le Plaque RV</label>
+            <div class="custom-dropdown" (click)="toggleDropdown('bhModel', $event)">
+              <div class="dropdown-trigger" [class.active]="activeDropdown === 'bhModel'">
+                <span class="placeholder" *ngIf="!displayBhRubber">Tous les mod&egrave;les</span>
+                <div class="selected-item" *ngIf="displayBhRubber">
+                  <img [src]="displayBhRubber.image || 'assets/default-rubber.png'" alt="">
+                  <span>{{ displayBhRubber.name }}</span>
+                </div>
+                <span class="chevron">?</span>
+              </div>
+              <div class="dropdown-menu" *ngIf="activeDropdown === 'bhModel'">
+                <div class="dropdown-item" (click)="selectFilter('selectedBhRubberId', null)">Tous les mod&egrave;les</div>
+                <div class="dropdown-item with-image" *ngFor="let r of rubbers" (click)="selectFilter('selectedBhRubberId', r.id)">
+                  <img [src]="r.image || 'assets/default-rubber.png'" alt="">
+                  <div class="item-details">
+                    <span class="item-brand">{{ r.brand.name }}</span>
+                    <span class="item-name">{{ r.name }}</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
-        <div class="filter-group">
-          <label>Revêtement RV</label>
-          <select [(ngModel)]="selectedBhRubberId" (change)="onFilterChange()">
-            <option [ngValue]="null">Tous</option>
-            <option *ngFor="let r of rubbers" [value]="r.id">{{ r.name }}</option>
-          </select>
-        </div>
-        <div class="filter-group">
-          <label>Étiquette (Tag)</label>
-          <select [(ngModel)]="selectedTagId" (change)="onFilterChange()">
-            <option [ngValue]="null">Tous</option>
-            <option *ngFor="let t of tags" [value]="t.id">{{ t.name }}</option>
-          </select>
+
+        <!-- Ligne 4 : Tag -->
+        <div class="filter-row">
+          <div class="filter-group">
+            <label>&Eacute;tiquette (Tag)</label>
+            <div class="custom-dropdown" (click)="toggleDropdown('tag', $event)">
+              <div class="dropdown-trigger" [class.active]="activeDropdown === 'tag'">
+                <span class="placeholder" *ngIf="!displayTag">Toutes les &eacute;tiquettes</span>
+                <span class="selected-text" *ngIf="displayTag">{{ displayTag.name }}</span>
+                <span class="chevron">?</span>
+              </div>
+              <div class="dropdown-menu" *ngIf="activeDropdown === 'tag'">
+                <div class="dropdown-item" (click)="selectFilter('selectedTagId', null)">Toutes les &eacute;tiquettes</div>
+                <div class="dropdown-item" *ngFor="let t of tags" (click)="selectFilter('selectedTagId', t.id)">
+                  {{ t.name }}
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -88,8 +204,8 @@
     <div class="chart-section">
       <div class="chart-header">
         <div class="output-selector">
-          <label for="outputSelect">Résultat à afficher :</label>
-          <select id="outputSelect" [(ngModel)]="selectedOutput" (change)="onFilterChange()">
+          <label for="outputSelect">R&eacute;sultat &agrave; afficher :</label>
+          <select id="outputSelect" [(ngModel)]="selectedOutput" (change)="sliderSubject.next()">
             <option *ngFor="let opt of outputOptions" [value]="opt.value">{{ opt.label }}</option>
           </select>
         </div>
@@ -97,7 +213,7 @@
       <div class="chart-container">
         <canvas #brandChart></canvas>
         <div class="empty-state" *ngIf="!chartInstance?.data?.labels?.length">
-          <p>Aucune donnée disponible pour ces critères.</p>
+          <p>Aucune donn&eacute;e disponible pour ces crit&egrave;res.</p>
         </div>
       </div>
     </div>

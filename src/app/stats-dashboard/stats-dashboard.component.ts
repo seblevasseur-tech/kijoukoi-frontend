@@ -25,7 +25,7 @@ export class StatsDashboardComponent implements OnInit, AfterViewInit, OnDestroy
   // Slider state
   minElo: number = 1000;
   maxElo: number = 3000;
-  minLimit: number = 300;
+  minLimit: number = 500;
   maxLimit: number = 5000;
 
   minAge: number = 5;

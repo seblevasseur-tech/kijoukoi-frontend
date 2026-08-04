@@ -1,7 +1,6 @@
 <div class="dashboard-page">
   <div class="dashboard-header">
     <h1>Tableau de bord</h1>
-    <p class="subtitle">Statistiques globales sur le mat&eacute;riel des joueurs</p>
   </div>
 
   <div class="dashboard-content">
@@ -19,7 +18,7 @@
           <span class="label-value">{{ minElo }}</span>
         </div>
         
-        <mat-slider class="mat-slider-custom" [min]="minLimit" [max]="maxLimit">
+        <mat-slider [min]="minLimit" [max]="maxLimit">
           <input matSliderStartThumb [(ngModel)]="minElo" (change)="sliderSubject.next()">
           <input matSliderEndThumb [(ngModel)]="maxElo" (change)="sliderSubject.next()">
         </mat-slider>
@@ -36,7 +35,7 @@
           <span class="label-value">{{ minAge }}</span>
         </div>
         
-        <mat-slider class="mat-slider-custom" [min]="minAgeLimit" [max]="maxAgeLimit">
+        <mat-slider [min]="minAgeLimit" [max]="maxAgeLimit">
           <input matSliderStartThumb [(ngModel)]="minAge" (change)="sliderSubject.next()">
           <input matSliderEndThumb [(ngModel)]="maxAge" (change)="sliderSubject.next()">
         </mat-slider>
@@ -53,7 +52,7 @@
           <span class="label-value">{{ minHardness }}&deg;</span>
         </div>
         
-        <mat-slider class="mat-slider-custom" [min]="minHardnessLimit" [max]="maxHardnessLimit" step="0.5">
+        <mat-slider [min]="minHardnessLimit" [max]="maxHardnessLimit" step="0.5">
           <input matSliderStartThumb [(ngModel)]="minHardness" (change)="sliderSubject.next()">
           <input matSliderEndThumb [(ngModel)]="maxHardness" (change)="sliderSubject.next()">
         </mat-slider>

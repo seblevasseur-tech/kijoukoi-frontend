@@ -12,13 +12,13 @@ import { PlayerTag } from '../models/player-tag.model';
 import { Blade } from '../models/blade.model';
 
 @Component({
-  selector: 'app-admin-dashboard',
+  selector: 'app-stats-dashboard',
   standalone: true,
   imports: [CommonModule, FormsModule],
-  templateUrl: './admin-dashboard.component.html',
-  styleUrl: './admin-dashboard.component.scss'
+  templateUrl: './stats-dashboard.component.html',
+  styleUrl: './stats-dashboard.component.scss'
 })
-export class AdminDashboardComponent implements OnInit, AfterViewInit, OnDestroy {
+export class StatsDashboardComponent implements OnInit, AfterViewInit, OnDestroy {
   private api = inject(ApiService);
   
   // Slider state

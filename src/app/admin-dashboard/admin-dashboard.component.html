@@ -14,11 +14,19 @@
       </div>
       
       <div class="slider-container">
-        <div class="label-group left">
-          <span class="label-title">Elo Min</span>
-          <span class="label-value">{{ minElo }}</span>
+        <!-- Labels -->
+        <div class="slider-labels">
+          <div class="label-group left">
+            <span class="label-title">Points Min</span>
+            <span class="label-value">{{ minElo }}</span>
+          </div>
+          <div class="label-group right">
+            <span class="label-title">Points Max</span>
+            <span class="label-value">{{ maxElo }}</span>
+          </div>
         </div>
         
+        <!-- Track & Thumbs -->
         <div class="range-slider">
           <div class="track-bg"></div>
           <div class="track-fill" #sliderTrack></div>
@@ -37,11 +45,6 @@
             (input)="onSliderChange(false)" 
             class="thumb max-thumb">
         </div>
-
-        <div class="label-group right">
-          <span class="label-title">Elo Max</span>
-          <span class="label-value">{{ maxElo }}</span>
-        </div>
       </div>
     </div>
 
@@ -52,8 +55,8 @@
       </div>
       <div class="chart-container">
         <canvas #brandChart></canvas>
-        <div class="empty-state" *ngIf="players.length === 0">
-          <p>Chargement des données...</p>
+        <div class="empty-state" *ngIf="!chartInstance?.data?.labels?.length">
+          <p>Aucune donnée disponible pour cette tranche de points.</p>
         </div>
       </div>
     </div>

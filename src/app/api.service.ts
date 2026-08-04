@@ -6,6 +6,7 @@ import { Blade } from './models/blade.model';
 import { Rubber } from './models/rubber.model';
 import { Brand } from './models/brand.model';
 import { PlayerTag } from './models/player-tag.model';
+import { AggregationRequestDTO, AggregationResultDTO } from './models/aggregation.model';
 import { environment } from '../environments/environment';
 
 @Injectable({
@@ -46,5 +47,9 @@ export class ApiService {
 
   getTags(): Observable<PlayerTag[]> {
     return this.http.get<PlayerTag[]>(`${this.baseUrl}/tags`);
+  }
+
+  postAggregation(request: AggregationRequestDTO): Observable<AggregationResultDTO[]> {
+    return this.http.post<AggregationResultDTO[]>(`${this.baseUrl}/stats/aggregate`, request);
   }
 }

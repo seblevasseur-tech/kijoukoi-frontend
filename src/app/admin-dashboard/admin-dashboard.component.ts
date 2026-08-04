@@ -2,8 +2,10 @@ import { Component, OnInit, ElementRef, ViewChild, inject, AfterViewInit, OnDest
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ApiService } from '../api.service';
-import { Player } from '../models/player.model';
 import Chart from 'chart.js/auto';
+import { Subject, Subscription } from 'rxjs';
+import { debounceTime } from 'rxjs/operators';
+import { AggregationRequestDTO } from '../models/aggregation.model';
 
 @Component({
   selector: 'app-admin-dashboard',
@@ -14,7 +16,6 @@ import Chart from 'chart.js/auto';
 })
 export class AdminDashboardComponent implements OnInit, AfterViewInit, OnDestroy {
   private api = inject(ApiService);
-  players: Player[] = [];
   
   // Slider state
   minElo: number = 1000;
@@ -22,29 +23,33 @@ export class AdminDashboardComponent implements OnInit, AfterViewInit, OnDestroy
   minLimit: number = 300;
   maxLimit: number = 5000;
   
+  // Debounce subject for API calls
+  private sliderSubject = new Subject<void>();
+  private sliderSub!: Subscription;
+  
   // Chart
   @ViewChild('brandChart') brandChartRef!: ElementRef<HTMLCanvasElement>;
   @ViewChild('sliderTrack') sliderTrackRef!: ElementRef<HTMLDivElement>;
   chartInstance: any;
 
   ngOnInit() {
-    this.api.getPlayers().subscribe(data => {
-      this.players = data;
-      if (this.chartInstance) {
-        this.updateChart();
-      }
+    this.sliderSub = this.sliderSubject.pipe(
+      debounceTime(300) // 300ms debounce
+    ).subscribe(() => {
+      this.fetchChartData();
     });
   }
 
   ngAfterViewInit() {
     this.initChart();
     this.updateSliderTrack();
-    if (this.players.length > 0) {
-      this.updateChart();
-    }
+    this.fetchChartData(); // initial fetch
   }
   
   ngOnDestroy() {
+    if (this.sliderSub) {
+      this.sliderSub.unsubscribe();
+    }
     if (this.chartInstance) {
       this.chartInstance.destroy();
     }
@@ -59,7 +64,7 @@ export class AdminDashboardComponent implements OnInit, AfterViewInit, OnDestroy
       }
     }
     this.updateSliderTrack();
-    this.updateChart();
+    this.sliderSubject.next(); // trigger debounce
   }
 
   updateSliderTrack() {
@@ -111,7 +116,22 @@ export class AdminDashboardComponent implements OnInit, AfterViewInit, OnDestroy
             titleFont: { size: 14 },
             bodyFont: { size: 14 },
             cornerRadius: 8,
-            displayColors: true
+            displayColors: true,
+            callbacks: {
+              label: function(context) {
+                let label = context.label || '';
+                if (label) {
+                  label += ': ';
+                }
+                const value = context.parsed;
+                const dataset = context.dataset;
+                const dataArr = dataset.data as number[];
+                const total = dataArr.reduce((acc: number, current: number) => acc + current, 0);
+                const percentage = total > 0 ? Math.round((value / total) * 100) : 0;
+                label += `${value} joueurs (${percentage}%)`;
+                return label;
+              }
+            }
           }
         },
         cutout: '70%'
@@ -119,34 +139,25 @@ export class AdminDashboardComponent implements OnInit, AfterViewInit, OnDestroy
     });
   }
 
-  updateChart() {
-    if (!this.chartInstance || this.players.length === 0) return;
-    
-    // Filter players by Elo range
-    const filteredPlayers = this.players.filter(p => {
-      const ranking = p.ranking || 0;
-      return ranking >= this.minElo && ranking <= this.maxElo;
-    });
-    
-    // Count blade brands
-    const brandCounts: Record<string, number> = {};
-    
-    filteredPlayers.forEach(p => {
-      if (p.racket && p.racket.blade && p.racket.blade.brand) {
-        const brandName = p.racket.blade.brand.name;
-        brandCounts[brandName] = (brandCounts[brandName] || 0) + 1;
-      }
-    });
-    
-    // Sort by count descending
-    const sortedBrands = Object.entries(brandCounts)
-      .sort((a, b) => b[1] - a[1]);
+  fetchChartData() {
+    const request: AggregationRequestDTO = {
+      groupBy: 'racket.blade.brand.name',
+      metric: 'COUNT',
+      filters: [
+        { field: 'ranking', operator: 'GTE', value: this.minElo },
+        { field: 'ranking', operator: 'LTE', value: this.maxElo }
+      ]
+    };
+
+    this.api.postAggregation(request).subscribe(stats => {
+      if (!this.chartInstance) return;
       
-    const labels = sortedBrands.map(item => item[0]);
-    const data = sortedBrands.map(item => item[1]);
-    
-    this.chartInstance.data.labels = labels;
-    this.chartInstance.data.datasets[0].data = data;
-    this.chartInstance.update();
+      const labels = stats.map(s => s.label);
+      const data = stats.map(s => s.value);
+      
+      this.chartInstance.data.labels = labels;
+      this.chartInstance.data.datasets[0].data = data;
+      this.chartInstance.update();
+    });
   }
 }

@@ -1,0 +1,1 @@
+export interface FilterDTO { field: string; operator: string; value: any; } export interface AggregationRequestDTO { groupBy: string; metric: string; filters: FilterDTO[]; } export interface AggregationResultDTO { label: string; value: number; }

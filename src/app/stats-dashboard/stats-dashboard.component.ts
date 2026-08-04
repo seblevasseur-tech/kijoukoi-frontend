@@ -26,6 +26,16 @@ export class StatsDashboardComponent implements OnInit, AfterViewInit, OnDestroy
   maxElo: number = 3000;
   minLimit: number = 300;
   maxLimit: number = 5000;
+
+  minAge: number = 5;
+  maxAge: number = 99;
+  minAgeLimit: number = 5;
+  maxAgeLimit: number = 99;
+
+  minHardness: number = 30;
+  maxHardness: number = 60;
+  minHardnessLimit: number = 30;
+  maxHardnessLimit: number = 60;
   
   // Filter Options Data
   brands: Brand[] = [];
@@ -52,8 +62,11 @@ export class StatsDashboardComponent implements OnInit, AfterViewInit, OnDestroy
     { label: 'Marque Revêtement CD', value: 'racket.forehandRubber.brand.name' },
     { label: 'Modèle Revêtement CD', value: 'racket.forehandRubber.name' },
     { label: 'Marque Revêtement RV', value: 'racket.backhandRubber.brand.name' },
-    { label: 'Modèle Revêtement RV', value: 'racket.backhandRubber.name' },
-    { label: 'Étiquettes (Tags)', value: 'tags.name' }
+    { label: 'Revêtement Revers', value: 'racket.backhandRubber.name' },
+    { label: 'Étiquettes (Tags)', value: 'tags.name' },
+    { label: 'Âge du joueur', value: 'age' },
+    { label: 'Dureté revêtement CD', value: 'racket.forehandRubber.hardness' },
+    { label: 'Dureté revêtement Revers', value: 'racket.backhandRubber.hardness' }
   ];
   selectedOutput = 'racket.blade.brand.name';
 
@@ -63,7 +76,6 @@ export class StatsDashboardComponent implements OnInit, AfterViewInit, OnDestroy
   
   // Chart
   @ViewChild('brandChart') brandChartRef!: ElementRef<HTMLCanvasElement>;
-  @ViewChild('sliderTrack') sliderTrackRef!: ElementRef<HTMLDivElement>;
   chartInstance: any;
 
   // Helpers for displaying selected values
@@ -95,7 +107,6 @@ export class StatsDashboardComponent implements OnInit, AfterViewInit, OnDestroy
 
   ngAfterViewInit() {
     this.initChart();
-    this.updateSliderTrack();
     this.fetchChartData();
   }
   
@@ -151,27 +162,30 @@ export class StatsDashboardComponent implements OnInit, AfterViewInit, OnDestroy
     this.sliderSubject.next();
   }
 
-  onSliderChange(isMin: boolean) {
-    if (this.minElo >= this.maxElo) {
-      if (isMin) {
-        this.minElo = this.maxElo - 10;
-      } else {
-        this.maxElo = this.minElo + 10;
-      }
-    }
-    this.updateSliderTrack();
+  onEloChange(isMin: boolean) {
+    if (this.minElo >= this.maxElo) { isMin ? this.minElo = this.maxElo - 10 : this.maxElo = this.minElo + 10; }
     this.sliderSubject.next();
   }
 
-  updateSliderTrack() {
-    if (!this.sliderTrackRef) return;
-    const minPercent = ((this.minElo - this.minLimit) / (this.maxLimit - this.minLimit)) * 100;
-    const maxPercent = ((this.maxElo - this.minLimit) / (this.maxLimit - this.minLimit)) * 100;
-    
-    this.sliderTrackRef.nativeElement.style.left = `${minPercent}%`;
-    this.sliderTrackRef.nativeElement.style.width = `${maxPercent - minPercent}%`;
+  onAgeChange(isMin: boolean) {
+    if (this.minAge >= this.maxAge) { isMin ? this.minAge = this.maxAge - 1 : this.maxAge = this.minAge + 1; }
+    this.sliderSubject.next();
   }
+
+  onHardnessChange(isMin: boolean) {
+    if (this.minHardness >= this.maxHardness) { isMin ? this.minHardness = this.maxHardness - 1 : this.maxHardness = this.minHardness + 1; }
+    this.sliderSubject.next();
+  }
+
+  get eloLeft() { return ((this.minElo - this.minLimit) / (this.maxLimit - this.minLimit)) * 100; }
+  get eloWidth() { return ((this.maxElo - this.minLimit) / (this.maxLimit - this.minLimit)) * 100 - this.eloLeft; }
   
+  get ageLeft() { return ((this.minAge - this.minAgeLimit) / (this.maxAgeLimit - this.minAgeLimit)) * 100; }
+  get ageWidth() { return ((this.maxAge - this.minAgeLimit) / (this.maxAgeLimit - this.minAgeLimit)) * 100 - this.ageLeft; }
+  
+  get hardnessLeft() { return ((this.minHardness - this.minHardnessLimit) / (this.maxHardnessLimit - this.minHardnessLimit)) * 100; }
+  get hardnessWidth() { return ((this.maxHardness - this.minHardnessLimit) / (this.maxHardnessLimit - this.minHardnessLimit)) * 100 - this.hardnessLeft; }
+
   initChart() {
     const ctx = this.brandChartRef.nativeElement.getContext('2d');
     if (!ctx) return;
@@ -240,6 +254,16 @@ export class StatsDashboardComponent implements OnInit, AfterViewInit, OnDestroy
       { field: 'ranking', operator: 'GTE', value: this.minElo },
       { field: 'ranking', operator: 'LTE', value: this.maxElo }
     ];
+
+    if (this.minAge > this.minAgeLimit) filters.push({ field: 'age', operator: 'GTE', value: this.minAge });
+    if (this.maxAge < this.maxAgeLimit) filters.push({ field: 'age', operator: 'LTE', value: this.maxAge });
+    
+    if (this.minHardness > this.minHardnessLimit) {
+      filters.push({ field: 'racket.forehandRubber.hardness', operator: 'GTE', value: this.minHardness });
+    }
+    if (this.maxHardness < this.maxHardnessLimit) {
+      filters.push({ field: 'racket.forehandRubber.hardness', operator: 'LTE', value: this.maxHardness });
+    }
 
     if (this.selectedBladeBrandId) filters.push({ field: 'racket.blade.brand.id', operator: 'EQ', value: Number(this.selectedBladeBrandId) });
     if (this.selectedBladeId) filters.push({ field: 'racket.blade.id', operator: 'EQ', value: Number(this.selectedBladeId) });

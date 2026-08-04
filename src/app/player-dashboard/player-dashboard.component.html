@@ -1,6 +1,10 @@
 <div class="dashboard-page" *ngIf="player">
   <div class="dashboard-header">
     <h2>Mon Profil : {{ player.login }}</h2>
+    <div class="age-input-container">
+      <label for="playerAge">Mon &Acirc;ge :</label>
+      <input type="number" id="playerAge" [(ngModel)]="player.age" min="5" max="100" class="age-input">
+    </div>
   </div>
 
   <div class="dashboard-content">

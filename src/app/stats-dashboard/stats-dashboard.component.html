@@ -21,26 +21,88 @@
         
         <div class="range-slider">
           <div class="track-bg"></div>
-          <div class="track-fill" #sliderTrack></div>
+          <div class="track-fill" [style.left.%]="eloLeft" [style.width.%]="eloWidth"></div>
           <input 
             type="range" 
             [min]="minLimit" 
             [max]="maxLimit" 
             [(ngModel)]="minElo" 
-            (input)="onSliderChange(true)" 
+            (input)="onEloChange(true)" 
             class="thumb min-thumb">
           <input 
             type="range" 
             [min]="minLimit" 
             [max]="maxLimit" 
             [(ngModel)]="maxElo" 
-            (input)="onSliderChange(false)" 
+            (input)="onEloChange(false)" 
             class="thumb max-thumb">
         </div>
 
         <div class="label-group right">
           <span class="label-title">Points Max</span>
           <span class="label-value">{{ maxElo }}</span>
+        </div>
+      </div>
+
+      <div class="slider-container" style="margin-top: 20px;">
+        <div class="label-group left">
+          <span class="label-title">&Acirc;ge Min</span>
+          <span class="label-value">{{ minAge }}</span>
+        </div>
+        
+        <div class="range-slider">
+          <div class="track-bg"></div>
+          <div class="track-fill" [style.left.%]="ageLeft" [style.width.%]="ageWidth"></div>
+          <input 
+            type="range" 
+            [min]="minAgeLimit" 
+            [max]="maxAgeLimit" 
+            [(ngModel)]="minAge" 
+            (input)="onAgeChange(true)" 
+            class="thumb min-thumb">
+          <input 
+            type="range" 
+            [min]="minAgeLimit" 
+            [max]="maxAgeLimit" 
+            [(ngModel)]="maxAge" 
+            (input)="onAgeChange(false)" 
+            class="thumb max-thumb">
+        </div>
+
+        <div class="label-group right">
+          <span class="label-title">&Acirc;ge Max</span>
+          <span class="label-value">{{ maxAge }}</span>
+        </div>
+      </div>
+
+      <div class="slider-container" style="margin-top: 20px;">
+        <div class="label-group left">
+          <span class="label-title">Duret&eacute; Min (CD)</span>
+          <span class="label-value">{{ minHardness }}&deg;</span>
+        </div>
+        
+        <div class="range-slider">
+          <div class="track-bg"></div>
+          <div class="track-fill" [style.left.%]="hardnessLeft" [style.width.%]="hardnessWidth"></div>
+          <input 
+            type="range" 
+            [min]="minHardnessLimit" 
+            [max]="maxHardnessLimit" 
+            [(ngModel)]="minHardness" 
+            (input)="onHardnessChange(true)" 
+            class="thumb min-thumb">
+          <input 
+            type="range" 
+            [min]="minHardnessLimit" 
+            [max]="maxHardnessLimit" 
+            [(ngModel)]="maxHardness" 
+            (input)="onHardnessChange(false)" 
+            class="thumb max-thumb">
+        </div>
+
+        <div class="label-group right">
+          <span class="label-title">Duret&eacute; Max (CD)</span>
+          <span class="label-value">{{ maxHardness }}&deg;</span>
         </div>
       </div>
 

@@ -6,5 +6,6 @@ export interface Rubber {
   name: string;
   brand: Brand;
   type: RubberType;
+  hardness: number;
   image: string;
 }

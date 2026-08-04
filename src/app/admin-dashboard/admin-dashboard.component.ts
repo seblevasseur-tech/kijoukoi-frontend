@@ -3,12 +3,9 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ApiService } from '../api.service';
 import Chart from 'chart.js/auto';
-import ChartDataLabels from 'chartjs-plugin-datalabels';
 import { Subject, Subscription } from 'rxjs';
 import { debounceTime } from 'rxjs/operators';
 import { AggregationRequestDTO } from '../models/aggregation.model';
-
-Chart.register(ChartDataLabels);
 
 @Component({
   selector: 'app-admin-dashboard',
@@ -104,23 +101,6 @@ export class AdminDashboardComponent implements OnInit, AfterViewInit, OnDestroy
         responsive: true,
         maintainAspectRatio: false,
         plugins: {
-          datalabels: {
-            color: '#fff',
-            font: {
-              weight: 'bold',
-              size: 14
-            },
-            formatter: (value: number, context: any) => {
-              const dataset = context.chart.data.datasets[0];
-              const dataArr = dataset.data as number[];
-              const total = dataArr.reduce((acc: number, current: number) => acc + current, 0);
-              const percentage = total > 0 ? Math.round((value / total) * 100) : 0;
-              const labelName = context.chart.data.labels[context.dataIndex];
-              
-              // Only show if >= 5% to avoid clutter on small slices
-              return percentage >= 5 ? `${labelName}\n${percentage}%` : null;
-            }
-          },
           legend: {
             position: 'right',
             labels: {
@@ -172,7 +152,13 @@ export class AdminDashboardComponent implements OnInit, AfterViewInit, OnDestroy
     this.api.postAggregation(request).subscribe(stats => {
       if (!this.chartInstance) return;
       
-      const labels = stats.map(s => s.label);
+      const total = stats.reduce((acc, s) => acc + (s.value as number), 0);
+      
+      const labels = stats.map(s => {
+        const percentage = total > 0 ? Math.round((s.value as number / total) * 100) : 0;
+        return `${s.label} - ${percentage}%`;
+      });
+      
       const data = stats.map(s => s.value);
       
       this.chartInstance.data.labels = labels;

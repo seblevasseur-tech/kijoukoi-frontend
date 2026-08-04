@@ -331,46 +331,24 @@ export class LoginComponent implements OnInit, AfterViewInit, OnDestroy {
   onPasswordBlur() {
     this.activeElement = null;
     setTimeout(() => {
-      if (this.activeElement !== "toggle" && this.activeElement !== "password") {
+      if (this.activeElement !== "password") {
         this.uncoverEyes();
       }
     }, 100);
   }
 
-  onPasswordToggleFocus() {
-    this.activeElement = "toggle";
-    if (!this.eyesCovered) {
-      this.coverEyes();
+  togglePasswordVisibility(event: Event) {
+    event.preventDefault(); // Prevent input blur
+    this.isPasswordVisible = !this.isPasswordVisible;
+    if (this.isPasswordVisible) {
+      this.spreadFingers();
+    } else {
+      this.closeFingers();
     }
-  }
-
-  onPasswordToggleBlur() {
-    this.activeElement = null;
-    if (!this.showPasswordClicked) {
-      setTimeout(() => {
-        if (this.activeElement !== "password" && this.activeElement !== "toggle") {
-          this.uncoverEyes();
-        }
-      }, 100);
-    }
-  }
-
-  onPasswordToggleMouseDown() {
-    this.showPasswordClicked = true;
-  }
-
-  onPasswordToggleMouseUp() {
-    this.showPasswordClicked = false;
-  }
-
-  onPasswordToggleChange(event: Event) {
-    setTimeout(() => {
-      if (this.isPasswordVisible) {
-        this.spreadFingers();
-      } else {
-        this.closeFingers();
-      }
-    }, 100);
+    
+    // Ensure eyes stay covered and password remains focused
+    this.activeElement = 'password';
+    setTimeout(() => this.passwordInput.nativeElement.focus(), 10);
   }
 
   onSubmit() {

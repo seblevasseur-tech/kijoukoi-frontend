@@ -115,8 +115,10 @@ export class AdminDashboardComponent implements OnInit, AfterViewInit, OnDestroy
               const dataArr = dataset.data as number[];
               const total = dataArr.reduce((acc: number, current: number) => acc + current, 0);
               const percentage = total > 0 ? Math.round((value / total) * 100) : 0;
+              const labelName = context.chart.data.labels[context.dataIndex];
+              
               // Only show if >= 5% to avoid clutter on small slices
-              return percentage >= 5 ? percentage + '%' : null;
+              return percentage >= 5 ? `${labelName}\n${percentage}%` : null;
             }
           },
           legend: {

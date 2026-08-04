@@ -14,19 +14,11 @@
       </div>
       
       <div class="slider-container">
-        <!-- Labels -->
-        <div class="slider-labels">
-          <div class="label-group left">
-            <span class="label-title">Points Min</span>
-            <span class="label-value">{{ minElo }}</span>
-          </div>
-          <div class="label-group right">
-            <span class="label-title">Points Max</span>
-            <span class="label-value">{{ maxElo }}</span>
-          </div>
+        <div class="label-group left">
+          <span class="label-title">Points Min</span>
+          <span class="label-value">{{ minElo }}</span>
         </div>
         
-        <!-- Track & Thumbs -->
         <div class="range-slider">
           <div class="track-bg"></div>
           <div class="track-fill" #sliderTrack></div>
@@ -44,6 +36,11 @@
             [(ngModel)]="maxElo" 
             (input)="onSliderChange(false)" 
             class="thumb max-thumb">
+        </div>
+
+        <div class="label-group right">
+          <span class="label-title">Points Max</span>
+          <span class="label-value">{{ maxElo }}</span>
         </div>
       </div>
     </div>

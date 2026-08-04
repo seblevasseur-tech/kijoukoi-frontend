@@ -4,6 +4,7 @@
   justify-content: center;
   height: 100vh;
   background-color: var(--bg-main, #121212);
+  padding-bottom: 10vh; /* Shifts the popup higher vertically */
 }
 
 .login-container {
@@ -14,12 +15,12 @@
   border-radius: var(--radius-lg, 12px);
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
   position: relative;
-  margin-top: 100px; /* Space for the yeti popping out */
+  margin-top: 130px; /* Space for the yeti popping out */
 }
 
 .yeti-wrapper {
   position: absolute;
-  top: -100px;
+  top: -130px;
   left: 50%;
   transform: translateX(-50%);
   width: 200px;

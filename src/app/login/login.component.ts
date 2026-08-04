@@ -2,6 +2,7 @@ import { Component, inject, OnInit, OnDestroy, ViewChild, ElementRef, AfterViewI
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { AuthService } from '../services/auth.service';
+import { ToastService } from '../shared/toast/toast.service';
 import { Router } from '@angular/router';
 import { gsap } from 'gsap';
 
@@ -351,6 +352,8 @@ export class LoginComponent implements OnInit, AfterViewInit, OnDestroy {
     setTimeout(() => this.passwordInput.nativeElement.focus(), 10);
   }
 
+  private toastService = inject(ToastService);
+
   onSubmit() {
     if (!this.loginData.login || !this.loginData.password) {
       this.errorMessage = 'Veuillez remplir tous les champs.';
@@ -360,7 +363,8 @@ export class LoginComponent implements OnInit, AfterViewInit, OnDestroy {
     if (this.isLoginMode) {
       this.authService.login(this.loginData.login, this.loginData.password).subscribe({
         next: () => {
-          this.router.navigate(['/dashboard']);
+          this.toastService.show('Connexion réussie', 'success');
+          this.router.navigate(['/profile']);
         },
         error: (err) => {
           this.errorMessage = 'Mot de passe et/ou login invalide';
@@ -369,7 +373,8 @@ export class LoginComponent implements OnInit, AfterViewInit, OnDestroy {
     } else {
       this.authService.register(this.loginData.login, this.loginData.password).subscribe({
         next: () => {
-          this.router.navigate(['/dashboard']);
+          this.toastService.show('Inscription réussie', 'success');
+          this.router.navigate(['/profile']);
         },
         error: (err) => {
           this.errorMessage = 'Erreur lors de la création du compte';

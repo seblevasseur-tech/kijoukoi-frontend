@@ -216,7 +216,9 @@
               <div class="custom-dropdown" (click)="toggleDropdown('tag', $event)">
                 <div class="dropdown-trigger" [class.active]="activeDropdown === 'tag'">
                   <span class="placeholder" *ngIf="displayTags.length === 0">Toutes les &eacute;tiquettes</span>
-                  <span class="selected-text" *ngIf="displayTags.length > 0">{{ displayTags.length }} s&eacute;lectionn&eacute;e(s)</span>
+                  <span class="selected-text tags-display" *ngIf="displayTags.length > 0">
+                    <span *ngFor="let t of displayTags; let last = last">{{ t.name }}{{ !last ? ', ' : '' }}</span>
+                  </span>
                   <span class="chevron">▼</span>
                 </div>
                 <div class="dropdown-menu" *ngIf="activeDropdown === 'tag'" (click)="$event.stopPropagation()">

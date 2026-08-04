@@ -192,16 +192,19 @@
           <h3 class="category-title">&Eacute;tiquettes</h3>
           <div class="filter-row">
             <div class="filter-group">
-              <label>&Eacute;tiquette (Tag)</label>
+              <label>&Eacute;tiquettes (Tags)</label>
               <div class="custom-dropdown" (click)="toggleDropdown('tag', $event)">
                 <div class="dropdown-trigger" [class.active]="activeDropdown === 'tag'">
-                  <span class="placeholder" *ngIf="!displayTag">Toutes les &eacute;tiquettes</span>
-                  <span class="selected-text" *ngIf="displayTag">{{ displayTag.name }}</span>
-                  <span class="chevron">?</span>
+                  <span class="placeholder" *ngIf="displayTags.length === 0">Toutes les &eacute;tiquettes</span>
+                  <span class="selected-text" *ngIf="displayTags.length > 0">{{ displayTags.length }} s&eacute;lectionn&eacute;e(s)</span>
+                  <span class="chevron">▼</span>
                 </div>
-                <div class="dropdown-menu" *ngIf="activeDropdown === 'tag'">
-                  <div class="dropdown-item" (click)="selectFilter('selectedTagId', null)">Toutes les &eacute;tiquettes</div>
-                  <div class="dropdown-item" *ngFor="let t of tags" (click)="selectFilter('selectedTagId', t.id)">
+                <div class="dropdown-menu" *ngIf="activeDropdown === 'tag'" (click)="$event.stopPropagation()">
+                  <div class="dropdown-item" (click)="clearTags($event)">
+                    <em>Toutes les &eacute;tiquettes (Effacer)</em>
+                  </div>
+                  <div class="dropdown-item" *ngFor="let t of tags" (click)="toggleTagSelection($event, t.id)" [class.selected]="selectedTagIds.includes(t.id)">
+                    <input type="checkbox" [checked]="selectedTagIds.includes(t.id)" style="margin-right: 8px; pointer-events: none;">
                     {{ t.name }}
                   </div>
                 </div>

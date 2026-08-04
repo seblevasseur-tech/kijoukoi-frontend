@@ -40,7 +40,7 @@ export class StatsDashboardComponent implements OnInit, AfterViewInit, OnDestroy
   selectedFhRubberId: number | null = null;
   selectedBhBrandId: number | null = null;
   selectedBhRubberId: number | null = null;
-  selectedTagId: number | null = null;
+  selectedTagIds: number[] = [];
 
   // Dropdown States
   activeDropdown: string | null = null;
@@ -73,7 +73,7 @@ export class StatsDashboardComponent implements OnInit, AfterViewInit, OnDestroy
   get displayFhRubber() { return this.rubbers.find(r => r.id === this.selectedFhRubberId) || null; }
   get displayBhBrand() { return this.brands.find(b => b.id === this.selectedBhBrandId) || null; }
   get displayBhRubber() { return this.rubbers.find(r => r.id === this.selectedBhRubberId) || null; }
-  get displayTag() { return this.tags.find(t => t.id === this.selectedTagId) || null; }
+  get displayTags() { return this.tags.filter(t => this.selectedTagIds.includes(t.id)); }
 
   @HostListener('document:click', ['$event'])
   onDocumentClick(event: MouseEvent) {
@@ -129,6 +129,24 @@ export class StatsDashboardComponent implements OnInit, AfterViewInit, OnDestroy
 
   selectFilter(filterName: string, id: number | null) {
     (this as any)[filterName] = id;
+    this.activeDropdown = null;
+    this.sliderSubject.next();
+  }
+
+  toggleTagSelection(event: Event, id: number) {
+    event.stopPropagation();
+    const index = this.selectedTagIds.indexOf(id);
+    if (index === -1) {
+      this.selectedTagIds.push(id);
+    } else {
+      this.selectedTagIds.splice(index, 1);
+    }
+    this.sliderSubject.next();
+  }
+
+  clearTags(event: Event) {
+    event.stopPropagation();
+    this.selectedTagIds = [];
     this.activeDropdown = null;
     this.sliderSubject.next();
   }
@@ -232,7 +250,7 @@ export class StatsDashboardComponent implements OnInit, AfterViewInit, OnDestroy
     if (this.selectedBhBrandId) filters.push({ field: 'racket.backhandRubber.brand.id', operator: 'EQ', value: Number(this.selectedBhBrandId) });
     if (this.selectedBhRubberId) filters.push({ field: 'racket.backhandRubber.id', operator: 'EQ', value: Number(this.selectedBhRubberId) });
     
-    if (this.selectedTagId) filters.push({ field: 'tags.id', operator: 'EQ', value: Number(this.selectedTagId) });
+    if (this.selectedTagIds.length > 0) filters.push({ field: 'tags.id', operator: 'IN', value: this.selectedTagIds });
 
     const request: AggregationRequestDTO = {
       groupBy: this.selectedOutput,

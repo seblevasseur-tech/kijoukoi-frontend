@@ -1,5 +1,5 @@
 import { Component, inject } from '@angular/core';
-import { RouterOutlet, RouterModule } from '@angular/router';
+import { RouterOutlet, RouterModule, Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { AuthService } from './services/auth.service';
 import { ToastComponent } from './shared/toast/toast.component';
@@ -14,6 +14,7 @@ import { ToastComponent } from './shared/toast/toast.component';
 export class AppComponent {
   isSidebarCollapsed = false;
   private authService = inject(AuthService);
+  private router = inject(Router);
   currentUser = this.authService.currentUser;
 
   toggleSidebar() {
@@ -28,5 +29,6 @@ export class AppComponent {
 
   logout() {
     this.authService.logout();
+    this.router.navigate(['/login']);
   }
 }

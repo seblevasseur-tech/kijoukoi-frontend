@@ -12,6 +12,7 @@ import { PlayerTag } from '../models/player-tag.model';
 import { Blade } from '../models/blade.model';
 import { BladeType } from '../models/blade-type.model';
 import { RubberType } from '../models/rubber-type.model';
+import { COUNTRIES, Country, countryFlagUrl } from '../models/country.model';
 import { MatSliderModule } from '@angular/material/slider';
 
 @Component({
@@ -55,6 +56,9 @@ export class StatsDashboardComponent implements OnInit, AfterViewInit, OnDestroy
   selectedBladeId: number | null = null;
   selectedBladeTypeId: number | null = null;
   selectedGender: string = 'ALL';
+  selectedCountryCode: string | null = null;
+  isCountryDropdownOpen = false;
+  countries = [...COUNTRIES].sort((a, b) => a.name.localeCompare(b.name, 'fr'));
   selectedFhBrandId: number | null = null;
   selectedFhRubberId: number | null = null;
   selectedBhBrandId: number | null = null;
@@ -69,7 +73,8 @@ export class StatsDashboardComponent implements OnInit, AfterViewInit, OnDestroy
     { label: 'Marque du Bois', value: 'racket.blade.brand.name' },
     { label: 'Modèle du Bois', value: 'racket.blade.name' },
     { label: 'Type de bois', value: 'racket.blade.bladeType.name' },
-    { label: 'Sexe', value: 'gender' },
+    { label: 'Genre', value: 'gender' },
+    { label: 'Nationalité', value: 'nationality' },
     { label: 'Marque Revêtement CD', value: 'racket.forehandRubber.brand.name' },
     { label: 'Modèle Revêtement CD', value: 'racket.forehandRubber.name' },
     { label: 'Type Revêtement CD', value: 'racket.forehandRubber.rubberType.name' },
@@ -104,9 +109,30 @@ export class StatsDashboardComponent implements OnInit, AfterViewInit, OnDestroy
   @HostListener('document:click', ['$event'])
   onDocumentClick(event: MouseEvent) {
     const target = event.target as HTMLElement;
-    if (!target.closest('.custom-dropdown')) {
+    if (!target.closest('.custom-dropdown') && !target.closest('.country-dropdown')) {
       this.activeDropdown = null;
+      this.isCountryDropdownOpen = false;
     }
+  }
+
+  getCountryFlagUrl(code: string | null): string {
+    return countryFlagUrl(code);
+  }
+
+  getCountry(code: string | null): Country | undefined {
+    return this.countries.find((c) => c.code === code);
+  }
+
+  toggleCountryDropdown(event: Event): void {
+    event.stopPropagation();
+    this.isCountryDropdownOpen = !this.isCountryDropdownOpen;
+    this.activeDropdown = null;
+  }
+
+  selectCountry(code: string | null): void {
+    this.selectedCountryCode = code;
+    this.isCountryDropdownOpen = false;
+    this.sliderSubject.next();
   }
 
   ngOnInit() {
@@ -267,6 +293,10 @@ export class StatsDashboardComponent implements OnInit, AfterViewInit, OnDestroy
 
     if (this.selectedGender !== 'ALL') {
       filters.push({ field: 'gender', operator: 'EQ', value: this.selectedGender });
+    }
+
+    if (this.selectedCountryCode) {
+      filters.push({ field: 'nationality', operator: 'EQ', value: this.selectedCountryCode });
     }
 
     if (this.selectedBladeTypeId) filters.push({ field: 'racket.blade.bladeType.id', operator: 'EQ', value: Number(this.selectedBladeTypeId) });

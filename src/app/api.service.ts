@@ -44,11 +44,11 @@ export class ApiService {
   }
 
   getBladeTypes(): Observable<BladeType[]> {
-    return this.http.get<BladeType[]>(this.apiUrl + '/equipment/blade-types');
+    return this.http.get<BladeType[]>(`${this.baseUrl}/equipment/blade-types`);
   }
 
   getRubberTypes(): Observable<RubberType[]> {
-    return this.http.get<RubberType[]>(this.apiUrl + '/equipment/rubber-types');
+    return this.http.get<RubberType[]>(`${this.baseUrl}/equipment/rubber-types`);
   }
 
   getBrands(): Observable<Brand[]> {

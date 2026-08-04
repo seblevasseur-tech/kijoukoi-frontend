@@ -48,12 +48,60 @@
 
       <div class="slider-container" style="margin-top: 10px;">
         <div class="label-group left">
-          <span class="label-title">Sexe</span>
+          <span class="label-title">Genre</span>
         </div>
         <div class="gender-toggle-dashboard" style="flex: 1; display: flex; justify-content: center; gap: 20px; align-items: center;">
           <label><input type="radio" name="dash-gender" [(ngModel)]="selectedGender" value="ALL" (change)="sliderSubject.next()"> Tous</label>
           <label><input type="radio" name="dash-gender" [(ngModel)]="selectedGender" value="M" (change)="sliderSubject.next()"> Homme</label>
           <label><input type="radio" name="dash-gender" [(ngModel)]="selectedGender" value="F" (change)="sliderSubject.next()"> Femme</label>
+        </div>
+        <div class="label-group right"></div>
+      </div>
+
+      <!-- Nationalité -->
+      <div class="slider-container" style="margin-top: 10px; padding: 10px 0; border-top: 1px solid var(--color-background);">
+        <div class="label-group left">
+          <span class="label-title">Nationalité</span>
+        </div>
+        <div class="country-dropdown-container" style="flex: 1; display: flex; justify-content: center; position: relative;">
+          <div class="country-dropdown">
+            <button
+              type="button"
+              class="country-dropdown-trigger"
+              [class.is-open]="isCountryDropdownOpen"
+              (click)="toggleCountryDropdown($event)"
+            >
+              <ng-container *ngIf="getCountry(selectedCountryCode) as selectedCountry; else countryPlaceholder">
+                <img class="country-flag" [src]="getCountryFlagUrl(selectedCountry.code)" [alt]="selectedCountry.name" />
+                <span>{{ selectedCountry.name }}</span>
+              </ng-container>
+              <ng-template #countryPlaceholder>
+                <span class="country-placeholder">Toutes (Aucun filtre)</span>
+              </ng-template>
+              <span class="dropdown-chevron">&#9660;</span>
+            </button>
+
+            <div class="country-dropdown-menu" *ngIf="isCountryDropdownOpen" (click)="$event.stopPropagation()">
+              <button
+                type="button"
+                class="country-option"
+                [class.selected]="!selectedCountryCode"
+                (click)="selectCountry(null)"
+              >
+                <span>Toutes (Aucun filtre)</span>
+              </button>
+              <button
+                type="button"
+                class="country-option"
+                *ngFor="let country of countries"
+                [class.selected]="country.code === selectedCountryCode"
+                (click)="selectCountry(country.code)"
+              >
+                <img class="country-flag" [src]="getCountryFlagUrl(country.code)" [alt]="country.name" />
+                <span>{{ country.name }}</span>
+              </button>
+            </div>
+          </div>
         </div>
         <div class="label-group right"></div>
       </div>
@@ -286,4 +334,4 @@
     </div>
 
   </div>
-</div>
+

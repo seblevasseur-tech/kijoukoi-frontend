@@ -71,14 +71,12 @@
               [class.is-open]="isCountryDropdownOpen"
               (click)="toggleCountryDropdown($event)"
             >
+              <span class="placeholder" *ngIf="selectedCountryCodes.length === 0">Toutes (Aucun filtre)</span>
               <ng-container *ngIf="selectedCountryCodes.length > 0">
                 <span class="selected-text tags-display">
                   <span *ngFor="let c of getCountries(selectedCountryCodes); let last = last">{{ c.name }}{{ !last ? ', ' : '' }}</span>
                 </span>
               </ng-container>
-              <ng-template #countryPlaceholder>
-                <span class="country-placeholder">Toutes (Aucun filtre)</span>
-              </ng-template>
               <span class="dropdown-chevron">&#9660;</span>
             </button>
 

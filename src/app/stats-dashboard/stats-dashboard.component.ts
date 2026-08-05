@@ -70,7 +70,6 @@ export class StatsDashboardComponent implements OnInit, AfterViewInit, OnDestroy
 
   // Dropdown States
   activeDropdown: string | null = null;
-  isFilterSidebarOpen: boolean = true;
 
   // Output Selection
   outputOptions = [
@@ -151,10 +150,6 @@ export class StatsDashboardComponent implements OnInit, AfterViewInit, OnDestroy
     this.selectedCountryCodes = [];
     this.isCountryDropdownOpen = false;
     this.sliderSubject.next();
-  }
-
-  toggleFilterSidebar() {
-    this.isFilterSidebarOpen = !this.isFilterSidebarOpen;
   }
 
   ngOnInit() {

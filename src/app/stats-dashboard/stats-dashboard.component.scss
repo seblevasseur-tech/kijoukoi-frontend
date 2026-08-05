@@ -31,7 +31,7 @@
 
 /* Sidebar Styles */
 .filter-card.sidebar {
-  width: 320px;
+  width: 420px;
   flex-shrink: 0;
   background: var(--color-surface, #1e1e1e);
   border-radius: var(--radius-lg, 12px);
@@ -226,4 +226,96 @@
 .accordion-content {
   overflow: hidden;
   transition: max-height 0.3s ease-out;
+}
+
+.country-dropdown-container {
+  position: relative;
+  width: 100%;
+}
+
+.country-dropdown-btn {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: var(--color-background, #121212);
+  border: 1px solid rgba(255,255,255,0.1);
+  padding: 10px 15px;
+  border-radius: 6px;
+  color: #fff;
+  cursor: pointer;
+  
+  .selected-countries-display {
+    font-size: 0.9rem;
+    .placeholder { color: #a1a1aa; }
+  }
+  
+  .chevron {
+    transition: transform 0.2s;
+    &.open { transform: rotate(180deg); }
+  }
+}
+
+.country-dropdown-menu {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  width: 100%;
+  background: #27272a;
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 6px;
+  margin-top: 4px;
+  z-index: 100;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+  
+  .country-search {
+    padding: 10px;
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+    
+    input {
+      width: 100%;
+      background: #18181b;
+      border: 1px solid rgba(255,255,255,0.2);
+      padding: 8px;
+      border-radius: 4px;
+      color: #fff;
+      outline: none;
+      
+      &:focus { border-color: var(--color-primary); }
+    }
+  }
+  
+  .country-list {
+    max-height: 250px;
+    overflow-y: auto;
+    
+    .country-option {
+      width: 100%;
+      text-align: left;
+      padding: 8px 10px;
+      background: none;
+      border: none;
+      color: #fff;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      
+      &:hover { background: rgba(255,255,255,0.05); }
+      &.selected {
+        background: rgba(var(--color-primary-rgb, 74, 222, 128), 0.1);
+        color: var(--color-primary);
+      }
+      
+      .flag-icon {
+        width: 20px;
+        height: auto;
+        border-radius: 2px;
+      }
+      .checkmark {
+        color: var(--color-primary);
+        font-weight: bold;
+      }
+    }
+  }
 }

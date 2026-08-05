@@ -60,6 +60,7 @@ export class StatsDashboardComponent implements OnInit, AfterViewInit, OnDestroy
   selectedCountryCodes: string[] = [];
   isCountryDropdownOpen = false;
   countries = [...COUNTRIES].sort((a, b) => a.name.localeCompare(b.name, 'fr'));
+  filteredCountries: Country[] = this.countries;
   selectedFhBrandIds: number[] = [];
   selectedFhRubberIds: number[] = [];
   selectedFhTypeIds: number[] = [];
@@ -124,6 +125,12 @@ export class StatsDashboardComponent implements OnInit, AfterViewInit, OnDestroy
       this.activeDropdown = null;
       this.isCountryDropdownOpen = false;
     }
+  }
+
+
+  filterCountries(event: Event) {
+    const search = (event.target as HTMLInputElement).value.toLowerCase();
+    this.filteredCountries = this.countries.filter(c => c.name.toLowerCase().includes(search));
   }
 
   getCountryFlagUrl(code: string | null): string {

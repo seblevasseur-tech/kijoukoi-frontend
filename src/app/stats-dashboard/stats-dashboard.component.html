@@ -98,11 +98,14 @@
             </button>
             <div class="country-dropdown-menu" *ngIf="isCountryDropdownOpen" (click)="$event.stopPropagation()">
               
+              <div class="country-search">
+                <input type="text" placeholder="Rechercher..." (input)="filterCountries($event)">
+              </div>
               <div class="country-list">
                 <button class="country-option" (click)="clearCountry($event)">
                   <span>Toutes (Aucun filtre)</span>
                 </button>
-                <button *ngFor="let country of countries" class="country-option" 
+                <button *ngFor="let country of filteredCountries" class="country-option" 
                         [class.selected]="selectedCountryCodes.includes(country.code)"
                         (click)="toggleCountry($event, country.code)">
                   <span class="checkmark" *ngIf="selectedCountryCodes.includes(country.code)">&#10003;</span>

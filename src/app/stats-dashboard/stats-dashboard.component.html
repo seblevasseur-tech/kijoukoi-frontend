@@ -213,6 +213,22 @@
               </div>
             </div>
 
+            <div class="filter-group">
+              <div class="custom-dropdown" (click)="toggleDropdown('fhType', $event)">
+                <div class="dropdown-trigger" [class.active]="activeDropdown === 'fhType'">
+                  <span class="placeholder" *ngIf="!displayFhType">Tous les types</span>
+                  <span class="selected-text" *ngIf="displayFhType">{{ displayFhType.name }}</span>
+                  <span class="chevron">▼</span>
+                </div>
+                <div class="dropdown-menu" *ngIf="activeDropdown === 'fhType'">
+                  <div class="dropdown-item" (click)="selectFilter('selectedFhTypeId', null)">Tous les types</div>
+                  <div class="dropdown-item" *ngFor="let rt of rubberTypes" (click)="selectFilter('selectedFhTypeId', rt.id)">
+                    {{ rt.name }}
+                  </div>
+                </div>
+              </div>
+            </div>
+
             <div class="filter-group hardness-slider-group" style="flex: 1.5; justify-content: center;">
               <div class="slider-container" style="margin: 0;">
                 <div class="label-group left" style="min-width: 60px;">
@@ -274,6 +290,22 @@
               </div>
             </div>
 
+            <div class="filter-group">
+              <div class="custom-dropdown" (click)="toggleDropdown('bhType', $event)">
+                <div class="dropdown-trigger" [class.active]="activeDropdown === 'bhType'">
+                  <span class="placeholder" *ngIf="!displayBhType">Tous les types</span>
+                  <span class="selected-text" *ngIf="displayBhType">{{ displayBhType.name }}</span>
+                  <span class="chevron">▼</span>
+                </div>
+                <div class="dropdown-menu" *ngIf="activeDropdown === 'bhType'">
+                  <div class="dropdown-item" (click)="selectFilter('selectedBhTypeId', null)">Tous les types</div>
+                  <div class="dropdown-item" *ngFor="let rt of rubberTypes" (click)="selectFilter('selectedBhTypeId', rt.id)">
+                    {{ rt.name }}
+                  </div>
+                </div>
+              </div>
+            </div>
+
             <div class="filter-group hardness-slider-group" style="flex: 1.5; justify-content: center;">
               <div class="slider-container" style="margin: 0;">
                 <div class="label-group left" style="min-width: 60px;">
@@ -305,7 +337,7 @@
                   </span>
                   <span class="chevron">▼</span>
                 </div>
-                <div class="dropdown-menu" *ngIf="activeDropdown === 'tag'" (click)="$event.stopPropagation()">
+                <div class="dropdown-menu" *ngIf="activeDropdown === 'tags'" (click)="$event.stopPropagation()">
                   <div class="dropdown-item" (click)="clearTags($event)">
                     <em>Toutes les &eacute;tiquettes (Effacer)</em>
                   </div>

@@ -61,8 +61,10 @@ export class StatsDashboardComponent implements OnInit, AfterViewInit, OnDestroy
   countries = [...COUNTRIES].sort((a, b) => a.name.localeCompare(b.name, 'fr'));
   selectedFhBrandId: number | null = null;
   selectedFhRubberId: number | null = null;
+  selectedFhTypeId: number | null = null;
   selectedBhBrandId: number | null = null;
   selectedBhRubberId: number | null = null;
+  selectedBhTypeId: number | null = null;
   selectedTagIds: number[] = [];
 
   // Dropdown States
@@ -70,21 +72,21 @@ export class StatsDashboardComponent implements OnInit, AfterViewInit, OnDestroy
 
   // Output Selection
   outputOptions = [
-    { label: 'Marque du Bois', value: 'racket.blade.brand.name' },
-    { label: 'Modèle du Bois', value: 'racket.blade.name' },
-    { label: 'Type de bois', value: 'racket.blade.bladeType.name' },
-    { label: 'Genre', value: 'gender' },
-    { label: 'Nationalité', value: 'nationality' },
-    { label: 'Marque Revêtement CD', value: 'racket.forehandRubber.brand.name' },
-    { label: 'Modèle Revêtement CD', value: 'racket.forehandRubber.name' },
-    { label: 'Type Revêtement CD', value: 'racket.forehandRubber.rubberType.name' },
-    { label: 'Marque Revêtement RV', value: 'racket.backhandRubber.brand.name' },
-    { label: 'Revêtement Revers', value: 'racket.backhandRubber.name' },
-    { label: 'Type Revêtement RV', value: 'racket.backhandRubber.rubberType.name' },
-    { label: 'Étiquettes', value: 'tags.name' },
-    { label: 'Âge du joueur', value: 'age' },
     { label: 'Dureté revêtement CD', value: 'racket.forehandRubber.hardness' },
-    { label: 'Dureté revêtement Revers', value: 'racket.backhandRubber.hardness' }
+    { label: 'Dureté revêtement Revers', value: 'racket.backhandRubber.hardness' },
+    { label: 'Genre', value: 'gender' },
+    { label: 'Marque Revêtement CD', value: 'racket.forehandRubber.brand.name' },
+    { label: 'Marque Revêtement RV', value: 'racket.backhandRubber.brand.name' },
+    { label: 'Marque du Bois', value: 'racket.blade.brand.name' },
+    { label: 'Modèle Revêtement CD', value: 'racket.forehandRubber.name' },
+    { label: 'Modèle du Bois', value: 'racket.blade.name' },
+    { label: 'Nationalité', value: 'nationality' },
+    { label: 'Revêtement Revers', value: 'racket.backhandRubber.name' },
+    { label: 'Type Revêtement CD', value: 'racket.forehandRubber.rubberType.name' },
+    { label: 'Type Revêtement RV', value: 'racket.backhandRubber.rubberType.name' },
+    { label: 'Type de bois', value: 'racket.blade.bladeType.name' },
+    { label: 'Âge du joueur', value: 'age' },
+    { label: 'Étiquettes', value: 'tags.name' }
   ];
   selectedOutput = 'racket.blade.brand.name';
 
@@ -102,8 +104,10 @@ export class StatsDashboardComponent implements OnInit, AfterViewInit, OnDestroy
   get displayBladeType() { return this.bladeTypes.find(bt => bt.id === this.selectedBladeTypeId) || null; }
   get displayFhBrand() { return this.brands.find(b => b.id === this.selectedFhBrandId) || null; }
   get displayFhRubber() { return this.rubbers.find(r => r.id === this.selectedFhRubberId) || null; }
+  get displayFhType() { return this.rubberTypes.find(rt => rt.id === this.selectedFhTypeId) || null; }
   get displayBhBrand() { return this.brands.find(b => b.id === this.selectedBhBrandId) || null; }
   get displayBhRubber() { return this.rubbers.find(r => r.id === this.selectedBhRubberId) || null; }
+  get displayBhType() { return this.rubberTypes.find(rt => rt.id === this.selectedBhTypeId) || null; }
   get displayTags() { return this.tags.filter(t => this.selectedTagIds.includes(t.id)); }
 
   @HostListener('document:click', ['$event'])
@@ -306,9 +310,11 @@ export class StatsDashboardComponent implements OnInit, AfterViewInit, OnDestroy
     
     if (this.selectedFhBrandId) filters.push({ field: 'racket.forehandRubber.brand.id', operator: 'EQ', value: Number(this.selectedFhBrandId) });
     if (this.selectedFhRubberId) filters.push({ field: 'racket.forehandRubber.id', operator: 'EQ', value: Number(this.selectedFhRubberId) });
+    if (this.selectedFhTypeId) filters.push({ field: 'racket.forehandRubber.rubberType.id', operator: 'EQ', value: Number(this.selectedFhTypeId) });
     
     if (this.selectedBhBrandId) filters.push({ field: 'racket.backhandRubber.brand.id', operator: 'EQ', value: Number(this.selectedBhBrandId) });
     if (this.selectedBhRubberId) filters.push({ field: 'racket.backhandRubber.id', operator: 'EQ', value: Number(this.selectedBhRubberId) });
+    if (this.selectedBhTypeId) filters.push({ field: 'racket.backhandRubber.rubberType.id', operator: 'EQ', value: Number(this.selectedBhTypeId) });
     
     if (this.selectedTagIds.length > 0) filters.push({ field: 'tags.id', operator: 'IN', value: this.selectedTagIds });
 

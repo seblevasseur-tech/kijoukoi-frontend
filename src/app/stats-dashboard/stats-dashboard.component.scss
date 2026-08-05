@@ -31,9 +31,11 @@
 }
 
 /* Sidebar Styles */
-.filter-card.sidebar {
-  width: 550px;
-  flex-shrink: 0;
+.custom-filter-panel {
+  width: 45vw;
+  max-width: 600px;
+  min-width: 400px;
+  flex: 0 0 auto;
   background: var(--color-surface, #1e1e1e);
   border-radius: var(--radius-lg, 12px);
   padding: 20px;
@@ -47,13 +49,13 @@
 }
 
 /* Scrollbar for sidebar */
-.filter-card.sidebar::-webkit-scrollbar {
+.custom-filter-panel::-webkit-scrollbar {
   width: 6px;
 }
-.filter-card.sidebar::-webkit-scrollbar-track {
+.custom-filter-panel::-webkit-scrollbar-track {
   background: rgba(255, 255, 255, 0.02);
 }
-.filter-card.sidebar::-webkit-scrollbar-thumb {
+.custom-filter-panel::-webkit-scrollbar-thumb {
   background: rgba(255, 255, 255, 0.1);
   border-radius: 10px;
 }

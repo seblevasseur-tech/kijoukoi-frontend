@@ -21,11 +21,7 @@
     }
   }
 
-  .dashboard-content {
-    display: flex;
-    flex-direction: column;
-    gap: 30px;
-  }
+  
 }
 
 .filter-card, .chart-card {
@@ -405,3 +401,78 @@ mat-slider {
 .checkmark { color: var(--color-primary); font-weight: bold; margin-right: 5px; }
 .clear-btn { text-align: center; font-style: italic; color: #a1a1aa; border-bottom: 1px solid #333; margin-bottom: 4px; padding-bottom: 8px; }
 .clear-btn:hover { color: #fff; background-color: #333; }
+
+.dashboard-content {
+  display: flex;
+  flex-direction: row; /* Chart on left, Sidebar on right */
+  align-items: flex-start;
+  gap: 30px;
+  position: relative;
+}
+
+.chart-section {
+  flex: 1;
+  min-width: 0; /* Prevent overflow */
+  transition: all 0.3s ease;
+}
+
+.toggle-sidebar-btn {
+  background: var(--color-surface, #1e1e1e);
+  color: #fff;
+  border: 1px solid rgba(255,255,255,0.1);
+  padding: 8px 16px;
+  border-radius: 6px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 500;
+  margin-right: 15px;
+  transition: background 0.2s;
+  
+  &:hover {
+    background: rgba(255,255,255,0.1);
+  }
+}
+
+.chart-header {
+  display: flex;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.filter-card.sidebar {
+  width: 350px;
+  flex-shrink: 0;
+  position: sticky;
+  top: 20px;
+  max-height: calc(100vh - 40px);
+  overflow-y: auto;
+  
+  /* Collapsible logic */
+  transform: translateX(120%);
+  opacity: 0;
+  visibility: hidden;
+  position: absolute;
+  right: 0;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  
+  &.open {
+    transform: translateX(0);
+    opacity: 1;
+    visibility: visible;
+    position: sticky;
+  }
+}
+
+/* Scrollbar for sidebar */
+.filter-card.sidebar::-webkit-scrollbar {
+  width: 6px;
+}
+.filter-card.sidebar::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.02);
+}
+.filter-card.sidebar::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 10px;
+}

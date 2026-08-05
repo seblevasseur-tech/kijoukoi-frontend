@@ -53,19 +53,19 @@ export class StatsDashboardComponent implements OnInit, AfterViewInit, OnDestroy
   tags: PlayerTag[] = [];
   
   // Selected Filters
-  selectedBladeBrandId: number | null = null;
-  selectedBladeId: number | null = null;
-  selectedBladeTypeId: number | null = null;
+  selectedBladeBrandIds: number[] = [];
+  selectedBladeIds: number[] = [];
+  selectedBladeTypeIds: number[] = [];
   selectedGender: string = 'ALL';
-  selectedCountryCode: string | null = null;
+  selectedCountryCodes: string[] = [];
   isCountryDropdownOpen = false;
   countries = [...COUNTRIES].sort((a, b) => a.name.localeCompare(b.name, 'fr'));
-  selectedFhBrandId: number | null = null;
-  selectedFhRubberId: number | null = null;
-  selectedFhTypeId: number | null = null;
-  selectedBhBrandId: number | null = null;
-  selectedBhRubberId: number | null = null;
-  selectedBhTypeId: number | null = null;
+  selectedFhBrandIds: number[] = [];
+  selectedFhRubberIds: number[] = [];
+  selectedFhTypeIds: number[] = [];
+  selectedBhBrandIds: number[] = [];
+  selectedBhRubberIds: number[] = [];
+  selectedBhTypeIds: number[] = [];
   selectedTagIds: number[] = [];
 
   // Dropdown States
@@ -100,15 +100,15 @@ export class StatsDashboardComponent implements OnInit, AfterViewInit, OnDestroy
   chartInstance: any;
 
   // Helpers for displaying selected values
-  get displayBladeBrand() { return this.brands.find(b => b.id === this.selectedBladeBrandId) || null; }
-  get displayBlade() { return this.blades.find(b => b.id === this.selectedBladeId) || null; }
-  get displayBladeType() { return this.bladeTypes.find(bt => bt.id === this.selectedBladeTypeId) || null; }
-  get displayFhBrand() { return this.brands.find(b => b.id === this.selectedFhBrandId) || null; }
-  get displayFhRubber() { return this.rubbers.find(r => r.id === this.selectedFhRubberId) || null; }
-  get displayFhType() { return this.rubberTypes.find(rt => rt.id === this.selectedFhTypeId) || null; }
-  get displayBhBrand() { return this.brands.find(b => b.id === this.selectedBhBrandId) || null; }
-  get displayBhRubber() { return this.rubbers.find(r => r.id === this.selectedBhRubberId) || null; }
-  get displayBhType() { return this.rubberTypes.find(rt => rt.id === this.selectedBhTypeId) || null; }
+  get displayBladeBrands() { return this.brands.filter(b => this.selectedBladeBrandIds.includes(b.id)); }
+  get displayBlades() { return this.blades.filter(b => this.selectedBladeIds.includes(b.id)); }
+  get displayBladeTypes() { return this.bladeTypes.filter(bt => this.selectedBladeTypeIds.includes(bt.id)); }
+  get displayFhBrands() { return this.brands.filter(b => this.selectedFhBrandIds.includes(b.id)); }
+  get displayFhRubbers() { return this.rubbers.filter(r => this.selectedFhRubberIds.includes(r.id)); }
+  get displayFhTypes() { return this.rubberTypes.filter(rt => this.selectedFhTypeIds.includes(rt.id)); }
+  get displayBhBrands() { return this.brands.filter(b => this.selectedBhBrandIds.includes(b.id)); }
+  get displayBhRubbers() { return this.rubbers.filter(r => this.selectedBhRubberIds.includes(r.id)); }
+  get displayBhTypes() { return this.rubberTypes.filter(rt => this.selectedBhTypeIds.includes(rt.id)); }
   get displayTags() { return this.tags.filter(t => this.selectedTagIds.includes(t.id)); }
 
   @HostListener('document:click', ['$event'])
@@ -124,8 +124,8 @@ export class StatsDashboardComponent implements OnInit, AfterViewInit, OnDestroy
     return countryFlagUrl(code);
   }
 
-  getCountry(code: string | null): Country | undefined {
-    return this.countries.find((c) => c.code === code);
+  getCountries(codes: string[]): Country[] {
+    return this.countries.filter(c => codes.includes(c.code));
   }
 
   toggleCountryDropdown(event: Event): void {
@@ -134,8 +134,20 @@ export class StatsDashboardComponent implements OnInit, AfterViewInit, OnDestroy
     this.activeDropdown = null;
   }
 
-  selectCountry(code: string | null): void {
-    this.selectedCountryCode = code;
+  toggleCountry(event: Event, code: string): void {
+    event.stopPropagation();
+    const index = this.selectedCountryCodes.indexOf(code);
+    if (index === -1) {
+      this.selectedCountryCodes.push(code);
+    } else {
+      this.selectedCountryCodes.splice(index, 1);
+    }
+    this.sliderSubject.next();
+  }
+
+  clearCountry(event: Event) {
+    event.stopPropagation();
+    this.selectedCountryCodes = [];
     this.isCountryDropdownOpen = false;
     this.sliderSubject.next();
   }
@@ -204,8 +216,21 @@ export class StatsDashboardComponent implements OnInit, AfterViewInit, OnDestroy
     }
   }
 
-  selectFilter(filterName: string, id: number | null) {
-    (this as any)[filterName] = id;
+  toggleFilterArray(event: Event, arrayName: string, id: number) {
+    event.stopPropagation();
+    const arr = (this as any)[arrayName] as number[];
+    const index = arr.indexOf(id);
+    if (index === -1) {
+      arr.push(id);
+    } else {
+      arr.splice(index, 1);
+    }
+    this.sliderSubject.next();
+  }
+
+  clearFilterArray(event: Event, arrayName: string) {
+    event.stopPropagation();
+    (this as any)[arrayName] = [];
     this.activeDropdown = null;
     this.sliderSubject.next();
   }
@@ -317,22 +342,22 @@ export class StatsDashboardComponent implements OnInit, AfterViewInit, OnDestroy
       filters.push({ field: 'gender', operator: 'EQ', value: this.selectedGender });
     }
 
-    if (this.selectedCountryCode) {
-      filters.push({ field: 'nationality', operator: 'EQ', value: this.selectedCountryCode });
+    if (this.selectedCountryCodes.length > 0) {
+      filters.push({ field: 'nationality', operator: 'IN', value: this.selectedCountryCodes });
     }
 
-    if (this.selectedBladeTypeId) filters.push({ field: 'racket.blade.bladeType.id', operator: 'EQ', value: Number(this.selectedBladeTypeId) });
+    if (this.selectedBladeTypeIds.length > 0) filters.push({ field: 'racket.blade.bladeType.id', operator: 'IN', value: this.selectedBladeTypeIds });
 
-    if (this.selectedBladeBrandId) filters.push({ field: 'racket.blade.brand.id', operator: 'EQ', value: Number(this.selectedBladeBrandId) });
-    if (this.selectedBladeId) filters.push({ field: 'racket.blade.id', operator: 'EQ', value: Number(this.selectedBladeId) });
+    if (this.selectedBladeBrandIds.length > 0) filters.push({ field: 'racket.blade.brand.id', operator: 'IN', value: this.selectedBladeBrandIds });
+    if (this.selectedBladeIds.length > 0) filters.push({ field: 'racket.blade.id', operator: 'IN', value: this.selectedBladeIds });
     
-    if (this.selectedFhBrandId) filters.push({ field: 'racket.forehandRubber.brand.id', operator: 'EQ', value: Number(this.selectedFhBrandId) });
-    if (this.selectedFhRubberId) filters.push({ field: 'racket.forehandRubber.id', operator: 'EQ', value: Number(this.selectedFhRubberId) });
-    if (this.selectedFhTypeId) filters.push({ field: 'racket.forehandRubber.rubberType.id', operator: 'EQ', value: Number(this.selectedFhTypeId) });
+    if (this.selectedFhBrandIds.length > 0) filters.push({ field: 'racket.forehandRubber.brand.id', operator: 'IN', value: this.selectedFhBrandIds });
+    if (this.selectedFhRubberIds.length > 0) filters.push({ field: 'racket.forehandRubber.id', operator: 'IN', value: this.selectedFhRubberIds });
+    if (this.selectedFhTypeIds.length > 0) filters.push({ field: 'racket.forehandRubber.rubberType.id', operator: 'IN', value: this.selectedFhTypeIds });
     
-    if (this.selectedBhBrandId) filters.push({ field: 'racket.backhandRubber.brand.id', operator: 'EQ', value: Number(this.selectedBhBrandId) });
-    if (this.selectedBhRubberId) filters.push({ field: 'racket.backhandRubber.id', operator: 'EQ', value: Number(this.selectedBhRubberId) });
-    if (this.selectedBhTypeId) filters.push({ field: 'racket.backhandRubber.rubberType.id', operator: 'EQ', value: Number(this.selectedBhTypeId) });
+    if (this.selectedBhBrandIds.length > 0) filters.push({ field: 'racket.backhandRubber.brand.id', operator: 'IN', value: this.selectedBhBrandIds });
+    if (this.selectedBhRubberIds.length > 0) filters.push({ field: 'racket.backhandRubber.id', operator: 'IN', value: this.selectedBhRubberIds });
+    if (this.selectedBhTypeIds.length > 0) filters.push({ field: 'racket.backhandRubber.rubberType.id', operator: 'IN', value: this.selectedBhTypeIds });
     
     if (this.selectedTagIds.length > 0) filters.push({ field: 'tags.id', operator: 'IN', value: this.selectedTagIds });
 

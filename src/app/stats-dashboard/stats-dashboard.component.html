@@ -71,9 +71,8 @@
               [class.is-open]="isCountryDropdownOpen"
               (click)="toggleCountryDropdown($event)"
             >
-              <ng-container *ngIf="getCountry(selectedCountryCode) as selectedCountry; else countryPlaceholder">
-                <img class="country-flag" [src]="getCountryFlagUrl(selectedCountry.code)" [alt]="selectedCountry.name" />
-                <span>{{ selectedCountry.name }}</span>
+              <ng-container *ngIf="selectedCountryCodes.length > 0">
+                <span>{{ selectedCountryCodes.length }} s&eacute;lection(s)</span>
               </ng-container>
               <ng-template #countryPlaceholder>
                 <span class="country-placeholder">Toutes (Aucun filtre)</span>
@@ -82,21 +81,17 @@
             </button>
 
             <div class="country-dropdown-menu" *ngIf="isCountryDropdownOpen" (click)="$event.stopPropagation()">
-              <button
-                type="button"
-                class="country-option"
-                [class.selected]="!selectedCountryCode"
-                (click)="selectCountry(null)"
-              >
-                <span>Toutes (Aucun filtre)</span>
+              <button type="button" class="country-option clear-btn" *ngIf="selectedCountryCodes.length > 0" (click)="clearCountry($event)">
+                <span>Tout effacer</span>
               </button>
               <button
                 type="button"
                 class="country-option"
                 *ngFor="let country of countries"
-                [class.selected]="country.code === selectedCountryCode"
-                (click)="selectCountry(country.code)"
+                [class.selected]="selectedCountryCodes.includes(country.code)"
+                (click)="toggleCountry($event, country.code)"
               >
+                <span class="checkmark" *ngIf="selectedCountryCodes.includes(country.code)">&#10003;</span>
                 <img class="country-flag" [src]="getCountryFlagUrl(country.code)" [alt]="country.name" />
                 <span>{{ country.name }}</span>
               </button>
@@ -117,13 +112,13 @@
             <div class="filter-group">
               <div class="custom-dropdown" (click)="toggleDropdown('bladeBrand', $event)">
                 <div class="dropdown-trigger" [class.active]="activeDropdown === 'bladeBrand'">
-                  <span class="placeholder" *ngIf="!displayBladeBrand">Toutes les marques</span>
-                  <span class="selected-text" *ngIf="displayBladeBrand">{{ displayBladeBrand.name }}</span>
+                  <span class="placeholder" *ngIf="selectedBladeBrandIds.length === 0">Toutes les marques</span>
+                  <span class="selected-text" *ngIf="selectedBladeBrandIds.length > 0">{{ selectedBladeBrandIds.length }} s&eacute;lection(s)</span>
                   <span class="chevron">?</span>
                 </div>
                 <div class="dropdown-menu" *ngIf="activeDropdown === 'bladeBrand'">
-                  <div class="dropdown-item" (click)="selectFilter('selectedBladeBrandId', null)">Toutes les marques</div>
-                  <div class="dropdown-item" *ngFor="let b of brands" (click)="selectFilter('selectedBladeBrandId', b.id)">
+                  <div class="dropdown-item" (click)="clearFilterArray($event, 'selectedBladeBrandIds')">Toutes les marques</div>
+                  <div class="dropdown-item" *ngFor="let b of brands" (click)="toggleFilterArray($event, 'selectedBladeBrandIds', b.id)">
                     {{ b.name }}
                   </div>
                 </div>
@@ -133,16 +128,13 @@
             <div class="filter-group">
               <div class="custom-dropdown" (click)="toggleDropdown('bladeModel', $event)">
                 <div class="dropdown-trigger" [class.active]="activeDropdown === 'bladeModel'">
-                  <span class="placeholder" *ngIf="!displayBlade">Tous les mod&egrave;les</span>
-                  <div class="selected-item" *ngIf="displayBlade">
-                    <img [src]="apiUrl + '/equipment/blades/' + displayBlade.id + '/image'" alt="" loading="lazy">
-                    <span>{{ displayBlade.name }}</span>
-                  </div>
+                  <span class="placeholder" *ngIf="selectedBladeIds.length === 0">Tous les mod&egrave;les</span>
+                  <span class="selected-text" *ngIf="selectedBladeIds.length > 0">{{ selectedBladeIds.length }} s&eacute;lection(s)</span>
                   <span class="chevron">▼</span>
                 </div>
                 <div class="dropdown-menu" *ngIf="activeDropdown === 'bladeModel'">
-                  <div class="dropdown-item" (click)="selectFilter('selectedBladeId', null)">Tous les mod&egrave;les</div>
-                  <div class="dropdown-item with-image" *ngFor="let b of blades" (click)="selectFilter('selectedBladeId', b.id)">
+                  <div class="dropdown-item" (click)="clearFilterArray($event, 'selectedBladeIds')">Tous les mod&egrave;les</div>
+                  <div class="dropdown-item with-image" *ngFor="let b of blades" (click)="toggleFilterArray($event, 'selectedBladeIds', b.id)">
                     <img [src]="apiUrl + '/equipment/blades/' + b.id + '/image'" alt="" loading="lazy">
                     <div class="item-details">
                       <span class="item-brand">{{ b.brand.name }}</span>
@@ -155,13 +147,13 @@
             <div class="filter-group">
               <div class="custom-dropdown" (click)="toggleDropdown('bladeType', $event)">
                 <div class="dropdown-trigger" [class.active]="activeDropdown === 'bladeType'">
-                  <span class="placeholder" *ngIf="!displayBladeType">Tous les types</span>
-                  <span class="selected-text" *ngIf="displayBladeType">{{ displayBladeType.name }}</span>
+                  <span class="placeholder" *ngIf="selectedBladeTypeIds.length === 0">Tous les types</span>
+                  <span class="selected-text" *ngIf="selectedBladeTypeIds.length > 0">{{ selectedBladeTypeIds.length }} s&eacute;lection(s)</span>
                   <span class="chevron">▼</span>
                 </div>
                 <div class="dropdown-menu" *ngIf="activeDropdown === 'bladeType'">
-                  <div class="dropdown-item" (click)="selectFilter('selectedBladeTypeId', null)">Tous les types</div>
-                  <div class="dropdown-item" *ngFor="let bt of bladeTypes" (click)="selectFilter('selectedBladeTypeId', bt.id)">
+                  <div class="dropdown-item" (click)="clearFilterArray($event, 'selectedBladeTypeIds')">Tous les types</div>
+                  <div class="dropdown-item" *ngFor="let bt of bladeTypes" (click)="toggleFilterArray($event, 'selectedBladeTypeIds', bt.id)">
                     {{ bt.name }}
                   </div>
                 </div>
@@ -177,13 +169,13 @@
             <div class="filter-group">
               <div class="custom-dropdown" (click)="toggleDropdown('fhBrand', $event)">
                 <div class="dropdown-trigger" [class.active]="activeDropdown === 'fhBrand'">
-                  <span class="placeholder" *ngIf="!displayFhBrand">Toutes les marques</span>
-                  <span class="selected-text" *ngIf="displayFhBrand">{{ displayFhBrand.name }}</span>
+                  <span class="placeholder" *ngIf="selectedFhBrandIds.length === 0">Toutes les marques</span>
+                  <span class="selected-text" *ngIf="selectedFhBrandIds.length > 0">{{ selectedFhBrandIds.length }} s&eacute;lection(s)</span>
                   <span class="chevron">?</span>
                 </div>
                 <div class="dropdown-menu" *ngIf="activeDropdown === 'fhBrand'">
-                  <div class="dropdown-item" (click)="selectFilter('selectedFhBrandId', null)">Toutes les marques</div>
-                  <div class="dropdown-item" *ngFor="let b of brands" (click)="selectFilter('selectedFhBrandId', b.id)">
+                  <div class="dropdown-item" (click)="clearFilterArray($event, 'selectedFhBrandIds')">Toutes les marques</div>
+                  <div class="dropdown-item" *ngFor="let b of brands" (click)="toggleFilterArray($event, 'selectedFhBrandIds', b.id)">
                     {{ b.name }}
                   </div>
                 </div>
@@ -193,16 +185,13 @@
             <div class="filter-group">
               <div class="custom-dropdown" (click)="toggleDropdown('fhModel', $event)">
                 <div class="dropdown-trigger" [class.active]="activeDropdown === 'fhModel'">
-                  <span class="placeholder" *ngIf="!displayFhRubber">Tous les mod&egrave;les</span>
-                  <div class="selected-item" *ngIf="displayFhRubber">
-                    <img [src]="apiUrl + '/equipment/rubbers/' + displayFhRubber.id + '/image'" alt="" loading="lazy">
-                    <span>{{ displayFhRubber.name }}</span>
-                  </div>
+                  <span class="placeholder" *ngIf="selectedFhRubberIds.length === 0">Tous les mod&egrave;les</span>
+                  <span class="selected-text" *ngIf="selectedFhRubberIds.length > 0">{{ selectedFhRubberIds.length }} s&eacute;lection(s)</span>
                   <span class="chevron">▼</span>
                 </div>
                 <div class="dropdown-menu" *ngIf="activeDropdown === 'fhModel'">
-                  <div class="dropdown-item" (click)="selectFilter('selectedFhRubberId', null)">Tous les mod&egrave;les</div>
-                  <div class="dropdown-item with-image" *ngFor="let r of rubbers" (click)="selectFilter('selectedFhRubberId', r.id)">
+                  <div class="dropdown-item" (click)="clearFilterArray($event, 'selectedFhRubberIds')">Tous les mod&egrave;les</div>
+                  <div class="dropdown-item with-image" *ngFor="let r of rubbers" (click)="toggleFilterArray($event, 'selectedFhRubberIds', r.id)">
                     <img [src]="apiUrl + '/equipment/rubbers/' + r.id + '/image'" alt="" loading="lazy">
                     <div class="item-details">
                       <span class="item-brand">{{ r.brand.name }}</span>
@@ -216,13 +205,13 @@
             <div class="filter-group">
               <div class="custom-dropdown" (click)="toggleDropdown('fhType', $event)">
                 <div class="dropdown-trigger" [class.active]="activeDropdown === 'fhType'">
-                  <span class="placeholder" *ngIf="!displayFhType">Tous les types</span>
-                  <span class="selected-text" *ngIf="displayFhType">{{ displayFhType.name }}</span>
+                  <span class="placeholder" *ngIf="selectedFhTypeIds.length === 0">Tous les types</span>
+                  <span class="selected-text" *ngIf="selectedFhTypeIds.length > 0">{{ selectedFhTypeIds.length }} s&eacute;lection(s)</span>
                   <span class="chevron">▼</span>
                 </div>
                 <div class="dropdown-menu" *ngIf="activeDropdown === 'fhType'">
-                  <div class="dropdown-item" (click)="selectFilter('selectedFhTypeId', null)">Tous les types</div>
-                  <div class="dropdown-item" *ngFor="let rt of rubberTypes" (click)="selectFilter('selectedFhTypeId', rt.id)">
+                  <div class="dropdown-item" (click)="clearFilterArray($event, 'selectedFhTypeIds')">Tous les types</div>
+                  <div class="dropdown-item" *ngFor="let rt of rubberTypes" (click)="toggleFilterArray($event, 'selectedFhTypeIds', rt.id)">
                     {{ rt.name }}
                   </div>
                 </div>
@@ -254,13 +243,13 @@
             <div class="filter-group">
               <div class="custom-dropdown" (click)="toggleDropdown('bhBrand', $event)">
                 <div class="dropdown-trigger" [class.active]="activeDropdown === 'bhBrand'">
-                  <span class="placeholder" *ngIf="!displayBhBrand">Toutes les marques</span>
-                  <span class="selected-text" *ngIf="displayBhBrand">{{ displayBhBrand.name }}</span>
+                  <span class="placeholder" *ngIf="selectedBhBrandIds.length === 0">Toutes les marques</span>
+                  <span class="selected-text" *ngIf="selectedBhBrandIds.length > 0">{{ selectedBhBrandIds.length }} s&eacute;lection(s)</span>
                   <span class="chevron">?</span>
                 </div>
                 <div class="dropdown-menu" *ngIf="activeDropdown === 'bhBrand'">
-                  <div class="dropdown-item" (click)="selectFilter('selectedBhBrandId', null)">Toutes les marques</div>
-                  <div class="dropdown-item" *ngFor="let b of brands" (click)="selectFilter('selectedBhBrandId', b.id)">
+                  <div class="dropdown-item" (click)="clearFilterArray($event, 'selectedBhBrandIds')">Toutes les marques</div>
+                  <div class="dropdown-item" *ngFor="let b of brands" (click)="toggleFilterArray($event, 'selectedBhBrandIds', b.id)">
                     {{ b.name }}
                   </div>
                 </div>
@@ -270,16 +259,13 @@
             <div class="filter-group">
               <div class="custom-dropdown" (click)="toggleDropdown('bhModel', $event)">
                 <div class="dropdown-trigger" [class.active]="activeDropdown === 'bhModel'">
-                  <span class="placeholder" *ngIf="!displayBhRubber">Tous les mod&egrave;les</span>
-                  <div class="selected-item" *ngIf="displayBhRubber">
-                    <img [src]="apiUrl + '/equipment/rubbers/' + displayBhRubber.id + '/image'" alt="" loading="lazy">
-                    <span>{{ displayBhRubber.name }}</span>
-                  </div>
+                  <span class="placeholder" *ngIf="selectedBhRubberIds.length === 0">Tous les mod&egrave;les</span>
+                  <span class="selected-text" *ngIf="selectedBhRubberIds.length > 0">{{ selectedBhRubberIds.length }} s&eacute;lection(s)</span>
                   <span class="chevron">▼</span>
                 </div>
                 <div class="dropdown-menu" *ngIf="activeDropdown === 'bhModel'">
-                  <div class="dropdown-item" (click)="selectFilter('selectedBhRubberId', null)">Tous les mod&egrave;les</div>
-                  <div class="dropdown-item with-image" *ngFor="let r of rubbers" (click)="selectFilter('selectedBhRubberId', r.id)">
+                  <div class="dropdown-item" (click)="clearFilterArray($event, 'selectedBhRubberIds')">Tous les mod&egrave;les</div>
+                  <div class="dropdown-item with-image" *ngFor="let r of rubbers" (click)="toggleFilterArray($event, 'selectedBhRubberIds', r.id)">
                     <img [src]="apiUrl + '/equipment/rubbers/' + r.id + '/image'" alt="" loading="lazy">
                     <div class="item-details">
                       <span class="item-brand">{{ r.brand.name }}</span>
@@ -293,13 +279,13 @@
             <div class="filter-group">
               <div class="custom-dropdown" (click)="toggleDropdown('bhType', $event)">
                 <div class="dropdown-trigger" [class.active]="activeDropdown === 'bhType'">
-                  <span class="placeholder" *ngIf="!displayBhType">Tous les types</span>
-                  <span class="selected-text" *ngIf="displayBhType">{{ displayBhType.name }}</span>
+                  <span class="placeholder" *ngIf="selectedBhTypeIds.length === 0">Tous les types</span>
+                  <span class="selected-text" *ngIf="selectedBhTypeIds.length > 0">{{ selectedBhTypeIds.length }} s&eacute;lection(s)</span>
                   <span class="chevron">▼</span>
                 </div>
                 <div class="dropdown-menu" *ngIf="activeDropdown === 'bhType'">
-                  <div class="dropdown-item" (click)="selectFilter('selectedBhTypeId', null)">Tous les types</div>
-                  <div class="dropdown-item" *ngFor="let rt of rubberTypes" (click)="selectFilter('selectedBhTypeId', rt.id)">
+                  <div class="dropdown-item" (click)="clearFilterArray($event, 'selectedBhTypeIds')">Tous les types</div>
+                  <div class="dropdown-item" *ngFor="let rt of rubberTypes" (click)="toggleFilterArray($event, 'selectedBhTypeIds', rt.id)">
                     {{ rt.name }}
                   </div>
                 </div>

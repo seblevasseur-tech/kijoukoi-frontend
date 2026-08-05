@@ -401,3 +401,7 @@ mat-slider {
   color: var(--color-primary);
 }
 
+
+.checkmark { color: var(--color-primary); font-weight: bold; margin-right: 5px; }
+.clear-btn { text-align: center; font-style: italic; color: #a1a1aa; border-bottom: 1px solid #333; margin-bottom: 4px; padding-bottom: 8px; }
+.clear-btn:hover { color: #fff; background-color: #333; }

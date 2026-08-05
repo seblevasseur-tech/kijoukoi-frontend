@@ -38,11 +38,11 @@ export class StatsDashboardComponent implements OnInit, AfterViewInit, OnDestroy
   maxAgeLimit: number = 99;
 
   minHardnessFh: number = 30;
-  maxHardnessFh: number = 65;
+  maxHardnessFh: number = 60;
   minHardnessBh: number = 30;
-  maxHardnessBh: number = 65;
+  maxHardnessBh: number = 60;
   minHardnessLimit: number = 30;
-  maxHardnessLimit: number = 65;
+  maxHardnessLimit: number = 60;
   
   // Filter Options Data
   brands: Brand[] = [];
@@ -71,11 +71,6 @@ export class StatsDashboardComponent implements OnInit, AfterViewInit, OnDestroy
   // Dropdown States
   activeDropdown: string | null = null;
   isFilterSidebarOpen: boolean = true;
-  // Accordion States
-  isBladeOpen: boolean = false;
-  isFhOpen: boolean = false;
-  isBhOpen: boolean = false;
-
 
   // Output Selection
   outputOptions = [

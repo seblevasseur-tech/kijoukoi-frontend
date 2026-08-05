@@ -36,7 +36,16 @@ export class BladeListComponent implements OnInit {
 
   ngOnInit(): void {
     this.api.getBrands().subscribe(b => this.brands = b);
-    this.api.getBladeTypes().subscribe(bt => this.bladeTypes = bt);
+    this.api.getBladeTypes().subscribe(bt => {
+      const order = ['DEF', 'ALL-', 'ALL', 'ALL+', 'OFF-', 'OFF', 'OFF+'];
+      this.bladeTypes = bt.sort((a, b) => {
+        let i = order.indexOf(a.name);
+        let j = order.indexOf(b.name);
+        if (i === -1) i = 99;
+        if (j === -1) j = 99;
+        return i - j;
+      });
+    });
     
     this.filterSubject.pipe(debounceTime(300)).subscribe(() => {
       this.fetchBlades();
@@ -54,7 +63,7 @@ export class BladeListComponent implements OnInit {
       filters.push({ field: 'brand.id', operator: 'IN', value: this.selectedBrandIds });
     }
     if (this.selectedTypeIds.length > 0) {
-      filters.push({ field: 'type.id', operator: 'IN', value: this.selectedTypeIds });
+      filters.push({ field: 'bladeType.id', operator: 'IN', value: this.selectedTypeIds });
     }
     if (this.minWeight > 50) {
       filters.push({ field: 'weight', operator: 'GTE', value: this.minWeight });

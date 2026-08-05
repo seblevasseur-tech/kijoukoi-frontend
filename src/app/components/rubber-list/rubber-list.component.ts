@@ -54,7 +54,7 @@ export class RubberListComponent implements OnInit {
       filters.push({ field: 'brand.id', operator: 'IN', value: this.selectedBrandIds });
     }
     if (this.selectedTypeIds.length > 0) {
-      filters.push({ field: 'type.id', operator: 'IN', value: this.selectedTypeIds });
+      filters.push({ field: 'rubberType.id', operator: 'IN', value: this.selectedTypeIds });
     }
     if (this.minHardness > 30) {
       filters.push({ field: 'hardness', operator: 'GTE', value: this.minHardness });

@@ -6,6 +6,6 @@ export interface Blade {
   name: string;
   brand: Brand;
   weight: number;
-  type: BladeType;
+  bladeType: BladeType;
   image: string;
 }

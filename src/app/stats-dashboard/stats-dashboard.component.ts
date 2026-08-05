@@ -38,11 +38,11 @@ export class StatsDashboardComponent implements OnInit, AfterViewInit, OnDestroy
   maxAgeLimit: number = 99;
 
   minHardnessFh: number = 30;
-  maxHardnessFh: number = 60;
+  maxHardnessFh: number = 65;
   minHardnessBh: number = 30;
-  maxHardnessBh: number = 60;
+  maxHardnessBh: number = 65;
   minHardnessLimit: number = 30;
-  maxHardnessLimit: number = 60;
+  maxHardnessLimit: number = 65;
   
   // Filter Options Data
   brands: Brand[] = [];

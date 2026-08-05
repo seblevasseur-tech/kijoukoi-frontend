@@ -13,6 +13,7 @@ import { Rubber } from '../../models/rubber.model';
 export class RubberListComponent implements OnInit {
   rubbers: Rubber[] = [];
   private api = inject(ApiService);
+  apiUrl = this.api.getBaseUrl();
 
   ngOnInit(): void {
     this.api.getRubbers().subscribe(data => {

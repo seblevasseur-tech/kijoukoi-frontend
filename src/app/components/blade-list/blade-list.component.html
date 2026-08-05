@@ -3,10 +3,7 @@
   <div class="blades-grid" *ngIf="blades.length > 0; else noBlades">
     <a class="blade-card" *ngFor="let blade of blades">
       <div class="card-avatar">
-        <img *ngIf="blade.image; else noImage" [src]="blade.image" [alt]="blade.name" />
-        <ng-template #noImage>
-            <div style="width:100%;height:100%;background:var(--color-surface-raised);display:flex;align-items:center;justify-content:center;">🏓</div>
-        </ng-template>
+        <img [src]="apiUrl + '/equipment/blades/' + blade.id + '/image'" [alt]="blade.name" loading="lazy" />
       </div>
 
       <div class="card-info">

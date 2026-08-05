@@ -13,6 +13,7 @@ import { Blade } from '../../models/blade.model';
 export class BladeListComponent implements OnInit {
   blades: Blade[] = [];
   private api = inject(ApiService);
+  apiUrl = this.api.getBaseUrl();
 
   ngOnInit(): void {
     this.api.getBlades().subscribe(data => {

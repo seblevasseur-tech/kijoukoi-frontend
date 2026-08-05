@@ -185,7 +185,7 @@ export class StatsDashboardComponent implements OnInit, AfterViewInit, OnDestroy
     event.stopPropagation();
     this.activeDropdown = this.activeDropdown === dropdownName ? null : dropdownName;
     
-    if (this.activeDropdown === 'blade') {
+    if (this.activeDropdown === 'bladeModel') {
       if (!this.bladesLoaded) {
         this.api.getBlades().subscribe(b => {
           this.blades = b;

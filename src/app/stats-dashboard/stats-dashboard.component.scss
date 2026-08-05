@@ -43,11 +43,11 @@
   overflow-y: auto;
   
   /* Collapsible logic */
-  transform: translateX(-120%);
+  transform: translateX(120%);
   opacity: 0;
   visibility: hidden;
   position: absolute;
-  left: 0;
+  right: 0;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   
   &.open {
@@ -80,8 +80,7 @@
     margin-bottom: 15px;
     text-transform: uppercase;
     letter-spacing: 0.05em;
-    border-bottom: 1px solid rgba(255,255,255,0.1);
-    padding-bottom: 5px;
+    
   }
 }
 
@@ -198,4 +197,33 @@
     position: absolute;
     color: var(--color-text-secondary, #a1a1aa);
   }
+}
+
+.accordion-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  cursor: pointer;
+  padding-bottom: 5px;
+  border-bottom: 1px solid rgba(255,255,255,0.1);
+  margin-bottom: 15px;
+  
+  .category-title {
+    font-size: 0.95rem;
+    color: var(--color-primary);
+    margin: 0;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+  
+  .chevron {
+    transition: transform 0.3s ease;
+    &.open {
+      transform: rotate(180deg);
+    }
+  }
+}
+.accordion-content {
+  overflow: hidden;
+  transition: max-height 0.3s ease-out;
 }

@@ -8,7 +8,25 @@
 
   <div class="dashboard-content" [class.with-sidebar]="isFilterSidebarOpen">
     
-    <!-- Sidebar Filtres (Left) -->
+    <!-- Output Selection & Graphique (Center/Right) -->
+    <div class="chart-section">
+      <div class="chart-header">
+        <div class="output-selector">
+          <label for="outputSelect">R&eacute;sultat &agrave; afficher :</label>
+          <select id="outputSelect" [(ngModel)]="selectedOutput" (change)="sliderSubject.next()">
+            <option *ngFor="let opt of outputOptions" [value]="opt.value">{{ opt.label }}</option>
+          </select>
+        </div>
+      </div>
+      <div class="chart-container">
+        <canvas #brandChart></canvas>
+        <div class="empty-state" *ngIf="!chartInstance?.data?.labels?.length">
+          <p>Aucune donn&eacute;e disponible pour ces crit&egrave;res.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Sidebar Filtres (Right) -->
     <div class="filter-card sidebar" [class.open]="isFilterSidebarOpen">
       
       <!-- General -->
@@ -99,7 +117,11 @@
 
       <!-- Bois -->
       <div class="filter-category">
-        <h3 class="category-title">Bois</h3>
+        <div class="accordion-header" (click)="isBladeOpen = !isBladeOpen">
+          <h3 class="category-title">Bois</h3>
+          <span class="chevron" [class.open]="isBladeOpen">&#9660;</span>
+        </div>
+        <div class="accordion-content" *ngIf="isBladeOpen">
         <div class="filter-group">
           <div class="custom-dropdown" (click)="toggleDropdown('bladeBrand', $event)">
             <div class="dropdown-trigger" [class.active]="activeDropdown === 'bladeBrand'">
@@ -155,7 +177,11 @@
 
       <!-- Revetement CD -->
       <div class="filter-category">
-        <h3 class="category-title">Rev&ecirc;tement Coup Droit</h3>
+        <div class="accordion-header" (click)="isFhOpen = !isFhOpen">
+          <h3 class="category-title">Rev&ecirc;tement CD</h3>
+          <span class="chevron" [class.open]="isFhOpen">&#9660;</span>
+        </div>
+        <div class="accordion-content" *ngIf="isFhOpen">
         
         <div class="filter-group">
           <div class="custom-dropdown" (click)="toggleDropdown('fhBrand', $event)">
@@ -228,7 +254,16 @@
 
       <!-- Revetement RV -->
       <div class="filter-category">
-        <h3 class="category-title">Rev&ecirc;tement Revers</h3>
+        </div>
+      </div>
+      
+      <!-- Revetement RV -->
+      <div class="filter-category">
+        <div class="accordion-header" (click)="isBhOpen = !isBhOpen">
+          <h3 class="category-title">Rev&ecirc;tement Revers</h3>
+          <span class="chevron" [class.open]="isBhOpen">&#9660;</span>
+        </div>
+        <div class="accordion-content" *ngIf="isBhOpen">
         <!-- Same as FH but for BH -->
         <div class="filter-group">
           <div class="custom-dropdown" (click)="toggleDropdown('bhBrand', $event)">
@@ -299,6 +334,9 @@
         </div>
       </div>
       
+      </div>
+      </div>
+      
       <!-- Etiquettes -->
       <div class="filter-category">
         <h3 class="category-title">&Eacute;tiquettes</h3>
@@ -324,23 +362,6 @@
       
     </div>
 
-    <!-- Output Selection & Graphique (Center/Right) -->
-    <div class="chart-section">
-      <div class="chart-header">
-        <div class="output-selector">
-          <label for="outputSelect">R&eacute;sultat &agrave; afficher :</label>
-          <select id="outputSelect" [(ngModel)]="selectedOutput" (change)="sliderSubject.next()">
-            <option *ngFor="let opt of outputOptions" [value]="opt.value">{{ opt.label }}</option>
-          </select>
-        </div>
-      </div>
-      <div class="chart-container">
-        <canvas #brandChart></canvas>
-        <div class="empty-state" *ngIf="!chartInstance?.data?.labels?.length">
-          <p>Aucune donn&eacute;e disponible pour ces crit&egrave;res.</p>
-        </div>
-      </div>
-    </div>
-
+    
   </div>
 </div>

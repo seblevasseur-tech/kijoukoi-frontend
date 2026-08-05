@@ -71,6 +71,11 @@ export class StatsDashboardComponent implements OnInit, AfterViewInit, OnDestroy
   // Dropdown States
   activeDropdown: string | null = null;
   isFilterSidebarOpen: boolean = true;
+  // Accordion States
+  isBladeOpen: boolean = false;
+  isFhOpen: boolean = false;
+  isBhOpen: boolean = false;
+
 
   // Output Selection
   outputOptions = [

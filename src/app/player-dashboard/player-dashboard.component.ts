@@ -29,6 +29,9 @@ export class PlayerDashboardComponent implements OnInit {
   bladeDropdownOpen = false;
   fhDropdownOpen = false;
   bhDropdownOpen = false;
+  
+  bladesLoaded = false;
+  rubbersLoaded = false;
 
   // Tag lists for Drag & Drop
   positiveTags: PlayerTag[] = [];
@@ -36,6 +39,7 @@ export class PlayerDashboardComponent implements OnInit {
 
   private api = inject(ApiService);
   private toastService = inject(ToastService);
+  apiUrl = this.api.getBaseUrl();
 
   constructor() {}
 
@@ -44,14 +48,10 @@ export class PlayerDashboardComponent implements OnInit {
   }
 
   loadData(): void {
-    // 1. Fetch available equipment and tags
+    // 1. Fetch tags only initially
     forkJoin({
-      blades: this.api.getBlades(),
-      rubbers: this.api.getRubbers(),
       tags: this.api.getTags()
     }).subscribe(res => {
-      this.blades = res.blades;
-      this.rubbers = res.rubbers;
       this.allTags = res.tags;
       
       // 2. Fetch logged-in user profile
@@ -113,9 +113,44 @@ export class PlayerDashboardComponent implements OnInit {
   }
 
   // Dropdown UI Helpers
-  toggleBladeDropdown() { this.bladeDropdownOpen = !this.bladeDropdownOpen; this.fhDropdownOpen = false; this.bhDropdownOpen = false; }
-  toggleFhDropdown() { this.fhDropdownOpen = !this.fhDropdownOpen; this.bladeDropdownOpen = false; this.bhDropdownOpen = false; }
-  toggleBhDropdown() { this.bhDropdownOpen = !this.bhDropdownOpen; this.bladeDropdownOpen = false; this.fhDropdownOpen = false; }
+  toggleBladeDropdown() { 
+    this.bladeDropdownOpen = !this.bladeDropdownOpen; 
+    this.fhDropdownOpen = false; 
+    this.bhDropdownOpen = false; 
+    
+    if (this.bladeDropdownOpen && !this.bladesLoaded) {
+      this.api.getBlades().subscribe(b => {
+        this.blades = b;
+        this.bladesLoaded = true;
+      });
+    }
+  }
+
+  toggleFhDropdown() { 
+    this.fhDropdownOpen = !this.fhDropdownOpen; 
+    this.bladeDropdownOpen = false; 
+    this.bhDropdownOpen = false; 
+    
+    if (this.fhDropdownOpen && !this.rubbersLoaded) {
+      this.api.getRubbers().subscribe(r => {
+        this.rubbers = r;
+        this.rubbersLoaded = true;
+      });
+    }
+  }
+
+  toggleBhDropdown() { 
+    this.bhDropdownOpen = !this.bhDropdownOpen; 
+    this.bladeDropdownOpen = false; 
+    this.fhDropdownOpen = false; 
+    
+    if (this.bhDropdownOpen && !this.rubbersLoaded) {
+      this.api.getRubbers().subscribe(r => {
+        this.rubbers = r;
+        this.rubbersLoaded = true;
+      });
+    }
+  }
 
   selectBlade(blade: Blade) {
     if (!this.isAuthenticated) {

@@ -18,6 +18,10 @@ export class ApiService {
   private http = inject(HttpClient);
   // Utilisation de l'URL du fichier d'environnement
   private baseUrl = `${environment.backendUrl}/api`;
+  
+  public getBaseUrl(): string {
+    return this.baseUrl;
+  }
 
   getPlayers(): Observable<Player[]> {
     return this.http.get<Player[]>(`${this.baseUrl}/players`);

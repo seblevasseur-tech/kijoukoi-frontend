@@ -24,6 +24,7 @@ import { MatSliderModule } from '@angular/material/slider';
 })
 export class StatsDashboardComponent implements OnInit, AfterViewInit, OnDestroy {
   private api = inject(ApiService);
+  apiUrl = this.api.getBaseUrl();
   
   // Slider state
   minElo: number = 1000;
@@ -166,24 +167,41 @@ export class StatsDashboardComponent implements OnInit, AfterViewInit, OnDestroy
   loadFilterOptions() {
     forkJoin({
       brands: this.api.getBrands(),
-      blades: this.api.getBlades(),
       bladeTypes: this.api.getBladeTypes(),
-      rubbers: this.api.getRubbers(),
       rubberTypes: this.api.getRubberTypes(),
       tags: this.api.getTags()
     }).subscribe(data => {
       this.brands = data.brands;
-      this.blades = data.blades;
       this.bladeTypes = data.bladeTypes;
-      this.rubbers = data.rubbers;
       this.rubberTypes = data.rubberTypes;
       this.tags = data.tags;
     });
   }
 
+  bladesLoaded = false;
+  rubbersLoaded = false;
+
   toggleDropdown(dropdownName: string, event: Event) {
     event.stopPropagation();
     this.activeDropdown = this.activeDropdown === dropdownName ? null : dropdownName;
+    
+    if (this.activeDropdown === 'blade') {
+      if (!this.bladesLoaded) {
+        this.api.getBlades().subscribe(b => {
+          this.blades = b;
+          this.bladesLoaded = true;
+        });
+      }
+    }
+    
+    if (this.activeDropdown === 'fhModel' || this.activeDropdown === 'bhModel') {
+      if (!this.rubbersLoaded) {
+        this.api.getRubbers().subscribe(r => {
+          this.rubbers = r;
+          this.rubbersLoaded = true;
+        });
+      }
+    }
   }
 
   selectFilter(filterName: string, id: number | null) {

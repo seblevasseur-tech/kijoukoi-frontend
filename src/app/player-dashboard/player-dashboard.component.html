@@ -20,7 +20,7 @@
           <div class="custom-select-container">
             <div class="custom-select-trigger" (click)="toggleBladeDropdown()">
               <ng-container *ngIf="player.racket?.blade; else noBlade">
-                <img [src]="player.racket!.blade!.image" class="item-img" *ngIf="player.racket!.blade!.image">
+                <img [src]="apiUrl + '/equipment/blades/' + player.racket!.blade!.id + '/image'" class="item-img" loading="lazy">
                 <span class="item-name">{{ player.racket!.blade!.name }}</span>
               </ng-container>
               <ng-template #noBlade><span class="placeholder">Sélectionner un bois...</span></ng-template>
@@ -28,7 +28,7 @@
             </div>
             <div class="custom-select-options" *ngIf="bladeDropdownOpen">
               <div class="custom-option" *ngFor="let blade of blades" (click)="selectBlade(blade)">
-                <img [src]="blade.image" class="item-img" *ngIf="blade.image">
+                <img [src]="apiUrl + '/equipment/blades/' + blade.id + '/image'" class="item-img" loading="lazy">
                 <span class="item-name">{{ blade.name }}</span>
               </div>
             </div>
@@ -41,7 +41,7 @@
           <div class="custom-select-container">
             <div class="custom-select-trigger" (click)="toggleFhDropdown()">
               <ng-container *ngIf="player.racket?.forehandRubber; else noFh">
-                <img [src]="player.racket!.forehandRubber!.image" class="item-img" *ngIf="player.racket!.forehandRubber!.image">
+                <img [src]="apiUrl + '/equipment/rubbers/' + player.racket!.forehandRubber!.id + '/image'" class="item-img" loading="lazy">
                 <span class="item-name">{{ player.racket!.forehandRubber!.name }}</span>
               </ng-container>
               <ng-template #noFh><span class="placeholder">Sélectionner un revêtement...</span></ng-template>
@@ -49,7 +49,7 @@
             </div>
             <div class="custom-select-options" *ngIf="fhDropdownOpen">
               <div class="custom-option" *ngFor="let rubber of rubbers" (click)="selectFhRubber(rubber)">
-                <img [src]="rubber.image" class="item-img" *ngIf="rubber.image">
+                <img [src]="apiUrl + '/equipment/rubbers/' + rubber.id + '/image'" class="item-img" loading="lazy">
                 <span class="item-name">{{ rubber.name }}</span>
               </div>
             </div>
@@ -62,7 +62,7 @@
           <div class="custom-select-container">
             <div class="custom-select-trigger" (click)="toggleBhDropdown()">
               <ng-container *ngIf="player.racket?.backhandRubber; else noBh">
-                <img [src]="player.racket!.backhandRubber!.image" class="item-img" *ngIf="player.racket!.backhandRubber!.image">
+                <img [src]="apiUrl + '/equipment/rubbers/' + player.racket!.backhandRubber!.id + '/image'" class="item-img" loading="lazy">
                 <span class="item-name">{{ player.racket!.backhandRubber!.name }}</span>
               </ng-container>
               <ng-template #noBh><span class="placeholder">Sélectionner un revêtement...</span></ng-template>
@@ -70,7 +70,7 @@
             </div>
             <div class="custom-select-options" *ngIf="bhDropdownOpen">
               <div class="custom-option" *ngFor="let rubber of rubbers" (click)="selectBhRubber(rubber)">
-                <img [src]="rubber.image" class="item-img" *ngIf="rubber.image">
+                <img [src]="apiUrl + '/equipment/rubbers/' + rubber.id + '/image'" class="item-img" loading="lazy">
                 <span class="item-name">{{ rubber.name }}</span>
               </div>
             </div>

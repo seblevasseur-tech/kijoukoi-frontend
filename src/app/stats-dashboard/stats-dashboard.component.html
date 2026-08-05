@@ -135,15 +135,15 @@
                 <div class="dropdown-trigger" [class.active]="activeDropdown === 'bladeModel'">
                   <span class="placeholder" *ngIf="!displayBlade">Tous les mod&egrave;les</span>
                   <div class="selected-item" *ngIf="displayBlade">
-                    <img [src]="displayBlade.image || 'assets/default-blade.png'" alt="">
+                    <img [src]="apiUrl + '/equipment/blades/' + displayBlade.id + '/image'" alt="" loading="lazy">
                     <span>{{ displayBlade.name }}</span>
                   </div>
-                  <span class="chevron">?</span>
+                  <span class="chevron">▼</span>
                 </div>
                 <div class="dropdown-menu" *ngIf="activeDropdown === 'bladeModel'">
                   <div class="dropdown-item" (click)="selectFilter('selectedBladeId', null)">Tous les mod&egrave;les</div>
                   <div class="dropdown-item with-image" *ngFor="let b of blades" (click)="selectFilter('selectedBladeId', b.id)">
-                    <img [src]="b.image || 'assets/default-blade.png'" alt="">
+                    <img [src]="apiUrl + '/equipment/blades/' + b.id + '/image'" alt="" loading="lazy">
                     <div class="item-details">
                       <span class="item-brand">{{ b.brand.name }}</span>
                       <span class="item-name">{{ b.name }}</span>
@@ -195,15 +195,15 @@
                 <div class="dropdown-trigger" [class.active]="activeDropdown === 'fhModel'">
                   <span class="placeholder" *ngIf="!displayFhRubber">Tous les mod&egrave;les</span>
                   <div class="selected-item" *ngIf="displayFhRubber">
-                    <img [src]="displayFhRubber.image || 'assets/default-rubber.png'" alt="">
+                    <img [src]="apiUrl + '/equipment/rubbers/' + displayFhRubber.id + '/image'" alt="" loading="lazy">
                     <span>{{ displayFhRubber.name }}</span>
                   </div>
-                  <span class="chevron">?</span>
+                  <span class="chevron">▼</span>
                 </div>
                 <div class="dropdown-menu" *ngIf="activeDropdown === 'fhModel'">
                   <div class="dropdown-item" (click)="selectFilter('selectedFhRubberId', null)">Tous les mod&egrave;les</div>
                   <div class="dropdown-item with-image" *ngFor="let r of rubbers" (click)="selectFilter('selectedFhRubberId', r.id)">
-                    <img [src]="r.image || 'assets/default-rubber.png'" alt="">
+                    <img [src]="apiUrl + '/equipment/rubbers/' + r.id + '/image'" alt="" loading="lazy">
                     <div class="item-details">
                       <span class="item-brand">{{ r.brand.name }}</span>
                       <span class="item-name">{{ r.name }}</span>
@@ -272,15 +272,15 @@
                 <div class="dropdown-trigger" [class.active]="activeDropdown === 'bhModel'">
                   <span class="placeholder" *ngIf="!displayBhRubber">Tous les mod&egrave;les</span>
                   <div class="selected-item" *ngIf="displayBhRubber">
-                    <img [src]="displayBhRubber.image || 'assets/default-rubber.png'" alt="">
+                    <img [src]="apiUrl + '/equipment/rubbers/' + displayBhRubber.id + '/image'" alt="" loading="lazy">
                     <span>{{ displayBhRubber.name }}</span>
                   </div>
-                  <span class="chevron">?</span>
+                  <span class="chevron">▼</span>
                 </div>
                 <div class="dropdown-menu" *ngIf="activeDropdown === 'bhModel'">
                   <div class="dropdown-item" (click)="selectFilter('selectedBhRubberId', null)">Tous les mod&egrave;les</div>
                   <div class="dropdown-item with-image" *ngFor="let r of rubbers" (click)="selectFilter('selectedBhRubberId', r.id)">
-                    <img [src]="r.image || 'assets/default-rubber.png'" alt="">
+                    <img [src]="apiUrl + '/equipment/rubbers/' + r.id + '/image'" alt="" loading="lazy">
                     <div class="item-details">
                       <span class="item-brand">{{ r.brand.name }}</span>
                       <span class="item-name">{{ r.name }}</span>

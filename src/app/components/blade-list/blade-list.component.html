@@ -1,5 +1,59 @@
-<div class="catalog-list-page">
+<div class="catalog-list-page" (click)="activeDropdown = null">
   <h2>Liste des Bois</h2>
+  
+  <div class="filter-bar">
+    <div class="filter-group">
+      <span class="filter-label">Recherche</span>
+      <input type="text" class="filter-search" placeholder="Nom du bois..." [(ngModel)]="searchTerm" (ngModelChange)="onFilterChange()">
+    </div>
+    
+    <div class="filter-group">
+      <span class="filter-label">Marque</span>
+      <div class="custom-dropdown" (click)="toggleDropdown('brand', $event)">
+        <div class="dropdown-trigger" [class.active]="activeDropdown === 'brand'">
+          <span class="placeholder" *ngIf="selectedBrandIds.length === 0">Toutes</span>
+          <span class="selected-text tags-display" *ngIf="selectedBrandIds.length > 0">
+            <span *ngFor="let t of displayBrands; let last = last">{{ t.name }}{{ !last ? ', ' : '' }}</span>
+          </span>
+          <span class="chevron">&#9660;</span>
+        </div>
+        <div class="dropdown-menu" *ngIf="activeDropdown === 'brand'" (click)="$event.stopPropagation()">
+          <div class="clear-btn" *ngIf="selectedBrandIds.length > 0" (click)="clearFilterArray($event, 'selectedBrandIds')">Tout effacer</div>
+          <div class="dropdown-item" *ngFor="let b of brands" [class.selected]="selectedBrandIds.includes(b.id)" (click)="toggleFilterArray($event, 'selectedBrandIds', b.id)">
+            <span class="checkmark" *ngIf="selectedBrandIds.includes(b.id)">&#10003;</span> {{ b.name }}
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <div class="filter-group">
+      <span class="filter-label">Type</span>
+      <div class="custom-dropdown" (click)="toggleDropdown('type', $event)">
+        <div class="dropdown-trigger" [class.active]="activeDropdown === 'type'">
+          <span class="placeholder" *ngIf="selectedTypeIds.length === 0">Tous</span>
+          <span class="selected-text tags-display" *ngIf="selectedTypeIds.length > 0">
+            <span *ngFor="let t of displayTypes; let last = last">{{ t.name }}{{ !last ? ', ' : '' }}</span>
+          </span>
+          <span class="chevron">&#9660;</span>
+        </div>
+        <div class="dropdown-menu" *ngIf="activeDropdown === 'type'" (click)="$event.stopPropagation()">
+          <div class="clear-btn" *ngIf="selectedTypeIds.length > 0" (click)="clearFilterArray($event, 'selectedTypeIds')">Tout effacer</div>
+          <div class="dropdown-item" *ngFor="let t of bladeTypes" [class.selected]="selectedTypeIds.includes(t.id)" (click)="toggleFilterArray($event, 'selectedTypeIds', t.id)">
+            <span class="checkmark" *ngIf="selectedTypeIds.includes(t.id)">&#10003;</span> {{ t.name }}
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <div class="filter-group">
+      <span class="filter-label">Poids ({{minWeight}}g - {{maxWeight}}g)</span>
+      <mat-slider [min]="50" [max]="110" style="width: 100%">
+        <input matSliderStartThumb [(ngModel)]="minWeight" (change)="onFilterChange()">
+        <input matSliderEndThumb [(ngModel)]="maxWeight" (change)="onFilterChange()">
+      </mat-slider>
+    </div>
+  </div>
+
   <div class="blades-grid" *ngIf="blades.length > 0; else noBlades">
     <a class="blade-card" *ngFor="let blade of blades">
       <div class="card-avatar">
@@ -9,7 +63,8 @@
       <div class="card-info">
         <h3 class="blade-brand">{{ blade.brand.name }}</h3>
         <h3 class="blade-name">{{ blade.name }}</h3>
-        <p style="color: var(--color-text-secondary); margin-top: 8px; font-size: 0.85em;">Poids: {{ blade.weight }}g</p>
+        <p style="color: var(--color-primary); font-weight: bold; margin-top: 4px;">{{ blade.type?.name }}</p>
+        <p style="color: var(--color-text-secondary); margin-top: 4px; font-size: 0.85em;">Poids: {{ blade.weight }}g</p>
       </div>
     </a>
   </div>

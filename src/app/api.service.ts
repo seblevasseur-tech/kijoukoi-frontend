@@ -8,7 +8,7 @@ import { RubberType } from './models/rubber-type.model';
 import { Rubber } from './models/rubber.model';
 import { Brand } from './models/brand.model';
 import { PlayerTag } from './models/player-tag.model';
-import { AggregationRequestDTO, AggregationResultDTO } from './models/aggregation.model';
+import { AggregationRequestDTO, AggregationResultDTO, FilterDTO } from './models/aggregation.model';
 import { environment } from '../environments/environment';
 
 @Injectable({
@@ -61,6 +61,14 @@ export class ApiService {
 
   getTags(): Observable<PlayerTag[]> {
     return this.http.get<PlayerTag[]>(`${this.baseUrl}/tags`);
+  }
+
+  searchBlades(filters: FilterDTO[]): Observable<Blade[]> {
+    return this.http.post<Blade[]>(`${this.baseUrl}/equipment/blades/search`, filters);
+  }
+
+  searchRubbers(filters: FilterDTO[]): Observable<Rubber[]> {
+    return this.http.post<Rubber[]>(`${this.baseUrl}/equipment/rubbers/search`, filters);
   }
 
   postAggregation(request: AggregationRequestDTO): Observable<AggregationResultDTO[]> {

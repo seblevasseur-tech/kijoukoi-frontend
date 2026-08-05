@@ -1,372 +1,330 @@
-<div class="dashboard-page">
+<div class="dashboard-page" (click)="activeDropdown = null; isCountryDropdownOpen = false">
   <div class="dashboard-header">
     <h1>Tableau de bord</h1>
+    <button class="toggle-sidebar-btn" (click)="toggleFilterSidebar()">
+      <span class="icon">&#9776;</span> Filtres
+    </button>
   </div>
 
-  <div class="dashboard-content">
+  <div class="dashboard-content" [class.with-sidebar]="isFilterSidebarOpen">
     
-    <!-- Filtres -->
-    <div class="filter-card">
-      <div class="card-header">
-        <h2>Filtres</h2>
-        <p>Ajustez le classement pour voir la r&eacute;partition des marques de bois.</p>
+    <!-- Sidebar Filtres (Left) -->
+    <div class="filter-card sidebar" [class.open]="isFilterSidebarOpen">
+      
+      <!-- General -->
+      <div class="filter-category">
+        <h3 class="category-title">G&eacute;n&eacute;ral</h3>
+        
+        <div class="slider-container">
+          <div class="slider-labels">
+            <div class="label-group left">
+              <span class="label-title">Points Min</span>
+              <span class="label-value">{{ minElo }}</span>
+            </div>
+            <div class="label-group right" style="text-align: right">
+              <span class="label-title">Points Max</span>
+              <span class="label-value">{{ maxElo }}</span>
+            </div>
+          </div>
+          <mat-slider [min]="minLimit" [max]="maxLimit" style="width: 100%">
+            <input matSliderStartThumb [(ngModel)]="minElo" (change)="sliderSubject.next()">
+            <input matSliderEndThumb [(ngModel)]="maxElo" (change)="sliderSubject.next()">
+          </mat-slider>
+        </div>
+
+        <div class="slider-container">
+          <div class="slider-labels">
+            <div class="label-group left">
+              <span class="label-title">&Acirc;ge Min</span>
+              <span class="label-value">{{ minAge }}</span>
+            </div>
+            <div class="label-group right" style="text-align: right">
+              <span class="label-title">&Acirc;ge Max</span>
+              <span class="label-value">{{ maxAge }}</span>
+            </div>
+          </div>
+          <mat-slider [min]="minAgeLimit" [max]="maxAgeLimit" style="width: 100%">
+            <input matSliderStartThumb [(ngModel)]="minAge" (change)="sliderSubject.next()">
+            <input matSliderEndThumb [(ngModel)]="maxAge" (change)="sliderSubject.next()">
+          </mat-slider>
+        </div>
+
+        <div class="filter-group">
+          <span style="font-size: 0.75rem; color: #888; text-transform: uppercase;">Genre</span>
+          <div style="display: flex; gap: 15px; margin-top: 5px;">
+            <label style="display: flex; align-items: center; gap: 5px; cursor: pointer;">
+              <input type="radio" name="gender" value="ALL" [(ngModel)]="selectedGender" (change)="sliderSubject.next()">
+              Tous
+            </label>
+            <label style="display: flex; align-items: center; gap: 5px; cursor: pointer;">
+              <input type="radio" name="gender" value="M" [(ngModel)]="selectedGender" (change)="sliderSubject.next()">
+              Homme
+            </label>
+            <label style="display: flex; align-items: center; gap: 5px; cursor: pointer;">
+              <input type="radio" name="gender" value="F" [(ngModel)]="selectedGender" (change)="sliderSubject.next()">
+              Femme
+            </label>
+          </div>
+        </div>
+
+        <div class="filter-group">
+          <span style="font-size: 0.75rem; color: #888; text-transform: uppercase;">Nationalit&eacute;</span>
+          <div class="country-dropdown-container">
+            <!-- (Code for country dropdown, abbreviated for brevity, but I will include it) -->
+            <button class="country-dropdown-btn" (click)="toggleCountryDropdown($event)">
+              <div class="selected-countries-display">
+                <span class="placeholder" *ngIf="selectedCountryCodes.length === 0">Toutes (Aucun filtre)</span>
+                <span *ngIf="selectedCountryCodes.length > 0">{{ selectedCountryCodes.length }} s&eacute;lectionn&eacute;s</span>
+              </div>
+              <span class="chevron" [class.open]="isCountryDropdownOpen">&#9660;</span>
+            </button>
+            <div class="country-dropdown-menu" *ngIf="isCountryDropdownOpen" (click)="$event.stopPropagation()">
+              
+              <div class="country-list">
+                <button class="country-option" (click)="clearCountry($event)">
+                  <span>Toutes (Aucun filtre)</span>
+                </button>
+                <button *ngFor="let country of countries" class="country-option" 
+                        [class.selected]="selectedCountryCodes.includes(country.code)"
+                        (click)="toggleCountry($event, country.code)">
+                  <span class="checkmark" *ngIf="selectedCountryCodes.includes(country.code)">&#10003;</span>
+                  <img [src]="getCountryFlagUrl(country.code)" [alt]="country.name" class="flag-icon">
+                  <span class="country-name">{{ country.name }}</span>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Bois -->
+      <div class="filter-category">
+        <h3 class="category-title">Bois</h3>
+        <div class="filter-group">
+          <div class="custom-dropdown" (click)="toggleDropdown('bladeBrand', $event)">
+            <div class="dropdown-trigger" [class.active]="activeDropdown === 'bladeBrand'">
+              <span class="placeholder" *ngIf="displayBladeBrands.length === 0">Toutes les marques</span>
+              <span class="selected-text" *ngIf="displayBladeBrands.length > 0">
+                <span *ngFor="let t of displayBladeBrands; let last = last">{{ t.name }}{{ !last ? ', ' : '' }}</span>
+              </span>
+            </div>
+            <!-- Menu abbreviated for script simplicity, assume standard ngFor -->
+            <div class="dropdown-menu" *ngIf="activeDropdown === 'bladeBrand'">
+              <div class="dropdown-item" (click)="clearFilterArray($event, 'selectedBladeBrandIds')">Toutes les marques</div>
+              <div class="dropdown-item" *ngFor="let b of brands" (click)="toggleFilterArray($event, 'selectedBladeBrandIds', b.id)">
+                <span class="checkmark" *ngIf="selectedBladeBrandIds.includes(b.id)">&#10003;</span>{{ b.name }}
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <div class="filter-group">
+          <div class="custom-dropdown" (click)="toggleDropdown('bladeModel', $event)">
+            <div class="dropdown-trigger" [class.active]="activeDropdown === 'bladeModel'">
+              <span class="placeholder" *ngIf="displayBlades.length === 0">Tous les mod&egrave;les</span>
+              <span class="selected-text" *ngIf="displayBlades.length > 0">
+                <span *ngFor="let t of displayBlades; let last = last">{{ t.name }}{{ !last ? ', ' : '' }}</span>
+              </span>
+            </div>
+            <div class="dropdown-menu" *ngIf="activeDropdown === 'bladeModel'">
+              <div class="dropdown-item" (click)="clearFilterArray($event, 'selectedBladeIds')">Tous les mod&egrave;les</div>
+              <div class="dropdown-item" *ngFor="let b of blades" (click)="toggleFilterArray($event, 'selectedBladeIds', b.id)">
+                <span class="checkmark" *ngIf="selectedBladeIds.includes(b.id)">&#10003;</span>{{ b.name }}
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <div class="filter-group">
+          <div class="custom-dropdown" (click)="toggleDropdown('bladeType', $event)">
+            <div class="dropdown-trigger" [class.active]="activeDropdown === 'bladeType'">
+              <span class="placeholder" *ngIf="displayBladeTypes.length === 0">Tous les types</span>
+              <span class="selected-text" *ngIf="displayBladeTypes.length > 0">
+                <span *ngFor="let t of displayBladeTypes; let last = last">{{ t.name }}{{ !last ? ', ' : '' }}</span>
+              </span>
+            </div>
+            <div class="dropdown-menu" *ngIf="activeDropdown === 'bladeType'">
+              <div class="dropdown-item" (click)="clearFilterArray($event, 'selectedBladeTypeIds')">Tous les types</div>
+              <div class="dropdown-item" *ngFor="let t of bladeTypes" (click)="toggleFilterArray($event, 'selectedBladeTypeIds', t.id)">
+                <span class="checkmark" *ngIf="selectedBladeTypeIds.includes(t.id)">&#10003;</span>{{ t.name }}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Revetement CD -->
+      <div class="filter-category">
+        <h3 class="category-title">Rev&ecirc;tement Coup Droit</h3>
+        
+        <div class="filter-group">
+          <div class="custom-dropdown" (click)="toggleDropdown('fhBrand', $event)">
+            <div class="dropdown-trigger" [class.active]="activeDropdown === 'fhBrand'">
+              <span class="placeholder" *ngIf="displayFhBrands.length === 0">Toutes les marques</span>
+              <span class="selected-text" *ngIf="displayFhBrands.length > 0">
+                <span *ngFor="let t of displayFhBrands; let last = last">{{ t.name }}{{ !last ? ', ' : '' }}</span>
+              </span>
+            </div>
+            <div class="dropdown-menu" *ngIf="activeDropdown === 'fhBrand'">
+              <div class="dropdown-item" (click)="clearFilterArray($event, 'selectedFhBrandIds')">Toutes les marques</div>
+              <div class="dropdown-item" *ngFor="let b of brands" (click)="toggleFilterArray($event, 'selectedFhBrandIds', b.id)">
+                <span class="checkmark" *ngIf="selectedFhBrandIds.includes(b.id)">&#10003;</span>{{ b.name }}
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="filter-group">
+          <div class="custom-dropdown" (click)="toggleDropdown('fhModel', $event)">
+            <div class="dropdown-trigger" [class.active]="activeDropdown === 'fhModel'">
+              <span class="placeholder" *ngIf="displayFhRubbers.length === 0">Tous les mod&egrave;les</span>
+              <span class="selected-text" *ngIf="displayFhRubbers.length > 0">
+                <span *ngFor="let t of displayFhRubbers; let last = last">{{ t.name }}{{ !last ? ', ' : '' }}</span>
+              </span>
+            </div>
+            <div class="dropdown-menu" *ngIf="activeDropdown === 'fhModel'">
+              <div class="dropdown-item" (click)="clearFilterArray($event, 'selectedFhRubberIds')">Tous les mod&egrave;les</div>
+              <div class="dropdown-item" *ngFor="let b of rubbers" (click)="toggleFilterArray($event, 'selectedFhRubberIds', b.id)">
+                <span class="checkmark" *ngIf="selectedFhRubberIds.includes(b.id)">&#10003;</span>{{ b.name }}
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="filter-group">
+          <div class="custom-dropdown" (click)="toggleDropdown('fhType', $event)">
+            <div class="dropdown-trigger" [class.active]="activeDropdown === 'fhType'">
+              <span class="placeholder" *ngIf="displayFhTypes.length === 0">Tous les types</span>
+              <span class="selected-text" *ngIf="displayFhTypes.length > 0">
+                <span *ngFor="let t of displayFhTypes; let last = last">{{ t.name }}{{ !last ? ', ' : '' }}</span>
+              </span>
+            </div>
+            <div class="dropdown-menu" *ngIf="activeDropdown === 'fhType'">
+              <div class="dropdown-item" (click)="clearFilterArray($event, 'selectedFhTypeIds')">Tous les types</div>
+              <div class="dropdown-item" *ngFor="let t of rubberTypes" (click)="toggleFilterArray($event, 'selectedFhTypeIds', t.id)">
+                <span class="checkmark" *ngIf="selectedFhTypeIds.includes(t.id)">&#10003;</span>{{ t.name }}
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="slider-container">
+          <div class="slider-labels">
+            <div class="label-group left">
+              <span class="label-title">Duret&eacute; Min</span>
+              <span class="label-value">{{ minHardnessFh }}&deg;</span>
+            </div>
+            <div class="label-group right" style="text-align: right">
+              <span class="label-title">Max</span>
+              <span class="label-value">{{ maxHardnessFh }}&deg;</span>
+            </div>
+          </div>
+          <mat-slider [min]="minHardnessLimit" [max]="maxHardnessLimit" step="0.5" style="width: 100%">
+            <input matSliderStartThumb [(ngModel)]="minHardnessFh" (change)="sliderSubject.next()">
+            <input matSliderEndThumb [(ngModel)]="maxHardnessFh" (change)="sliderSubject.next()">
+          </mat-slider>
+        </div>
+      </div>
+
+      <!-- Revetement RV -->
+      <div class="filter-category">
+        <h3 class="category-title">Rev&ecirc;tement Revers</h3>
+        <!-- Same as FH but for BH -->
+        <div class="filter-group">
+          <div class="custom-dropdown" (click)="toggleDropdown('bhBrand', $event)">
+            <div class="dropdown-trigger" [class.active]="activeDropdown === 'bhBrand'">
+              <span class="placeholder" *ngIf="displayBhBrands.length === 0">Toutes les marques</span>
+              <span class="selected-text" *ngIf="displayBhBrands.length > 0">
+                <span *ngFor="let t of displayBhBrands; let last = last">{{ t.name }}{{ !last ? ', ' : '' }}</span>
+              </span>
+            </div>
+            <div class="dropdown-menu" *ngIf="activeDropdown === 'bhBrand'">
+              <div class="dropdown-item" (click)="clearFilterArray($event, 'selectedBhBrandIds')">Toutes les marques</div>
+              <div class="dropdown-item" *ngFor="let b of brands" (click)="toggleFilterArray($event, 'selectedBhBrandIds', b.id)">
+                <span class="checkmark" *ngIf="selectedBhBrandIds.includes(b.id)">&#10003;</span>{{ b.name }}
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="filter-group">
+          <div class="custom-dropdown" (click)="toggleDropdown('bhModel', $event)">
+            <div class="dropdown-trigger" [class.active]="activeDropdown === 'bhModel'">
+              <span class="placeholder" *ngIf="displayBhRubbers.length === 0">Tous les mod&egrave;les</span>
+              <span class="selected-text" *ngIf="displayBhRubbers.length > 0">
+                <span *ngFor="let t of displayBhRubbers; let last = last">{{ t.name }}{{ !last ? ', ' : '' }}</span>
+              </span>
+            </div>
+            <div class="dropdown-menu" *ngIf="activeDropdown === 'bhModel'">
+              <div class="dropdown-item" (click)="clearFilterArray($event, 'selectedBhRubberIds')">Tous les mod&egrave;les</div>
+              <div class="dropdown-item" *ngFor="let b of rubbers" (click)="toggleFilterArray($event, 'selectedBhRubberIds', b.id)">
+                <span class="checkmark" *ngIf="selectedBhRubberIds.includes(b.id)">&#10003;</span>{{ b.name }}
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="filter-group">
+          <div class="custom-dropdown" (click)="toggleDropdown('bhType', $event)">
+            <div class="dropdown-trigger" [class.active]="activeDropdown === 'bhType'">
+              <span class="placeholder" *ngIf="displayBhTypes.length === 0">Tous les types</span>
+              <span class="selected-text" *ngIf="displayBhTypes.length > 0">
+                <span *ngFor="let t of displayBhTypes; let last = last">{{ t.name }}{{ !last ? ', ' : '' }}</span>
+              </span>
+            </div>
+            <div class="dropdown-menu" *ngIf="activeDropdown === 'bhType'">
+              <div class="dropdown-item" (click)="clearFilterArray($event, 'selectedBhTypeIds')">Tous les types</div>
+              <div class="dropdown-item" *ngFor="let t of rubberTypes" (click)="toggleFilterArray($event, 'selectedBhTypeIds', t.id)">
+                <span class="checkmark" *ngIf="selectedBhTypeIds.includes(t.id)">&#10003;</span>{{ t.name }}
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="slider-container">
+          <div class="slider-labels">
+            <div class="label-group left">
+              <span class="label-title">Duret&eacute; Min</span>
+              <span class="label-value">{{ minHardnessBh }}&deg;</span>
+            </div>
+            <div class="label-group right" style="text-align: right">
+              <span class="label-title">Max</span>
+              <span class="label-value">{{ maxHardnessBh }}&deg;</span>
+            </div>
+          </div>
+          <mat-slider [min]="minHardnessLimit" [max]="maxHardnessLimit" step="0.5" style="width: 100%">
+            <input matSliderStartThumb [(ngModel)]="minHardnessBh" (change)="sliderSubject.next()">
+            <input matSliderEndThumb [(ngModel)]="maxHardnessBh" (change)="sliderSubject.next()">
+          </mat-slider>
+        </div>
       </div>
       
-      <div class="slider-container">
-        <div class="label-group left">
-          <span class="label-title">Points Min</span>
-          <span class="label-value">{{ minElo }}</span>
-        </div>
-        
-        <mat-slider [min]="minLimit" [max]="maxLimit">
-          <input matSliderStartThumb [(ngModel)]="minElo" (change)="sliderSubject.next()">
-          <input matSliderEndThumb [(ngModel)]="maxElo" (change)="sliderSubject.next()">
-        </mat-slider>
-
-        <div class="label-group right">
-          <span class="label-title">Points Max</span>
-          <span class="label-value">{{ maxElo }}</span>
-        </div>
-      </div>
-
-      <div class="slider-container" style="margin-top: 10px;">
-        <div class="label-group left">
-          <span class="label-title">&Acirc;ge Min</span>
-          <span class="label-value">{{ minAge }}</span>
-        </div>
-        
-        <mat-slider [min]="minAgeLimit" [max]="maxAgeLimit">
-          <input matSliderStartThumb [(ngModel)]="minAge" (change)="sliderSubject.next()">
-          <input matSliderEndThumb [(ngModel)]="maxAge" (change)="sliderSubject.next()">
-        </mat-slider>
-
-        <div class="label-group right">
-          <span class="label-title">&Acirc;ge Max</span>
-          <span class="label-value">{{ maxAge }}</span>
-        </div>
-      </div>
-
-      <div class="slider-container" style="margin-top: 10px;">
-        <div class="label-group left">
-          <span class="label-title">Genre</span>
-        </div>
-        <div class="gender-toggle-dashboard" style="flex: 1; display: flex; justify-content: center; gap: 20px; align-items: center;">
-          <label><input type="radio" name="dash-gender" [(ngModel)]="selectedGender" value="ALL" (change)="sliderSubject.next()"> Tous</label>
-          <label><input type="radio" name="dash-gender" [(ngModel)]="selectedGender" value="M" (change)="sliderSubject.next()"> Homme</label>
-          <label><input type="radio" name="dash-gender" [(ngModel)]="selectedGender" value="F" (change)="sliderSubject.next()"> Femme</label>
-        </div>
-        <div class="label-group right"></div>
-      </div>
-
-      <!-- Nationalité -->
-      <div class="slider-container" style="margin-top: 10px; padding: 10px 0; border-top: 1px solid var(--color-background);">
-        <div class="label-group left">
-          <span class="label-title">Nationalité</span>
-        </div>
-        <div class="country-dropdown-container" style="flex: 1; display: flex; justify-content: center; position: relative;">
-          <div class="country-dropdown">
-            <button
-              type="button"
-              class="country-dropdown-trigger"
-              [class.is-open]="isCountryDropdownOpen"
-              (click)="toggleCountryDropdown($event)"
-            >
-              <span class="placeholder" *ngIf="selectedCountryCodes.length === 0">Toutes (Aucun filtre)</span>
-              <ng-container *ngIf="selectedCountryCodes.length > 0">
-                <span class="selected-text tags-display">
-                  <span *ngFor="let c of getCountries(selectedCountryCodes); let last = last">{{ c.name }}{{ !last ? ', ' : '' }}</span>
-                </span>
-              </ng-container>
-              <span class="dropdown-chevron">&#9660;</span>
-            </button>
-
-            <div class="country-dropdown-menu" *ngIf="isCountryDropdownOpen" (click)="$event.stopPropagation()">
-              <button type="button" class="country-option clear-btn" *ngIf="selectedCountryCodes.length > 0" (click)="clearCountry($event)">
-                <span>Tout effacer</span>
-              </button>
-              <button
-                type="button"
-                class="country-option"
-                *ngFor="let country of countries"
-                [class.selected]="selectedCountryCodes.includes(country.code)"
-                (click)="toggleCountry($event, country.code)"
-              >
-                <span class="checkmark" *ngIf="selectedCountryCodes.includes(country.code)">&#10003;</span>
-                <img class="country-flag" [src]="getCountryFlagUrl(country.code)" [alt]="country.name" />
-                <span>{{ country.name }}</span>
-              </button>
+      <!-- Etiquettes -->
+      <div class="filter-category">
+        <h3 class="category-title">&Eacute;tiquettes</h3>
+        <div class="filter-group">
+          <div class="custom-dropdown" (click)="toggleDropdown('tags', $event)">
+            <div class="dropdown-trigger" [class.active]="activeDropdown === 'tags'">
+              <span class="placeholder" *ngIf="displayTags.length === 0">Toutes les &eacute;tiquettes</span>
+              <span class="selected-text tags-display" *ngIf="displayTags.length > 0">
+                <span *ngFor="let t of displayTags; let last = last">{{ t.name }}{{ !last ? ', ' : '' }}</span>
+              </span>
             </div>
-          </div>
-        </div>
-        <div class="label-group right"></div>
-      </div>
-
-
-
-      <!-- Advanced Filters -->
-      <div class="advanced-filters">
-        <!-- Ligne 1 : Bois -->
-        <div class="filter-category">
-          <h3 class="category-title">Bois</h3>
-          <div class="filter-row">
-            <div class="filter-group">
-              <div class="custom-dropdown" (click)="toggleDropdown('bladeBrand', $event)">
-                <div class="dropdown-trigger" [class.active]="activeDropdown === 'bladeBrand'">
-                  <span class="placeholder" *ngIf="selectedBladeBrandIds.length === 0">Toutes les marques</span>
-                  <span class="selected-text tags-display" *ngIf="selectedBladeBrandIds.length > 0">
-                    <span *ngFor="let t of displayBladeBrands; let last = last">{{ t.name }}{{ !last ? ', ' : '' }}</span>
-                  </span>
-                  <span class="chevron">?</span>
-                </div>
-                <div class="dropdown-menu" *ngIf="activeDropdown === 'bladeBrand'">
-                  <div class="dropdown-item" (click)="clearFilterArray($event, 'selectedBladeBrandIds')">Toutes les marques</div>
-                  <div class="dropdown-item" *ngFor="let b of brands" (click)="toggleFilterArray($event, 'selectedBladeBrandIds', b.id)">
-                      <span class="checkmark" *ngIf="selectedBladeBrandIds.includes(b.id)">&#10003;</span>
-                    {{ b.name }}
-                  </div>
-                </div>
+            <div class="dropdown-menu" *ngIf="activeDropdown === 'tags'" (click)="$event.stopPropagation()">
+              <div class="dropdown-item" (click)="clearTags($event)">
+                <em>Toutes (Effacer)</em>
               </div>
-            </div>
-            
-            <div class="filter-group">
-              <div class="custom-dropdown" (click)="toggleDropdown('bladeModel', $event)">
-                <div class="dropdown-trigger" [class.active]="activeDropdown === 'bladeModel'">
-                  <span class="placeholder" *ngIf="selectedBladeIds.length === 0">Tous les mod&egrave;les</span>
-                  <span class="selected-text tags-display" *ngIf="selectedBladeIds.length > 0">
-                    <span *ngFor="let t of displayBlades; let last = last">{{ t.name }}{{ !last ? ', ' : '' }}</span>
-                  </span>
-                  <span class="chevron">▼</span>
-                </div>
-                <div class="dropdown-menu" *ngIf="activeDropdown === 'bladeModel'">
-                  <div class="dropdown-item" (click)="clearFilterArray($event, 'selectedBladeIds')">Tous les mod&egrave;les</div>
-                  <div class="dropdown-item with-image" *ngFor="let b of blades" (click)="toggleFilterArray($event, 'selectedBladeIds', b.id)">
-                      <span class="checkmark" *ngIf="selectedBladeIds.includes(b.id)">&#10003;</span>
-                    <img [src]="apiUrl + '/equipment/blades/' + b.id + '/image'" alt="" loading="lazy">
-                    <div class="item-details">
-                      <span class="item-brand">{{ b.brand.name }}</span>
-                      <span class="item-name">{{ b.name }}</span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div class="filter-group">
-              <div class="custom-dropdown" (click)="toggleDropdown('bladeType', $event)">
-                <div class="dropdown-trigger" [class.active]="activeDropdown === 'bladeType'">
-                  <span class="placeholder" *ngIf="selectedBladeTypeIds.length === 0">Tous les types</span>
-                  <span class="selected-text tags-display" *ngIf="selectedBladeTypeIds.length > 0">
-                    <span *ngFor="let t of displayBladeTypes; let last = last">{{ t.name }}{{ !last ? ', ' : '' }}</span>
-                  </span>
-                  <span class="chevron">▼</span>
-                </div>
-                <div class="dropdown-menu" *ngIf="activeDropdown === 'bladeType'">
-                  <div class="dropdown-item" (click)="clearFilterArray($event, 'selectedBladeTypeIds')">Tous les types</div>
-                  <div class="dropdown-item" *ngFor="let bt of bladeTypes" (click)="toggleFilterArray($event, 'selectedBladeTypeIds', bt.id)">
-                      <span class="checkmark" *ngIf="selectedBladeTypeIds.includes(bt.id)">&#10003;</span>
-                    {{ bt.name }}
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Ligne 2 : CD -->
-        <div class="filter-category">
-          <h3 class="category-title">Rev&ecirc;tement Coup Droit</h3>
-          <div class="filter-row">
-            <div class="filter-group">
-              <div class="custom-dropdown" (click)="toggleDropdown('fhBrand', $event)">
-                <div class="dropdown-trigger" [class.active]="activeDropdown === 'fhBrand'">
-                  <span class="placeholder" *ngIf="selectedFhBrandIds.length === 0">Toutes les marques</span>
-                  <span class="selected-text tags-display" *ngIf="selectedFhBrandIds.length > 0">
-                    <span *ngFor="let t of displayFhBrands; let last = last">{{ t.name }}{{ !last ? ', ' : '' }}</span>
-                  </span>
-                  <span class="chevron">?</span>
-                </div>
-                <div class="dropdown-menu" *ngIf="activeDropdown === 'fhBrand'">
-                  <div class="dropdown-item" (click)="clearFilterArray($event, 'selectedFhBrandIds')">Toutes les marques</div>
-                  <div class="dropdown-item" *ngFor="let b of brands" (click)="toggleFilterArray($event, 'selectedFhBrandIds', b.id)">
-                      <span class="checkmark" *ngIf="selectedFhBrandIds.includes(b.id)">&#10003;</span>
-                    {{ b.name }}
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <div class="filter-group">
-              <div class="custom-dropdown" (click)="toggleDropdown('fhModel', $event)">
-                <div class="dropdown-trigger" [class.active]="activeDropdown === 'fhModel'">
-                  <span class="placeholder" *ngIf="selectedFhRubberIds.length === 0">Tous les mod&egrave;les</span>
-                  <span class="selected-text tags-display" *ngIf="selectedFhRubberIds.length > 0">
-                    <span *ngFor="let t of displayFhRubbers; let last = last">{{ t.name }}{{ !last ? ', ' : '' }}</span>
-                  </span>
-                  <span class="chevron">▼</span>
-                </div>
-                <div class="dropdown-menu" *ngIf="activeDropdown === 'fhModel'">
-                  <div class="dropdown-item" (click)="clearFilterArray($event, 'selectedFhRubberIds')">Tous les mod&egrave;les</div>
-                  <div class="dropdown-item with-image" *ngFor="let r of rubbers" (click)="toggleFilterArray($event, 'selectedFhRubberIds', r.id)">
-                      <span class="checkmark" *ngIf="selectedFhRubberIds.includes(r.id)">&#10003;</span>
-                    <img [src]="apiUrl + '/equipment/rubbers/' + r.id + '/image'" alt="" loading="lazy">
-                    <div class="item-details">
-                      <span class="item-brand">{{ r.brand.name }}</span>
-                      <span class="item-name">{{ r.name }}</span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <div class="filter-group">
-              <div class="custom-dropdown" (click)="toggleDropdown('fhType', $event)">
-                <div class="dropdown-trigger" [class.active]="activeDropdown === 'fhType'">
-                  <span class="placeholder" *ngIf="selectedFhTypeIds.length === 0">Tous les types</span>
-                  <span class="selected-text tags-display" *ngIf="selectedFhTypeIds.length > 0">
-                    <span *ngFor="let t of displayFhTypes; let last = last">{{ t.name }}{{ !last ? ', ' : '' }}</span>
-                  </span>
-                  <span class="chevron">▼</span>
-                </div>
-                <div class="dropdown-menu" *ngIf="activeDropdown === 'fhType'">
-                  <div class="dropdown-item" (click)="clearFilterArray($event, 'selectedFhTypeIds')">Tous les types</div>
-                  <div class="dropdown-item" *ngFor="let rt of rubberTypes" (click)="toggleFilterArray($event, 'selectedFhTypeIds', rt.id)">
-                      <span class="checkmark" *ngIf="selectedFhTypeIds.includes(rt.id)">&#10003;</span>
-                    {{ rt.name }}
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <div class="filter-group hardness-slider-group" style="flex: 1.5; justify-content: center;">
-              <div class="slider-container" style="margin: 0;">
-                <div class="label-group left" style="min-width: 60px;">
-                  <span class="label-title">Duret&eacute;</span>
-                  <span class="label-value">{{ minHardnessFh }}&deg;</span>
-                </div>
-                <mat-slider [min]="minHardnessLimit" [max]="maxHardnessLimit" step="0.5" style="margin: 0 10px;">
-                  <input matSliderStartThumb [(ngModel)]="minHardnessFh" (change)="sliderSubject.next()">
-                  <input matSliderEndThumb [(ngModel)]="maxHardnessFh" (change)="sliderSubject.next()">
-                </mat-slider>
-                <div class="label-group right" style="min-width: 40px;">
-                  <span class="label-value">{{ maxHardnessFh }}&deg;</span>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Ligne 3 : RV -->
-        <div class="filter-category">
-          <h3 class="category-title">Rev&ecirc;tement Revers</h3>
-          <div class="filter-row">
-            <div class="filter-group">
-              <div class="custom-dropdown" (click)="toggleDropdown('bhBrand', $event)">
-                <div class="dropdown-trigger" [class.active]="activeDropdown === 'bhBrand'">
-                  <span class="placeholder" *ngIf="selectedBhBrandIds.length === 0">Toutes les marques</span>
-                  <span class="selected-text tags-display" *ngIf="selectedBhBrandIds.length > 0">
-                    <span *ngFor="let t of displayBhBrands; let last = last">{{ t.name }}{{ !last ? ', ' : '' }}</span>
-                  </span>
-                  <span class="chevron">?</span>
-                </div>
-                <div class="dropdown-menu" *ngIf="activeDropdown === 'bhBrand'">
-                  <div class="dropdown-item" (click)="clearFilterArray($event, 'selectedBhBrandIds')">Toutes les marques</div>
-                  <div class="dropdown-item" *ngFor="let b of brands" (click)="toggleFilterArray($event, 'selectedBhBrandIds', b.id)">
-                      <span class="checkmark" *ngIf="selectedBhBrandIds.includes(b.id)">&#10003;</span>
-                    {{ b.name }}
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <div class="filter-group">
-              <div class="custom-dropdown" (click)="toggleDropdown('bhModel', $event)">
-                <div class="dropdown-trigger" [class.active]="activeDropdown === 'bhModel'">
-                  <span class="placeholder" *ngIf="selectedBhRubberIds.length === 0">Tous les mod&egrave;les</span>
-                  <span class="selected-text tags-display" *ngIf="selectedBhRubberIds.length > 0">
-                    <span *ngFor="let t of displayBhRubbers; let last = last">{{ t.name }}{{ !last ? ', ' : '' }}</span>
-                  </span>
-                  <span class="chevron">▼</span>
-                </div>
-                <div class="dropdown-menu" *ngIf="activeDropdown === 'bhModel'">
-                  <div class="dropdown-item" (click)="clearFilterArray($event, 'selectedBhRubberIds')">Tous les mod&egrave;les</div>
-                  <div class="dropdown-item with-image" *ngFor="let r of rubbers" (click)="toggleFilterArray($event, 'selectedBhRubberIds', r.id)">
-                      <span class="checkmark" *ngIf="selectedBhRubberIds.includes(r.id)">&#10003;</span>
-                    <img [src]="apiUrl + '/equipment/rubbers/' + r.id + '/image'" alt="" loading="lazy">
-                    <div class="item-details">
-                      <span class="item-brand">{{ r.brand.name }}</span>
-                      <span class="item-name">{{ r.name }}</span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <div class="filter-group">
-              <div class="custom-dropdown" (click)="toggleDropdown('bhType', $event)">
-                <div class="dropdown-trigger" [class.active]="activeDropdown === 'bhType'">
-                  <span class="placeholder" *ngIf="selectedBhTypeIds.length === 0">Tous les types</span>
-                  <span class="selected-text tags-display" *ngIf="selectedBhTypeIds.length > 0">
-                    <span *ngFor="let t of displayBhTypes; let last = last">{{ t.name }}{{ !last ? ', ' : '' }}</span>
-                  </span>
-                  <span class="chevron">▼</span>
-                </div>
-                <div class="dropdown-menu" *ngIf="activeDropdown === 'bhType'">
-                  <div class="dropdown-item" (click)="clearFilterArray($event, 'selectedBhTypeIds')">Tous les types</div>
-                  <div class="dropdown-item" *ngFor="let rt of rubberTypes" (click)="toggleFilterArray($event, 'selectedBhTypeIds', rt.id)">
-                      <span class="checkmark" *ngIf="selectedBhTypeIds.includes(rt.id)">&#10003;</span>
-                    {{ rt.name }}
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <div class="filter-group hardness-slider-group" style="flex: 1.5; justify-content: center;">
-              <div class="slider-container" style="margin: 0;">
-                <div class="label-group left" style="min-width: 60px;">
-                  <span class="label-title">Duret&eacute;</span>
-                  <span class="label-value">{{ minHardnessBh }}&deg;</span>
-                </div>
-                <mat-slider [min]="minHardnessLimit" [max]="maxHardnessLimit" step="0.5" style="margin: 0 10px;">
-                  <input matSliderStartThumb [(ngModel)]="minHardnessBh" (change)="sliderSubject.next()">
-                  <input matSliderEndThumb [(ngModel)]="maxHardnessBh" (change)="sliderSubject.next()">
-                </mat-slider>
-                <div class="label-group right" style="min-width: 40px;">
-                  <span class="label-value">{{ maxHardnessBh }}&deg;</span>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Etiquettes -->
-        <div class="filter-category">
-          <h3 class="category-title">&Eacute;tiquettes</h3>
-          <div class="filter-row">
-            <div class="filter-group">
-              <div class="custom-dropdown" (click)="toggleDropdown('tags', $event)">
-                <div class="dropdown-trigger" [class.active]="activeDropdown === 'tags'">
-                  <span class="placeholder" *ngIf="displayTags.length === 0">Toutes les &eacute;tiquettes</span>
-                  <span class="selected-text tags-display" *ngIf="displayTags.length > 0">
-                    <span *ngFor="let t of displayTags; let last = last">{{ t.name }}{{ !last ? ', ' : '' }}</span>
-                  </span>
-                  <span class="chevron">▼</span>
-                </div>
-                <div class="dropdown-menu" *ngIf="activeDropdown === 'tags'" (click)="$event.stopPropagation()">
-                  <div class="dropdown-item" (click)="clearTags($event)">
-                    <em>Toutes les &eacute;tiquettes (Effacer)</em>
-                  </div>
-                  <div class="dropdown-item" *ngFor="let t of tags" (click)="toggleTagSelection($event, t.id)" [class.selected]="selectedTagIds.includes(t.id)">
-                    <span class="checkmark" *ngIf="selectedTagIds.includes(t.id)">&#10003;</span>
-                    {{ t.name }}
-                  </div>
-                </div>
+              <div class="dropdown-item" *ngFor="let t of tags" (click)="toggleTagSelection($event, t.id)" [class.selected]="selectedTagIds.includes(t.id)">
+                <span class="checkmark" *ngIf="selectedTagIds.includes(t.id)">&#10003;</span>{{ t.name }}
               </div>
             </div>
           </div>
         </div>
       </div>
+      
     </div>
 
-    <!-- Output Selection & Graphique -->
+    <!-- Output Selection & Graphique (Center/Right) -->
     <div class="chart-section">
       <div class="chart-header">
         <div class="output-selector">
@@ -385,4 +343,4 @@
     </div>
 
   </div>
-
+</div>

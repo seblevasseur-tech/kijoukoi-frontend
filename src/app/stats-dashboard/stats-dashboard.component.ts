@@ -153,6 +153,10 @@ export class StatsDashboardComponent implements OnInit, AfterViewInit, OnDestroy
     this.sliderSubject.next();
   }
 
+  toggleFilterSidebar() {
+    this.isFilterSidebarOpen = !this.isFilterSidebarOpen;
+  }
+
   ngOnInit() {
     this.loadFilterOptions();
 

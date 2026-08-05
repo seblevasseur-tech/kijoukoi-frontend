@@ -1,9 +1,7 @@
 <div class="dashboard-page" (click)="activeDropdown = null; isCountryDropdownOpen = false">
   <div class="dashboard-header">
     <h1>Tableau de bord</h1>
-    <button class="toggle-sidebar-btn" (click)="toggleFilterSidebar()">
-      <span class="icon">&#9776;</span> Filtres
-    </button>
+    
   </div>
 
   <div class="dashboard-content" [class.with-sidebar]="isFilterSidebarOpen">

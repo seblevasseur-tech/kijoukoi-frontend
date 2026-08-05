@@ -1,7 +1,8 @@
 
 .dashboard-page {
   padding: 20px;
-  max-width: 1400px;
+  max-width: 500px;
+  min-width: 500px;
   margin: 0 auto;
   min-height: 100vh;
   color: #fff;
@@ -42,20 +43,7 @@
   max-height: calc(100vh - 40px);
   overflow-y: auto;
   
-  /* Collapsible logic */
-  transform: translateX(120%);
-  opacity: 0;
-  visibility: hidden;
-  position: absolute;
-  right: 0;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   
-  &.open {
-    transform: translateX(0);
-    opacity: 1;
-    visibility: visible;
-    position: sticky;
-  }
 }
 
 /* Scrollbar for sidebar */
@@ -257,9 +245,7 @@
 }
 
 .country-dropdown-menu {
-  position: absolute;
-  top: 100%;
-  left: 0;
+  position: relative;
   width: 100%;
   background: #27272a;
   border: 1px solid rgba(255,255,255,0.1);
@@ -286,7 +272,6 @@
   }
   
   .country-list {
-    max-height: 250px;
     overflow-y: auto;
     
     .country-option {

@@ -1,1 +1,62 @@
-<p>add-blade works!</p>
+<div class="add-blade-container">
+  <div class="form-card">
+    <h2 class="form-title">Ajouter un Bois</h2>
+    <p class="form-subtitle">Renseignez les informations de ce nouveau modèle.</p>
+
+    <form [formGroup]="bladeForm" (ngSubmit)="onSubmit()" class="blade-form">
+      <!-- Ligne 1 : Nom et Marque -->
+      <div class="form-row">
+        <div class="form-group">
+          <label for="name">Nom du modèle *</label>
+          <input type="text" id="name" formControlName="name" placeholder="Ex: Viscaria" />
+        </div>
+        
+        <div class="form-group">
+          <label for="brandId">Marque *</label>
+          <select id="brandId" formControlName="brandId">
+            <option value="" disabled selected>Choisir une marque</option>
+            <option *ngFor="let brand of brands" [value]="brand.id">{{ brand.name }}</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Ligne 2 : Poids et Type -->
+      <div class="form-row">
+        <div class="form-group">
+          <label for="weight">Poids moyen (g) *</label>
+          <input type="number" id="weight" formControlName="weight" placeholder="Ex: 85" min="20" max="200" />
+        </div>
+        
+        <div class="form-group">
+          <label for="typeId">Type de bois *</label>
+          <select id="typeId" formControlName="typeId">
+            <option value="" disabled selected>Choisir un type</option>
+            <option *ngFor="let type of bladeTypes" [value]="type.id">{{ type.name }}</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Ligne 3 : Image -->
+      <div class="form-row">
+        <div class="form-group full-width">
+          <label for="image">Image (facultatif)</label>
+          <div class="file-input-wrapper">
+            <button type="button" class="btn-file" (click)="fileInput.click()">Sélectionner un fichier</button>
+            <span class="file-name">{{ imageFileName || 'Aucun fichier sélectionné' }}</span>
+            <input type="file" id="image" #fileInput (change)="onFileSelected($event)" accept="image/jpeg, image/png" style="display: none;" />
+          </div>
+        </div>
+      </div>
+
+      <div class="form-actions">
+        <button type="submit" class="btn-submit" [disabled]="!bladeForm.valid">
+          Ajouter le bois
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<div class="list-section">
+  <app-blade-list #bladeList></app-blade-list>
+</div>

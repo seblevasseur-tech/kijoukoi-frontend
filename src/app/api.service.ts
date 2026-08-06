@@ -23,6 +23,10 @@ export class ApiService {
     return this.baseUrl;
   }
 
+  createBlade(payload: any): Observable<Blade> {
+    return this.http.post<Blade>(`${this.baseUrl}/equipment/blades`, payload);
+  }
+
   getPlayers(): Observable<Player[]> {
     return this.http.get<Player[]>(`${this.baseUrl}/players`);
   }

@@ -27,6 +27,12 @@ export class AppComponent {
     }
   }
 
+  handleMonEspaceClick() {
+    if (!this.authService.isLoggedIn()) {
+      this.router.navigate(['/login']);
+    }
+  }
+
   logout() {
     this.authService.logout();
     this.router.navigate(['/login']);

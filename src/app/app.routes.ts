@@ -1,3 +1,5 @@
+import { AddBladeComponent } from './components/add-blade/add-blade.component';
+import { AddRubberComponent } from './components/add-rubber/add-rubber.component';
 import { Routes } from '@angular/router';
 import { PlayerListComponent } from './components/player-list/player-list.component';
 import { BladeListComponent } from './components/blade-list/blade-list.component';
@@ -15,4 +17,6 @@ export const routes: Routes = [
   { path: 'blades', component: BladeListComponent },
   { path: 'rubbers', component: RubberListComponent },
   { path: 'profile', component: PlayerDashboardComponent, canActivate: [authGuard] },
+  { path: 'add-blade', component: AddBladeComponent, canActivate: [authGuard] },
+  { path: 'add-rubber', component: AddRubberComponent, canActivate: [authGuard] },
 ];

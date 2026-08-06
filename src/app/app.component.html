@@ -1,16 +1,16 @@
-﻿<div class="spotify-layout" [class.sidebar-collapsed]="isSidebarCollapsed">
+<div class="spotify-layout" [class.sidebar-collapsed]="isSidebarCollapsed">
     <!-- Sidebar Navigation -->
     <aside class="sidebar" [class.is-collapsed]="isSidebarCollapsed">
         <div class="logo">
-            <span class="icon">ðŸ“</span>
+            <span class="icon">🏓</span>
             <button
                     type="button"
                     class="sidebar-toggle"
                     (click)="toggleSidebar()"
-                    [attr.aria-label]="isSidebarCollapsed ? 'DÃ©plier le menu' : 'Replier le menu'"
+                    [attr.aria-label]="isSidebarCollapsed ? 'Déplier le menu' : 'Replier le menu'"
                     [attr.aria-expanded]="!isSidebarCollapsed"
             >
-                {{ isSidebarCollapsed ? 'â–¶' : 'â—€' }}
+                {{ isSidebarCollapsed ? '▶' : '◀' }}
             </button>
         </div>
 
@@ -32,7 +32,7 @@
 
             <a routerLink="/rubbers" routerLinkActive="active" class="nav-item" (click)="closeSidebarOnMobile()">
                 <svg class="nav-icon" viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="4" width="16" height="15" rx="3"/><path d="M7 8h10M7 12h10M7 16h10"/><circle cx="8" cy="6" r=".7" fill="currentColor" stroke="none"/><circle cx="12" cy="6" r=".7" fill="currentColor" stroke="none"/><circle cx="16" cy="6" r=".7" fill="currentColor" stroke="none"/></svg>
-                <span class="nav-label">RevÃªtements</span>
+                <span class="nav-label">Revêtements</span>
             </a>
 
             <div class="nav-section-title" (click)="handleMonEspaceClick()" style="cursor: pointer;">Mon Espace</div>
@@ -50,7 +50,7 @@
 
                 <a routerLink="/add-rubber" routerLinkActive="active" class="nav-item" (click)="closeSidebarOnMobile()">
                     <svg class="nav-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14" stroke-width="2" stroke-linecap="round"/></svg>
-                    <span class="nav-label">Ajouter un RevÃªtement</span>
+                    <span class="nav-label">Ajouter un Revêtement</span>
                 </a>
             </ng-container>
 

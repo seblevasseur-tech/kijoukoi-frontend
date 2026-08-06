@@ -337,14 +337,14 @@
           </div>
         </div>
 
-        <!-- Etiquettes -->
+        <!-- Style de jeu -->
         <div class="filter-category">
-          <h3 class="category-title">&Eacute;tiquettes</h3>
+          <h3 class="category-title">Style de jeu</h3>
           <div class="filter-row">
             <div class="filter-group">
               <div class="custom-dropdown" (click)="toggleDropdown('tags', $event)">
                 <div class="dropdown-trigger" [class.active]="activeDropdown === 'tags'">
-                  <span class="placeholder" *ngIf="displayTags.length === 0">Toutes les &eacute;tiquettes</span>
+                  <span class="placeholder" *ngIf="displayTags.length === 0">Tous les styles de jeu</span>
                   <span class="selected-text tags-display" *ngIf="displayTags.length > 0">
                     <span *ngFor="let t of displayTags; let last = last">{{ t.name }}{{ !last ? ', ' : '' }}</span>
                   </span>
@@ -352,7 +352,7 @@
                 </div>
                 <div class="dropdown-menu" *ngIf="activeDropdown === 'tags'" (click)="$event.stopPropagation()">
                   <div class="dropdown-item" (click)="clearTags($event)">
-                    <em>Toutes les &eacute;tiquettes (Effacer)</em>
+                    <em>Tous les styles de jeu (Effacer)</em>
                   </div>
                   <div class="dropdown-item" *ngFor="let t of tags" (click)="toggleTagSelection($event, t.id)" [class.selected]="selectedTagIds.includes(t.id)">
                     <span class="checkmark" *ngIf="selectedTagIds.includes(t.id)">&#10003;</span>

@@ -490,3 +490,13 @@ mat-slider {
 }
 
 canvas { cursor: pointer; }
+
+.empty-slice-state {
+  text-align: center;
+  padding: 30px;
+  color: #6b7280;
+  font-style: italic;
+  background: rgba(255, 255, 255, 0.02);
+  border-radius: 8px;
+  border: 1px dashed rgba(255, 255, 255, 0.1);
+}

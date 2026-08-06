@@ -1,4 +1,4 @@
-import { Component, OnInit, ElementRef, ViewChild, inject, AfterViewInit, OnDestroy, HostListener } from '@angular/core';
+import { Component, OnInit, ElementRef, ViewChild, inject, AfterViewInit, OnDestroy, HostListener, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ApiService } from '../api.service';
@@ -25,6 +25,7 @@ import { MatSliderModule } from '@angular/material/slider';
 })
 export class StatsDashboardComponent implements OnInit, AfterViewInit, OnDestroy {
   private api = inject(ApiService);
+  private cdr = inject(ChangeDetectorRef);
   apiUrl = this.api.getBaseUrl();
   
   // Slider state
@@ -287,8 +288,9 @@ export class StatsDashboardComponent implements OnInit, AfterViewInit, OnDestroy
             this.fetchPlayersForSlice(rawLabel);
           } else {
             this.selectedSlicePlayers = null;
-          }
-        },
+              this.cdr.detectChanges();
+            }
+          },
         responsive: true,
         maintainAspectRatio: false,
         plugins: {
@@ -423,6 +425,7 @@ export class StatsDashboardComponent implements OnInit, AfterViewInit, OnDestroy
 
     this.api.searchPlayersByStats(request).subscribe(players => {
         this.selectedSlicePlayers = players;
+        this.cdr.detectChanges();
     });
   }
 

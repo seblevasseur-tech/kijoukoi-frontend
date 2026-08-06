@@ -390,7 +390,7 @@
           <h3>Joueurs pour : {{ selectedSliceLabel && selectedSliceLabel !== 'null' ? selectedSliceLabel : 'Non défini' }} ({{ selectedSlicePlayers.length }})</h3>
           <div class="players-grid">
             <div class="player-card" *ngFor="let p of selectedSlicePlayers">
-              <div class="player-login">{{ p.login }}</div>
+              <div class="player-login">{{ p.login }} <span *ngIf="p.ranking">- {{ p.ranking }} pts</span></div>
               <div class="racket-details">
                 <div class="racket-item" *ngIf="p.racket?.blade">
                   <span class="racket-label">Bois:</span> {{ p.racket?.blade?.brand?.name }} {{ p.racket?.blade?.name }}

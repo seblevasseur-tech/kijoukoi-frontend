@@ -1,4 +1,4 @@
-<div class="login-page">
+﻿<div class="login-page">
   <div class="login-container">
     
     <div class="yeti-wrapper">
@@ -143,13 +143,13 @@
           </div>
         </div>
         
-        <button type="submit" class="btn btn-primary" [disabled]="!loginData.login || !loginData.password">
-          {{ isLoginMode ? 'Se Connecter' : 'Créer un compte' }}
+        <button type="submit" class="btn btn-primary btn-block" [disabled]="!loginData.login || !loginData.password">
+          {{ isLoginMode ? 'Se Connecter' : 'CrÃ©er un compte' }}
         </button>
       </form>
-      <div class="toggle-mode">
-        <span (click)="setMode(!isLoginMode)">
-          {{ isLoginMode ? "Je n'ai pas de compte. M'inscrire." : "J'ai déjà un compte. Me connecter." }}
+      <div class="auth-switch">
+        <span class="switch-link" (click)="setMode(!isLoginMode)">
+          {{ isLoginMode ? "Je n'ai pas de compte. M'inscrire." : "J'ai dÃ©jÃ  un compte. Me connecter." }}
         </span>
       </div>
     </div>

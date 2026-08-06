@@ -74,4 +74,9 @@ export class ApiService {
   postAggregation(request: AggregationRequestDTO): Observable<AggregationResultDTO[]> {
     return this.http.post<AggregationResultDTO[]>(`${this.baseUrl}/stats/aggregate`, request);
   }
+
+  searchPlayersByStats(request: AggregationRequestDTO): Observable<Player[]> {
+    return this.http.post<Player[]>(`${this.baseUrl}/stats/players`, request);
+  }
+
 }

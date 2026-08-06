@@ -405,3 +405,85 @@ mat-slider {
 .checkmark { color: var(--color-primary); font-weight: bold; margin-right: 5px; }
 .clear-btn { text-align: center; font-style: italic; color: #a1a1aa; border-bottom: 1px solid #333; margin-bottom: 4px; padding-bottom: 8px; }
 .clear-btn:hover { color: #fff; background-color: #333; }
+
+
+/* Hint Text */
+.chart-hint {
+  text-align: center;
+  font-size: 0.9rem;
+  color: var(--color-primary);
+  margin-bottom: 10px;
+  opacity: 0.8;
+}
+
+/* Selected Slice Players Grid */
+.slice-details-container {
+  margin-top: 30px;
+  padding-top: 20px;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  
+  h3 {
+    font-size: 1.2rem;
+    color: #fff;
+    margin-bottom: 15px;
+  }
+  
+  .players-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 15px;
+    max-height: 400px;
+    overflow-y: auto;
+    padding-right: 10px;
+    
+    &::-webkit-scrollbar {
+      width: 6px;
+    }
+    &::-webkit-scrollbar-track {
+      background: rgba(255, 255, 255, 0.02);
+    }
+    &::-webkit-scrollbar-thumb {
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 10px;
+    }
+  }
+  
+  .player-card {
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    border-radius: 8px;
+    padding: 12px;
+    transition: transform 0.2s, background 0.2s;
+    
+    &:hover {
+      background: rgba(255, 255, 255, 0.05);
+      transform: translateY(-2px);
+    }
+    
+    .player-login {
+      font-weight: 600;
+      color: var(--color-primary);
+      margin-bottom: 8px;
+      font-size: 1.05rem;
+    }
+    
+    .racket-details {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      
+      .racket-item {
+        font-size: 0.85rem;
+        color: #d1d5db;
+        line-height: 1.3;
+        
+        .racket-label {
+          color: #9ca3af;
+          font-weight: 500;
+          display: inline-block;
+          width: 40px;
+        }
+      }
+    }
+  }
+}

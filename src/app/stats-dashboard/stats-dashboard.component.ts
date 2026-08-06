@@ -6,6 +6,7 @@ import Chart from 'chart.js/auto';
 import { Subject, Subscription, forkJoin } from 'rxjs';
 import { debounceTime } from 'rxjs/operators';
 import { AggregationRequestDTO, FilterDTO } from '../models/aggregation.model';
+import { Player } from '../models/player.model';
 import { Brand } from '../models/brand.model';
 import { Rubber } from '../models/rubber.model';
 import { PlayerTag } from '../models/player-tag.model';
@@ -98,6 +99,9 @@ export class StatsDashboardComponent implements OnInit, AfterViewInit, OnDestroy
   // Chart
   @ViewChild('brandChart') brandChartRef!: ElementRef<HTMLCanvasElement>;
   chartInstance: any;
+  rawLabels: string[] = [];
+  selectedSlicePlayers: Player[] | null = null;
+  selectedSliceLabel: string = '';
 
   // Helpers for displaying selected values
   get displayBladeBrands() { return this.brands.filter(b => this.selectedBladeBrandIds.includes(b.id)); }
@@ -158,6 +162,7 @@ export class StatsDashboardComponent implements OnInit, AfterViewInit, OnDestroy
     this.sliderSub = this.sliderSubject.pipe(
       debounceTime(300)
     ).subscribe(() => {
+      this.selectedSlicePlayers = null;
       this.fetchChartData();
     });
   }
@@ -275,6 +280,15 @@ export class StatsDashboardComponent implements OnInit, AfterViewInit, OnDestroy
         }]
       },
       options: {
+        onClick: (event, elements) => {
+          if (elements && elements.length > 0) {
+            const index = elements[0].index;
+            const rawLabel = this.rawLabels[index];
+            this.fetchPlayersForSlice(rawLabel);
+          } else {
+            this.selectedSlicePlayers = null;
+          }
+        },
         responsive: true,
         maintainAspectRatio: false,
         plugins: {
@@ -316,7 +330,7 @@ export class StatsDashboardComponent implements OnInit, AfterViewInit, OnDestroy
     });
   }
 
-  fetchChartData() {
+  buildAggregationRequest(): AggregationRequestDTO {
     const filters: FilterDTO[] = [
       { field: 'ranking', operator: 'GTE', value: this.minElo },
       { field: 'ranking', operator: 'LTE', value: this.maxElo }
@@ -366,11 +380,18 @@ export class StatsDashboardComponent implements OnInit, AfterViewInit, OnDestroy
       metric: 'COUNT',
       filters: filters
     };
+    return request;
+  }
+
+  fetchChartData() {
+    const request = this.buildAggregationRequest();
 
     this.api.postAggregation(request).subscribe(stats => {
       if (!this.chartInstance) return;
       
       const total = stats.reduce((acc, s) => acc + (s.value as number), 0);
+      
+      this.rawLabels = stats.map(s => String(s.label));
       
       const labels = stats.map(s => {
         const percentage = total > 0 ? Math.round((s.value as number / total) * 100) : 0;
@@ -384,4 +405,25 @@ export class StatsDashboardComponent implements OnInit, AfterViewInit, OnDestroy
       this.chartInstance.update();
     });
   }
+
+  fetchPlayersForSlice(label: string) {
+    this.selectedSliceLabel = label;
+    const request = this.buildAggregationRequest();
+    
+    let val: any = label;
+    if (val === 'null' || val === 'undefined') {
+        val = null;
+    }
+    
+    request.filters.push({
+        field: this.selectedOutput,
+        operator: 'EQ',
+        value: val
+    });
+
+    this.api.searchPlayersByStats(request).subscribe(players => {
+        this.selectedSlicePlayers = players;
+    });
+  }
+
 }

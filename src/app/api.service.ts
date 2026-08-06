@@ -23,6 +23,11 @@ export class ApiService {
     return this.baseUrl;
   }
 
+  
+  createRubber(payload: any): Observable<Rubber> {
+    return this.http.post<Rubber>(`${this.baseUrl}/equipment/rubbers`, payload);
+  }
+
   createBlade(payload: any): Observable<Blade> {
     return this.http.post<Blade>(`${this.baseUrl}/equipment/blades`, payload);
   }

@@ -143,3 +143,15 @@
           </div>
         </div>
         
+        <button type="submit" class="btn btn-primary" [disabled]="!loginData.login || !loginData.password">
+          {{ isLoginMode ? 'Se Connecter' : 'Créer un compte' }}
+        </button>
+      </form>
+      <div class="toggle-mode">
+        <span (click)="setMode(!isLoginMode)">
+          {{ isLoginMode ? "Je n'ai pas de compte. M'inscrire." : "J'ai déjà un compte. Me connecter." }}
+        </span>
+      </div>
+    </div>
+  </div>
+</div>

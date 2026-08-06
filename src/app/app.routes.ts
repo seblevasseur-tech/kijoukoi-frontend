@@ -8,11 +8,11 @@ import { LoginComponent } from './login/login.component';
 import { authGuard } from './guards/auth.guard';
 
 export const routes: Routes = [
-  { path: '', redirectTo: '/profile', pathMatch: 'full' },
+  { path: '', redirectTo: '/dashboard', pathMatch: 'full' },
   { path: 'login', component: LoginComponent },
-  { path: 'players', component: PlayerListComponent, canActivate: [authGuard] },
-  { path: 'blades', component: BladeListComponent, canActivate: [authGuard] },
-  { path: 'rubbers', component: RubberListComponent, canActivate: [authGuard] },
+  { path: 'dashboard', component: StatsDashboardComponent },
+  { path: 'players', component: PlayerListComponent },
+  { path: 'blades', component: BladeListComponent },
+  { path: 'rubbers', component: RubberListComponent },
   { path: 'profile', component: PlayerDashboardComponent, canActivate: [authGuard] },
-  { path: 'dashboard', component: StatsDashboardComponent, canActivate: [authGuard] },
 ];

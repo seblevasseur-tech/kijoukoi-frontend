@@ -6,7 +6,7 @@
         <label for="playerAge">&Acirc;ge :</label>
         <input type="number" id="playerAge" [(ngModel)]="player.age" min="5" max="100" class="profile-input" (blur)="saveProfile()">
       </div>
-      
+
       <div class="input-container">
         <label for="playerGender">Genre :</label>
         <select id="playerGender" [(ngModel)]="player.gender" class="profile-input" (change)="saveProfile()">
@@ -24,11 +24,11 @@
   </div>
 
   <div class="dashboard-content">
-    
+
     <!-- SECTION RAQUETTE (Custom Dropdowns) -->
     <div class="section-card racket-section">
       <h3>Ma Raquette</h3>
-      
+
       <div class="equipment-form">
         <!-- BOIS -->
         <div class="form-group">
@@ -109,11 +109,11 @@
 
     <!-- SECTION ETIQUETTES (Tags) Drag & Drop -->
     <div class="section-card tags-section">
-      <h3>Mon Style de Jeu (Étiquettes)</h3>
+      <h3>Mon Style de Jeu</h3>
       <p class="section-desc">Faites glisser les étiquettes dans les colonnes correspondantes pour définir votre profil de joueur.</p>
 
       <div class="tags-dnd-container">
-        
+
         <!-- Colonne JE SUIS -->
         <div class="tag-column positive-col">
           <h4>💪 Je suis</h4>

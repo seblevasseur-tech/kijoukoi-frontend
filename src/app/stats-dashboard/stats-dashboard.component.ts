@@ -99,7 +99,7 @@ export class StatsDashboardComponent implements OnInit, AfterViewInit, OnDestroy
   // Chart
   @ViewChild('brandChart') brandChartRef!: ElementRef<HTMLCanvasElement>;
   chartInstance: any;
-  rawLabels: string[] = [];
+  rawLabels: any[] = [];
   selectedSlicePlayers: Player[] | null = null;
   selectedSliceLabel: string = '';
 
@@ -391,7 +391,7 @@ export class StatsDashboardComponent implements OnInit, AfterViewInit, OnDestroy
       
       const total = stats.reduce((acc, s) => acc + (s.value as number), 0);
       
-      this.rawLabels = stats.map(s => String(s.label));
+      this.rawLabels = stats.map(s => s.label);
       
       const labels = stats.map(s => {
         const percentage = total > 0 ? Math.round((s.value as number / total) * 100) : 0;
@@ -406,12 +406,12 @@ export class StatsDashboardComponent implements OnInit, AfterViewInit, OnDestroy
     });
   }
 
-  fetchPlayersForSlice(label: string) {
+  fetchPlayersForSlice(label: any) {
     this.selectedSliceLabel = label;
     const request = this.buildAggregationRequest();
     
     let val: any = label;
-    if (val === 'null' || val === 'undefined') {
+    if (val === 'null' || val === 'undefined' || val === 'Non défini' || val === null) {
         val = null;
     }
     

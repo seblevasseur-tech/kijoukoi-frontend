@@ -1,9 +1,25 @@
 <div class="dashboard-page" *ngIf="player">
   <div class="dashboard-header">
     <h2>Mon Profil : {{ player.login }}</h2>
-    <div class="age-input-container">
-      <label for="playerAge">Mon &Acirc;ge :</label>
-      <input type="number" id="playerAge" [(ngModel)]="player.age" min="5" max="100" class="age-input">
+    <div class="profile-inputs">
+      <div class="input-container">
+        <label for="playerAge">&Acirc;ge :</label>
+        <input type="number" id="playerAge" [(ngModel)]="player.age" min="5" max="100" class="profile-input" (blur)="saveProfile()">
+      </div>
+      
+      <div class="input-container">
+        <label for="playerGender">Genre :</label>
+        <select id="playerGender" [(ngModel)]="player.gender" class="profile-input" (change)="saveProfile()">
+          <option value="M">Homme</option>
+          <option value="F">Femme</option>
+          <option value="O">Autre</option>
+        </select>
+      </div>
+
+      <div class="input-container">
+        <label for="playerRanking">Classement :</label>
+        <input type="number" id="playerRanking" [(ngModel)]="player.ranking" min="500" max="4000" class="profile-input" (blur)="saveProfile()">
+      </div>
     </div>
   </div>
 
@@ -27,10 +43,14 @@
               <span class="arrow" [class.open]="bladeDropdownOpen">▼</span>
             </div>
             <div class="custom-select-options" *ngIf="bladeDropdownOpen">
-              <div class="custom-option" *ngFor="let blade of blades" (click)="selectBlade(blade)">
+              <div class="dropdown-search">
+                <input type="text" placeholder="Rechercher un bois..." [value]="searchBladeText" (input)="filterBlades($event)" (click)="$event.stopPropagation()">
+              </div>
+              <div class="custom-option" *ngFor="let blade of filteredBlades" (click)="selectBlade(blade)">
                 <img [src]="apiUrl + '/equipment/blades/' + blade.id + '/image'" class="item-img" loading="lazy">
                 <span class="item-name">{{ blade.name }}</span>
               </div>
+              <div class="no-results" *ngIf="filteredBlades.length === 0">Aucun résultat</div>
             </div>
           </div>
         </div>
@@ -48,10 +68,14 @@
               <span class="arrow" [class.open]="fhDropdownOpen">▼</span>
             </div>
             <div class="custom-select-options" *ngIf="fhDropdownOpen">
-              <div class="custom-option" *ngFor="let rubber of rubbers" (click)="selectFhRubber(rubber)">
+              <div class="dropdown-search">
+                <input type="text" placeholder="Rechercher un revêtement..." [value]="searchFhText" (input)="filterFhRubbers($event)" (click)="$event.stopPropagation()">
+              </div>
+              <div class="custom-option" *ngFor="let rubber of filteredFhRubbers" (click)="selectFhRubber(rubber)">
                 <img [src]="apiUrl + '/equipment/rubbers/' + rubber.id + '/image'" class="item-img" loading="lazy">
                 <span class="item-name">{{ rubber.name }}</span>
               </div>
+              <div class="no-results" *ngIf="filteredFhRubbers.length === 0">Aucun résultat</div>
             </div>
           </div>
         </div>
@@ -69,10 +93,14 @@
               <span class="arrow" [class.open]="bhDropdownOpen">▼</span>
             </div>
             <div class="custom-select-options" *ngIf="bhDropdownOpen">
-              <div class="custom-option" *ngFor="let rubber of rubbers" (click)="selectBhRubber(rubber)">
+              <div class="dropdown-search">
+                <input type="text" placeholder="Rechercher un revêtement..." [value]="searchBhText" (input)="filterBhRubbers($event)" (click)="$event.stopPropagation()">
+              </div>
+              <div class="custom-option" *ngFor="let rubber of filteredBhRubbers" (click)="selectBhRubber(rubber)">
                 <img [src]="apiUrl + '/equipment/rubbers/' + rubber.id + '/image'" class="item-img" loading="lazy">
                 <span class="item-name">{{ rubber.name }}</span>
               </div>
+              <div class="no-results" *ngIf="filteredBhRubbers.length === 0">Aucun résultat</div>
             </div>
           </div>
         </div>

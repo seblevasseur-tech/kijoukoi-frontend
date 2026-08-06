@@ -258,34 +258,80 @@
 .auth-modal .btn {
   display: inline-block;
 }
-.age-input-container {
-  margin-top: 10px;
+.profile-inputs {
   display: flex;
-  align-items: center;
-  gap: 10px;
-  font-size: 1rem;
-  color: #94a3b8;
+  gap: 16px;
+  margin-top: 10px;
 
-  label {
-    font-weight: 500;
+  @media (max-width: 768px) {
+    flex-wrap: wrap;
   }
 
-  .age-input {
-    background: rgba(30, 41, 59, 0.5);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    color: white;
+  .input-container {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.95rem;
+    color: var(--color-text-secondary);
+
+    label {
+      font-weight: 500;
+    }
+
+    .profile-input {
+      background: rgba(30, 41, 59, 0.5);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      color: var(--color-text);
+      padding: 6px 10px;
+      border-radius: 6px;
+      font-family: inherit;
+      font-size: 0.95rem;
+      min-width: 80px;
+      
+      &:focus {
+        outline: none;
+        border-color: var(--color-primary);
+      }
+    }
+    
+    select.profile-input {
+      appearance: auto;
+      padding-right: 20px;
+      cursor: pointer;
+    }
+  }
+}
+
+.dropdown-search {
+  padding: 8px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  position: sticky;
+  top: 0;
+  background: var(--color-surface);
+  z-index: 2;
+
+  input {
+    width: 100%;
     padding: 8px 12px;
-    border-radius: 8px;
-    width: 80px;
-    font-family: inherit;
-    font-size: 1rem;
+    background: rgba(0, 0, 0, 0.2);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 4px;
+    color: var(--color-text);
+    font-size: 0.9rem;
     
     &:focus {
       outline: none;
-      border-color: #6366f1;
-      box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.2);
+      border-color: var(--color-primary);
     }
   }
+}
+
+.no-results {
+  padding: 12px;
+  text-align: center;
+  color: var(--color-text-secondary);
+  font-size: 0.9rem;
+  font-style: italic;
 }
 
 /* DRAG & DROP TAGS */

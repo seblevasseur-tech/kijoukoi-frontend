@@ -142,37 +142,4 @@
             </div>
           </div>
         </div>
-        <div class="form-group" *ngIf="!isLoginMode">
-          <label>Genre</label>
-          <div class="gender-toggle-login">
-            <label>
-              <input type="radio" name="gender" [(ngModel)]="loginData.gender" value="M">
-              Homme
-            </label>
-            <label>
-              <input type="radio" name="gender" [(ngModel)]="loginData.gender" value="F">
-              Femme
-            </label>
-            <label>
-              <input type="radio" name="gender" [(ngModel)]="loginData.gender" value="O">
-              Autre
-            </label>
-          </div>
-        </div>
-
-        <button type="submit" class="btn btn-primary btn-block">
-          {{ isLoginMode ? 'Se connecter' : 'Créer mon compte' }}
-        </button>
         
-        <div class="auth-switch">
-          <a *ngIf="isLoginMode" (click)="setMode(false)" class="switch-link">
-            Pas encore de compte ? <strong>Inscrivez-vous</strong>
-          </a>
-          <a *ngIf="!isLoginMode" (click)="setMode(true)" class="switch-link">
-            Déjà un compte ? <strong>Connectez-vous</strong>
-          </a>
-        </div>
-      </form>
-    </div>
-  </div>
-</div>

@@ -7,6 +7,7 @@ export interface Player {
   age?: number;
   nationality?: string;
   ranking?: number;
+  gender?: string;
   registrationDate?: string;
   lastRacketUpdateDate?: string;
   avatar?: string;

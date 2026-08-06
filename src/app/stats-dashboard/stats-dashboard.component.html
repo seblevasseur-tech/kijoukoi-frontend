@@ -383,7 +383,33 @@
           <p>Aucune donn&eacute;e disponible pour ces crit&egrave;res.</p>
         </div>
       </div>
+
+      <!-- Liste des joueurs cliqués -->
+      <div class="slice-details-container">
+        <ng-container *ngIf="selectedSlicePlayers; else noPlayersTpl">
+          <h3>Joueurs pour : {{ selectedSliceLabel && selectedSliceLabel !== 'null' ? selectedSliceLabel : 'Non défini' }} ({{ selectedSlicePlayers.length }})</h3>
+          <div class="players-grid">
+            <div class="player-card" *ngFor="let p of selectedSlicePlayers">
+              <div class="player-login">{{ p.login }}</div>
+              <div class="racket-details">
+                <div class="racket-item" *ngIf="p.racket?.blade">
+                  <span class="racket-label">Bois:</span> {{ p.racket?.blade?.brand?.name }} {{ p.racket?.blade?.name }}
+                </div>
+                <div class="racket-item" *ngIf="p.racket?.forehandRubber">
+                  <span class="racket-label">CD:</span> {{ p.racket?.forehandRubber?.brand?.name }} {{ p.racket?.forehandRubber?.name }}
+                </div>
+                <div class="racket-item" *ngIf="p.racket?.backhandRubber">
+                  <span class="racket-label">RV:</span> {{ p.racket?.backhandRubber?.brand?.name }} {{ p.racket?.backhandRubber?.name }}
+                </div>
+              </div>
+            </div>
+          </div>
+        </ng-container>
+        <ng-template #noPlayersTpl>
+          <div class="empty-slice-state">
+            <p>Cliquez sur une part du graphique pour afficher le détail des raquettes.</p>
+          </div>
+        </ng-template>
+      </div>
     </div>
-
   </div>
-

@@ -64,29 +64,25 @@
           <span class="label-title">Nationalité</span>
         </div>
         <div class="country-dropdown-container" style="flex: 1; display: flex; justify-content: center; position: relative;">
-          <div class="country-dropdown">
-            <button
-              type="button"
-              class="country-dropdown-trigger"
-              [class.is-open]="isCountryDropdownOpen"
-              (click)="toggleCountryDropdown($event)"
-            >
-              <span class="placeholder" *ngIf="selectedCountryCodes.length === 0">Toutes (Aucun filtre)</span>
-              <ng-container *ngIf="selectedCountryCodes.length > 0">
-                <span class="selected-text tags-display">
+          <div class="custom-dropdown" (click)="toggleCountryDropdown($event)">
+              <div
+                class="dropdown-trigger"
+                [class.active]="isCountryDropdownOpen"
+              >
+                <span class="placeholder" *ngIf="selectedCountryCodes.length === 0">Toutes (Aucun filtre)</span>
+                <span class="selected-text tags-display" *ngIf="selectedCountryCodes.length > 0">
                   <span *ngFor="let c of getCountries(selectedCountryCodes); let last = last">{{ c.name }}{{ !last ? ', ' : '' }}</span>
                 </span>
-              </ng-container>
-              <span class="dropdown-chevron">&#9660;</span>
-            </button>
+                <span class="chevron">&#9660;</span>
+              </div>
 
-            <div class="country-dropdown-menu" *ngIf="isCountryDropdownOpen" (click)="$event.stopPropagation()">
-              <button type="button" class="country-option clear-btn" *ngIf="selectedCountryCodes.length > 0" (click)="clearCountry($event)">
+            <div class="dropdown-menu" *ngIf="isCountryDropdownOpen" (click)="$event.stopPropagation()">
+              <button type="button" class="dropdown-item clear-btn" *ngIf="selectedCountryCodes.length > 0" (click)="clearCountry($event)">
                 <span>Tout effacer</span>
               </button>
               <button
                 type="button"
-                class="country-option"
+                class="dropdown-item"
                 *ngFor="let country of countries"
                 [class.selected]="selectedCountryCodes.includes(country.code)"
                 (click)="toggleCountry($event, country.code)"
@@ -116,7 +112,7 @@
                   <span class="selected-text tags-display" *ngIf="selectedBladeBrandIds.length > 0">
                     <span *ngFor="let t of displayBladeBrands; let last = last">{{ t.name }}{{ !last ? ', ' : '' }}</span>
                   </span>
-                  <span class="chevron">?</span>
+                  <span class="chevron">&#9660;</span>
                 </div>
                 <div class="dropdown-menu" *ngIf="activeDropdown === 'bladeBrand'">
                   <div class="dropdown-item" (click)="clearFilterArray($event, 'selectedBladeBrandIds')">Toutes les marques</div>
@@ -135,7 +131,7 @@
                   <span class="selected-text tags-display" *ngIf="selectedBladeIds.length > 0">
                     <span *ngFor="let t of displayBlades; let last = last">{{ t.name }}{{ !last ? ', ' : '' }}</span>
                   </span>
-                  <span class="chevron">▼</span>
+                  <span class="chevron">&#9660;</span>
                 </div>
                 <div class="dropdown-menu" *ngIf="activeDropdown === 'bladeModel'">
                   <div class="dropdown-item" (click)="clearFilterArray($event, 'selectedBladeIds')">Tous les mod&egrave;les</div>
@@ -157,7 +153,7 @@
                   <span class="selected-text tags-display" *ngIf="selectedBladeTypeIds.length > 0">
                     <span *ngFor="let t of displayBladeTypes; let last = last">{{ t.name }}{{ !last ? ', ' : '' }}</span>
                   </span>
-                  <span class="chevron">▼</span>
+                  <span class="chevron">&#9660;</span>
                 </div>
                 <div class="dropdown-menu" *ngIf="activeDropdown === 'bladeType'">
                   <div class="dropdown-item" (click)="clearFilterArray($event, 'selectedBladeTypeIds')">Tous les types</div>
@@ -182,7 +178,7 @@
                   <span class="selected-text tags-display" *ngIf="selectedFhBrandIds.length > 0">
                     <span *ngFor="let t of displayFhBrands; let last = last">{{ t.name }}{{ !last ? ', ' : '' }}</span>
                   </span>
-                  <span class="chevron">?</span>
+                  <span class="chevron">&#9660;</span>
                 </div>
                 <div class="dropdown-menu" *ngIf="activeDropdown === 'fhBrand'">
                   <div class="dropdown-item" (click)="clearFilterArray($event, 'selectedFhBrandIds')">Toutes les marques</div>
@@ -201,7 +197,7 @@
                   <span class="selected-text tags-display" *ngIf="selectedFhRubberIds.length > 0">
                     <span *ngFor="let t of displayFhRubbers; let last = last">{{ t.name }}{{ !last ? ', ' : '' }}</span>
                   </span>
-                  <span class="chevron">▼</span>
+                  <span class="chevron">&#9660;</span>
                 </div>
                 <div class="dropdown-menu" *ngIf="activeDropdown === 'fhModel'">
                   <div class="dropdown-item" (click)="clearFilterArray($event, 'selectedFhRubberIds')">Tous les mod&egrave;les</div>
@@ -224,7 +220,7 @@
                   <span class="selected-text tags-display" *ngIf="selectedFhTypeIds.length > 0">
                     <span *ngFor="let t of displayFhTypes; let last = last">{{ t.name }}{{ !last ? ', ' : '' }}</span>
                   </span>
-                  <span class="chevron">▼</span>
+                  <span class="chevron">&#9660;</span>
                 </div>
                 <div class="dropdown-menu" *ngIf="activeDropdown === 'fhType'">
                   <div class="dropdown-item" (click)="clearFilterArray($event, 'selectedFhTypeIds')">Tous les types</div>
@@ -265,7 +261,7 @@
                   <span class="selected-text tags-display" *ngIf="selectedBhBrandIds.length > 0">
                     <span *ngFor="let t of displayBhBrands; let last = last">{{ t.name }}{{ !last ? ', ' : '' }}</span>
                   </span>
-                  <span class="chevron">?</span>
+                  <span class="chevron">&#9660;</span>
                 </div>
                 <div class="dropdown-menu" *ngIf="activeDropdown === 'bhBrand'">
                   <div class="dropdown-item" (click)="clearFilterArray($event, 'selectedBhBrandIds')">Toutes les marques</div>
@@ -284,7 +280,7 @@
                   <span class="selected-text tags-display" *ngIf="selectedBhRubberIds.length > 0">
                     <span *ngFor="let t of displayBhRubbers; let last = last">{{ t.name }}{{ !last ? ', ' : '' }}</span>
                   </span>
-                  <span class="chevron">▼</span>
+                  <span class="chevron">&#9660;</span>
                 </div>
                 <div class="dropdown-menu" *ngIf="activeDropdown === 'bhModel'">
                   <div class="dropdown-item" (click)="clearFilterArray($event, 'selectedBhRubberIds')">Tous les mod&egrave;les</div>
@@ -307,7 +303,7 @@
                   <span class="selected-text tags-display" *ngIf="selectedBhTypeIds.length > 0">
                     <span *ngFor="let t of displayBhTypes; let last = last">{{ t.name }}{{ !last ? ', ' : '' }}</span>
                   </span>
-                  <span class="chevron">▼</span>
+                  <span class="chevron">&#9660;</span>
                 </div>
                 <div class="dropdown-menu" *ngIf="activeDropdown === 'bhType'">
                   <div class="dropdown-item" (click)="clearFilterArray($event, 'selectedBhTypeIds')">Tous les types</div>
@@ -348,7 +344,7 @@
                   <span class="selected-text tags-display" *ngIf="displayTags.length > 0">
                     <span *ngFor="let t of displayTags; let last = last">{{ t.name }}{{ !last ? ', ' : '' }}</span>
                   </span>
-                  <span class="chevron">▼</span>
+                  <span class="chevron">&#9660;</span>
                 </div>
                 <div class="dropdown-menu" *ngIf="activeDropdown === 'tags'" (click)="$event.stopPropagation()">
                   <div class="dropdown-item" (click)="clearTags($event)">

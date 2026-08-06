@@ -3,9 +3,14 @@ import { throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 import { inject } from '@angular/core';
 import { ToastService } from './shared/toast/toast.service';
+import { Router } from '@angular/router';
+import { AuthService } from './services/auth.service';
+
 
 export const errorInterceptor: HttpInterceptorFn = (req, next) => {
   const toastService = inject(ToastService);
+  const authService = inject(AuthService);
+  const router = inject(Router);
 
   return next(req).pipe(
     catchError((error: HttpErrorResponse) => {
@@ -17,9 +22,10 @@ export const errorInterceptor: HttpInterceptorFn = (req, next) => {
       } else {
         // Le backend a retourné un code d'erreur (404, 500, etc.)
         if (error.status === 401 || error.status === 403) {
-           // On ignore ces erreurs pour le toast car l'AuthInterceptor ou les guards s'en chargent souvent,
-           // ou on laisse passer de manière plus discrète.
-           errorMessage = `Accès non autorisé ou session expirée.`;
+           // Si on a un 401 ou 403, le token a expiré ou est invalide.
+           authService.logout();
+           router.navigate(['/login']);
+           return throwError(() => new Error('Accès non autorisé ou session expirée.'));
         } else if (error.status === 404) {
           errorMessage = `Ressource introuvable (404).`;
         } else if (error.status === 0) {
@@ -29,7 +35,7 @@ export const errorInterceptor: HttpInterceptorFn = (req, next) => {
         }
       }
       
-      // Affichage d'un toaster au lieu d'une alerte native
+      // Affichage d'un toaster au lieu d'une alerte native (seulement si ce n'est pas un 401/403)
       toastService.show(errorMessage, 'error');
       console.error(errorMessage);
       

@@ -12,6 +12,7 @@ import { Player } from '../models/player.model';
 import { PlayerTag } from '../models/player-tag.model';
 import { Blade } from '../models/blade.model';
 import { Rubber } from '../models/rubber.model';
+import { ToastService } from '../shared/toast/toast.service';
 
 @Component({
   selector: 'app-player-dashboard',
@@ -21,7 +22,8 @@ import { Rubber } from '../models/rubber.model';
   styleUrl: './player-dashboard.component.scss'
 })
 export class PlayerDashboardComponent implements OnInit {
-  private api = inject(ApiService);
+  private toast = inject(ToastService);
+private api = inject(ApiService);
   apiUrl = this.api.getBaseUrl();
   
   player: Player | null = null;
@@ -178,6 +180,7 @@ export class PlayerDashboardComponent implements OnInit {
     this.api.updatePlayer(this.player.id, this.player).subscribe(updated => {
       this.player = updated;
       this.distributeTags();
+      this.toast.show('Modifications enregistrées', 'success');
     });
   }
 }

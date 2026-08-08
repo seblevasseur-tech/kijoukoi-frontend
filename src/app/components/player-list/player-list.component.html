@@ -12,9 +12,15 @@
         <p style="color: var(--color-text-secondary); margin-top: 4px; font-size: 0.9em;">Classement: {{ player.ranking }}</p>
         
         <div *ngIf="player.racket" style="margin-top: 12px; font-size: 0.85em; color: var(--color-text-secondary);">
-          <div *ngIf="player.racket.blade"><strong>Bois:</strong> {{ player.racket.blade.name }}</div>
-          <div *ngIf="player.racket.forehandRubber"><strong>CD:</strong> {{ player.racket.forehandRubber.name }}</div>
-          <div *ngIf="player.racket.backhandRubber"><strong>RV:</strong> {{ player.racket.backhandRubber.name }}</div>
+          <div *ngIf="player.racket.blade">
+            <strong>Bois:</strong> <span [ngStyle]="{'color': player.racket.blade.name === 'Matériel introuvable' ? '#ff4444' : 'inherit', 'font-weight': player.racket.blade.name === 'Matériel introuvable' ? 'bold' : 'normal'}">{{ player.racket.blade.name }}</span>
+          </div>
+          <div *ngIf="player.racket.forehandRubber">
+            <strong>CD:</strong> <span [ngStyle]="{'color': player.racket.forehandRubber.name === 'Matériel introuvable' ? '#ff4444' : 'inherit', 'font-weight': player.racket.forehandRubber.name === 'Matériel introuvable' ? 'bold' : 'normal'}">{{ player.racket.forehandRubber.name }}</span>
+          </div>
+          <div *ngIf="player.racket.backhandRubber">
+            <strong>RV:</strong> <span [ngStyle]="{'color': player.racket.backhandRubber.name === 'Matériel introuvable' ? '#ff4444' : 'inherit', 'font-weight': player.racket.backhandRubber.name === 'Matériel introuvable' ? 'bold' : 'normal'}">{{ player.racket.backhandRubber.name }}</span>
+          </div>
         </div>
       </div>
     </a>

@@ -8,6 +8,7 @@ import { PlayerDashboardComponent } from './player-dashboard/player-dashboard.co
 import { StatsDashboardComponent } from './stats-dashboard/stats-dashboard.component';
 import { LoginComponent } from './login/login.component';
 import { authGuard } from './guards/auth.guard';
+import { AddPlayerComponent } from './components/add-player/add-player.component';
 
 export const routes: Routes = [
   { path: '', redirectTo: '/dashboard', pathMatch: 'full' },
@@ -19,4 +20,5 @@ export const routes: Routes = [
   { path: 'profile', component: PlayerDashboardComponent, canActivate: [authGuard] },
   { path: 'add-blade', component: AddBladeComponent, canActivate: [authGuard] },
   { path: 'add-rubber', component: AddRubberComponent, canActivate: [authGuard] },
+  { path: 'add-player', component: AddPlayerComponent, canActivate: [authGuard] },
 ];

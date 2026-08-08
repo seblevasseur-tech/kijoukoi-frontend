@@ -1,0 +1,31 @@
+<div class="dashboard-page">
+  <div class="dashboard-header">
+    <h2>Ajouter un joueur en masse</h2>
+  </div>
+
+  <div class="dashboard-content">
+    <div class="section-card upload-section">
+      <h3>Importation depuis Excel</h3>
+      <p class="section-desc">Vous pouvez importer plusieurs joueurs simultanément en remplissant un fichier Excel.</p>
+      
+      <div class="actions-container">
+        <div class="action-box">
+          <h4>1. Télécharger le modèle</h4>
+          <p>Récupérez le modèle Excel pré-formaté pour voir les colonnes attendues.</p>
+          <button class="btn btn-secondary" (click)="downloadTemplate()">
+            Télécharger Modèle Excel
+          </button>
+        </div>
+
+        <div class="action-box">
+          <h4>2. Uploader le fichier</h4>
+          <p>Sélectionnez votre fichier Excel (.xlsx) rempli avec les données des joueurs.</p>
+          <input type="file" id="excelFileInput" accept=".xlsx, .xls" (change)="onFileSelected($event)" class="file-input">
+          <button class="btn btn-primary" (click)="uploadFile()" [disabled]="!selectedFile || isUploading">
+            {{ isUploading ? 'Importation en cours...' : 'Importer Joueurs' }}
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

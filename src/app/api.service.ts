@@ -88,4 +88,16 @@ export class ApiService {
     return this.http.post<Player[]>(`${this.baseUrl}/stats/players`, request);
   }
 
+  downloadExcelTemplate(): Observable<Blob> {
+    return this.http.get(`${this.baseUrl}/players/excel/template`, {
+      responseType: 'blob'
+    });
+  }
+
+  uploadExcelFile(file: File): Observable<any> {
+    const formData = new FormData();
+    formData.append('file', file);
+    return this.http.post(`${this.baseUrl}/players/excel/upload`, formData);
+  }
+
 }

@@ -4,11 +4,11 @@
     <a class="player-card" *ngFor="let player of players">
       <div class="card-avatar">
         <!-- Générateur d'avatar aléatoire basé sur le login si pas d'avatar -->
-        <img [src]="player.avatar || 'https://api.dicebear.com/7.x/avataaars/svg?seed=' + player.login" [alt]="player.login" />
+        <img [src]="player.avatar || 'https://api.dicebear.com/7.x/avataaars/svg?seed=' + player.firstName + player.lastName" [alt]="player.firstName + ' ' + player.lastName" />
       </div>
 
       <div class="card-info">
-        <h3 class="player-name">{{ player.login }}</h3>
+        <h3 class="player-name">{{ player.firstName }} {{ player.lastName }}</h3>
         <p style="color: var(--color-text-secondary); margin-top: 4px; font-size: 0.9em;">Classement: {{ player.ranking }}</p>
         
         <div *ngIf="player.racket" style="margin-top: 12px; font-size: 0.85em; color: var(--color-text-secondary);">

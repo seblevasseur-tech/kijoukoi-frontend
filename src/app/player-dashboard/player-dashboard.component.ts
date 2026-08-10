@@ -27,6 +27,9 @@ private api = inject(ApiService);
   apiUrl = this.api.getBaseUrl();
   
   player: Player | null = null;
+  allPlayers: Player[] = [];
+  filteredPlayers: Player[] = [];
+  searchPlayerText = '';
   allTags: PlayerTag[] = [];
   
   positiveTags: PlayerTag[] = [];
@@ -50,7 +53,11 @@ private api = inject(ApiService);
   ngOnInit(): void {
     this.api.getTags().subscribe(tags => {
       this.allTags = tags;
-      this.loadProfile();
+    });
+    
+    this.api.getPlayers().subscribe(players => {
+      this.allPlayers = players;
+      this.filteredPlayers = players;
     });
     
     this.api.getBlades().subscribe(b => {
@@ -65,17 +72,21 @@ private api = inject(ApiService);
     });
   }
 
-  loadProfile(): void {
-    this.api.getMe().subscribe({
-      next: (p) => {
-        this.player = p;
-        this.distributeTags();
-        if (!this.player.racket) {
-          this.player.racket = {};
-        }
-      },
-      error: (err) => console.error(err)
-    });
+  loadProfile(p: Player): void {
+    this.player = p;
+    this.distributeTags();
+    if (!this.player.racket) {
+      this.player.racket = {};
+    }
+  }
+
+  filterPlayers(event: any) {
+    const text = event.target.value.toLowerCase();
+    this.searchPlayerText = text;
+    this.filteredPlayers = this.allPlayers.filter(p => 
+      (p.firstName + ' ' + p.lastName).toLowerCase().includes(text) ||
+      (p.lastName + ' ' + p.firstName).toLowerCase().includes(text)
+    );
   }
 
   distributeTags(): void {

@@ -1,151 +1,170 @@
-<div class="dashboard-page" *ngIf="player">
-  <div class="dashboard-header">
-    <h2>Mon Profil : {{ player.login }}</h2>
-    <div class="profile-inputs">
-      <div class="input-container">
-        <label for="playerAge">&Acirc;ge :</label>
-        <input type="number" id="playerAge" [(ngModel)]="player.age" min="5" max="100" class="profile-input" (blur)="saveProfile()">
+<div class="dashboard-page">
+
+  <div *ngIf="player">
+    <div class="dashboard-header">
+      <h2>Modifier le joueur : {{ player.firstName }} {{ player.lastName }}</h2>
+      <div class="profile-inputs">
+        <div class="input-container">
+          <label for="playerFirstName">Prénom :</label>
+          <input type="text" id="playerFirstName" [(ngModel)]="player.firstName" class="profile-input" (blur)="saveProfile()">
+        </div>
+
+        <div class="input-container">
+          <label for="playerLastName">Nom :</label>
+          <input type="text" id="playerLastName" [(ngModel)]="player.lastName" class="profile-input" (blur)="saveProfile()">
+        </div>
+
+        <div class="input-container">
+          <label for="playerAge">&Acirc;ge :</label>
+          <input type="number" id="playerAge" [(ngModel)]="player.age" min="5" max="100" class="profile-input" (blur)="saveProfile()">
+        </div>
+
+        <div class="input-container">
+          <label for="playerGender">Genre :</label>
+          <select id="playerGender" [(ngModel)]="player.gender" class="profile-input" (change)="saveProfile()">
+            <option value="M">Homme</option>
+            <option value="F">Femme</option>
+            <option value="O">Autre</option>
+          </select>
+        </div>
+
+        <div class="input-container">
+          <label for="playerRanking">Classement :</label>
+          <input type="number" id="playerRanking" [(ngModel)]="player.ranking" min="500" max="4000" class="profile-input" (blur)="saveProfile()">
+        </div>
+      </div>
+    </div>
+
+    <div class="dashboard-content">
+      <!-- SECTION RAQUETTE (Custom Dropdowns) -->
+      <div class="section-card racket-section">
+        <h3>Sa Raquette</h3>
+        <div class="equipment-form">
+          <!-- BOIS -->
+          <div class="form-group">
+            <label>Bois (Blade)</label>
+            <div class="custom-select-container">
+              <div class="custom-select-trigger" (click)="toggleBladeDropdown()">
+                <ng-container *ngIf="player.racket?.blade; else noBlade">
+                  <img [src]="apiUrl + '/equipment/blades/' + player.racket!.blade!.id + '/image'" class="item-img" loading="lazy">
+                  <span class="item-name">{{ player.racket!.blade!.name }}</span>
+                </ng-container>
+                <ng-template #noBlade><span class="placeholder">Sélectionner un bois...</span></ng-template>
+                <span class="arrow" [class.open]="bladeDropdownOpen">▼</span>
+              </div>
+              <div class="custom-select-options" *ngIf="bladeDropdownOpen">
+                <div class="dropdown-search">
+                  <input type="text" placeholder="Rechercher un bois..." [value]="searchBladeText" (input)="filterBlades($event)" (click)="$event.stopPropagation()">
+                </div>
+                <div class="custom-option" *ngFor="let blade of filteredBlades" (click)="selectBlade(blade)">
+                  <img [src]="apiUrl + '/equipment/blades/' + blade.id + '/image'" class="item-img" loading="lazy">
+                  <span class="item-name">{{ blade.name }}</span>
+                </div>
+                <div class="no-results" *ngIf="filteredBlades.length === 0">Aucun résultat</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- COUP DROIT -->
+          <div class="form-group">
+            <label>Coup Droit (Forehand)</label>
+            <div class="custom-select-container">
+              <div class="custom-select-trigger" (click)="toggleFhDropdown()">
+                <ng-container *ngIf="player.racket?.forehandRubber; else noFh">
+                  <img [src]="apiUrl + '/equipment/rubbers/' + player.racket!.forehandRubber!.id + '/image'" class="item-img" loading="lazy">
+                  <span class="item-name">{{ player.racket!.forehandRubber!.name }}</span>
+                </ng-container>
+                <ng-template #noFh><span class="placeholder">Sélectionner un revêtement...</span></ng-template>
+                <span class="arrow" [class.open]="fhDropdownOpen">▼</span>
+              </div>
+              <div class="custom-select-options" *ngIf="fhDropdownOpen">
+                <div class="dropdown-search">
+                  <input type="text" placeholder="Rechercher un revêtement..." [value]="searchFhText" (input)="filterFhRubbers($event)" (click)="$event.stopPropagation()">
+                </div>
+                <div class="custom-option" *ngFor="let rubber of filteredFhRubbers" (click)="selectFhRubber(rubber)">
+                  <img [src]="apiUrl + '/equipment/rubbers/' + rubber.id + '/image'" class="item-img" loading="lazy">
+                  <span class="item-name">{{ rubber.name }}</span>
+                </div>
+                <div class="no-results" *ngIf="filteredFhRubbers.length === 0">Aucun résultat</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- REVERS -->
+          <div class="form-group">
+            <label>Revers (Backhand)</label>
+            <div class="custom-select-container">
+              <div class="custom-select-trigger" (click)="toggleBhDropdown()">
+                <ng-container *ngIf="player.racket?.backhandRubber; else noBh">
+                  <img [src]="apiUrl + '/equipment/rubbers/' + player.racket!.backhandRubber!.id + '/image'" class="item-img" loading="lazy">
+                  <span class="item-name">{{ player.racket!.backhandRubber!.name }}</span>
+                </ng-container>
+                <ng-template #noBh><span class="placeholder">Sélectionner un revêtement...</span></ng-template>
+                <span class="arrow" [class.open]="bhDropdownOpen">▼</span>
+              </div>
+              <div class="custom-select-options" *ngIf="bhDropdownOpen">
+                <div class="dropdown-search">
+                  <input type="text" placeholder="Rechercher un revêtement..." [value]="searchBhText" (input)="filterBhRubbers($event)" (click)="$event.stopPropagation()">
+                </div>
+                <div class="custom-option" *ngFor="let rubber of filteredBhRubbers" (click)="selectBhRubber(rubber)">
+                  <img [src]="apiUrl + '/equipment/rubbers/' + rubber.id + '/image'" class="item-img" loading="lazy">
+                  <span class="item-name">{{ rubber.name }}</span>
+                </div>
+                <div class="no-results" *ngIf="filteredBhRubbers.length === 0">Aucun résultat</div>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
 
-      <div class="input-container">
-        <label for="playerGender">Genre :</label>
-        <select id="playerGender" [(ngModel)]="player.gender" class="profile-input" (change)="saveProfile()">
-          <option value="M">Homme</option>
-          <option value="F">Femme</option>
-          <option value="O">Autre</option>
-        </select>
-      </div>
-
-      <div class="input-container">
-        <label for="playerRanking">Classement :</label>
-        <input type="number" id="playerRanking" [(ngModel)]="player.ranking" min="500" max="4000" class="profile-input" (blur)="saveProfile()">
+      <!-- SECTION ETIQUETTES (Tags) Drag & Drop -->
+      <div class="section-card tags-section">
+        <h3>Son Style de Jeu</h3>
+        <p class="section-desc">Faites glisser les étiquettes dans les colonnes correspondantes pour définir le profil du joueur.</p>
+        <div class="tags-dnd-container">
+          <div class="tag-column positive-col">
+            <h4>💪 Il/Elle est</h4>
+            <div cdkDropList
+                 #positiveList="cdkDropList"
+                 [cdkDropListData]="positiveTags"
+                 [cdkDropListConnectedTo]="[negativeList]"
+                 class="tag-list"
+                 (cdkDropListDropped)="drop($event)">
+              <div class="tag-item" *ngFor="let item of positiveTags" cdkDrag>
+                {{item.name}}
+              </div>
+            </div>
+          </div>
+          <div class="tag-column negative-col">
+            <h4>🤷 Il/Elle n'est pas</h4>
+            <div cdkDropList
+                 #negativeList="cdkDropList"
+                 [cdkDropListData]="negativeTags"
+                 [cdkDropListConnectedTo]="[positiveList]"
+                 class="tag-list"
+                 (cdkDropListDropped)="drop($event)">
+              <div class="tag-item" *ngFor="let item of negativeTags" cdkDrag>
+                {{item.name}}
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   </div>
 
-  <div class="dashboard-content">
-
-    <!-- SECTION RAQUETTE (Custom Dropdowns) -->
-    <div class="section-card racket-section">
-      <h3>Ma Raquette</h3>
-
-      <div class="equipment-form">
-        <!-- BOIS -->
-        <div class="form-group">
-          <label>Bois (Blade)</label>
-          <div class="custom-select-container">
-            <div class="custom-select-trigger" (click)="toggleBladeDropdown()">
-              <ng-container *ngIf="player.racket?.blade; else noBlade">
-                <img [src]="apiUrl + '/equipment/blades/' + player.racket!.blade!.id + '/image'" class="item-img" loading="lazy">
-                <span class="item-name">{{ player.racket!.blade!.name }}</span>
-              </ng-container>
-              <ng-template #noBlade><span class="placeholder">Sélectionner un bois...</span></ng-template>
-              <span class="arrow" [class.open]="bladeDropdownOpen">▼</span>
-            </div>
-            <div class="custom-select-options" *ngIf="bladeDropdownOpen">
-              <div class="dropdown-search">
-                <input type="text" placeholder="Rechercher un bois..." [value]="searchBladeText" (input)="filterBlades($event)" (click)="$event.stopPropagation()">
-              </div>
-              <div class="custom-option" *ngFor="let blade of filteredBlades" (click)="selectBlade(blade)">
-                <img [src]="apiUrl + '/equipment/blades/' + blade.id + '/image'" class="item-img" loading="lazy">
-                <span class="item-name">{{ blade.name }}</span>
-              </div>
-              <div class="no-results" *ngIf="filteredBlades.length === 0">Aucun résultat</div>
-            </div>
-          </div>
+  <div class="section-card player-selection-section" style="margin-top: 30px;">
+    <h3>Sélectionner un joueur à modifier</h3>
+    <input type="text" placeholder="Filtrer par nom..." [value]="searchPlayerText" (input)="filterPlayers($event)" class="profile-input" style="margin-bottom: 15px; width: 100%;">
+    
+    <div class="custom-select-container">
+      <div class="custom-select-options" style="position: relative; display: block; border: 1px solid #ccc; max-height: 250px; overflow-y: auto;">
+        <div class="custom-option" *ngFor="let p of filteredPlayers" (click)="loadProfile(p)" style="padding: 10px; cursor: pointer; border-bottom: 1px solid #eee;">
+          <span class="item-name">{{ p.firstName }} {{ p.lastName }} ({{ p.ranking }} pts)</span>
         </div>
-
-        <!-- COUP DROIT -->
-        <div class="form-group">
-          <label>Coup Droit (Forehand)</label>
-          <div class="custom-select-container">
-            <div class="custom-select-trigger" (click)="toggleFhDropdown()">
-              <ng-container *ngIf="player.racket?.forehandRubber; else noFh">
-                <img [src]="apiUrl + '/equipment/rubbers/' + player.racket!.forehandRubber!.id + '/image'" class="item-img" loading="lazy">
-                <span class="item-name">{{ player.racket!.forehandRubber!.name }}</span>
-              </ng-container>
-              <ng-template #noFh><span class="placeholder">Sélectionner un revêtement...</span></ng-template>
-              <span class="arrow" [class.open]="fhDropdownOpen">▼</span>
-            </div>
-            <div class="custom-select-options" *ngIf="fhDropdownOpen">
-              <div class="dropdown-search">
-                <input type="text" placeholder="Rechercher un revêtement..." [value]="searchFhText" (input)="filterFhRubbers($event)" (click)="$event.stopPropagation()">
-              </div>
-              <div class="custom-option" *ngFor="let rubber of filteredFhRubbers" (click)="selectFhRubber(rubber)">
-                <img [src]="apiUrl + '/equipment/rubbers/' + rubber.id + '/image'" class="item-img" loading="lazy">
-                <span class="item-name">{{ rubber.name }}</span>
-              </div>
-              <div class="no-results" *ngIf="filteredFhRubbers.length === 0">Aucun résultat</div>
-            </div>
-          </div>
-        </div>
-
-        <!-- REVERS -->
-        <div class="form-group">
-          <label>Revers (Backhand)</label>
-          <div class="custom-select-container">
-            <div class="custom-select-trigger" (click)="toggleBhDropdown()">
-              <ng-container *ngIf="player.racket?.backhandRubber; else noBh">
-                <img [src]="apiUrl + '/equipment/rubbers/' + player.racket!.backhandRubber!.id + '/image'" class="item-img" loading="lazy">
-                <span class="item-name">{{ player.racket!.backhandRubber!.name }}</span>
-              </ng-container>
-              <ng-template #noBh><span class="placeholder">Sélectionner un revêtement...</span></ng-template>
-              <span class="arrow" [class.open]="bhDropdownOpen">▼</span>
-            </div>
-            <div class="custom-select-options" *ngIf="bhDropdownOpen">
-              <div class="dropdown-search">
-                <input type="text" placeholder="Rechercher un revêtement..." [value]="searchBhText" (input)="filterBhRubbers($event)" (click)="$event.stopPropagation()">
-              </div>
-              <div class="custom-option" *ngFor="let rubber of filteredBhRubbers" (click)="selectBhRubber(rubber)">
-                <img [src]="apiUrl + '/equipment/rubbers/' + rubber.id + '/image'" class="item-img" loading="lazy">
-                <span class="item-name">{{ rubber.name }}</span>
-              </div>
-              <div class="no-results" *ngIf="filteredBhRubbers.length === 0">Aucun résultat</div>
-            </div>
-          </div>
-        </div>
+        <div class="no-results" *ngIf="filteredPlayers.length === 0" style="padding: 10px;">Aucun joueur trouvé</div>
       </div>
     </div>
-
-    <!-- SECTION ETIQUETTES (Tags) Drag & Drop -->
-    <div class="section-card tags-section">
-      <h3>Mon Style de Jeu</h3>
-      <p class="section-desc">Faites glisser les étiquettes dans les colonnes correspondantes pour définir votre profil de joueur.</p>
-
-      <div class="tags-dnd-container">
-
-        <!-- Colonne JE SUIS -->
-        <div class="tag-column positive-col">
-          <h4>💪 Je suis</h4>
-          <div cdkDropList
-               #positiveList="cdkDropList"
-               [cdkDropListData]="positiveTags"
-               [cdkDropListConnectedTo]="[negativeList]"
-               class="tag-list"
-               (cdkDropListDropped)="drop($event)">
-            <div class="tag-item" *ngFor="let item of positiveTags" cdkDrag>
-              {{item.name}}
-            </div>
-          </div>
-        </div>
-
-        <!-- Colonne JE NE SUIS PAS -->
-        <div class="tag-column negative-col">
-          <h4>🤷 Je ne suis pas</h4>
-          <div cdkDropList
-               #negativeList="cdkDropList"
-               [cdkDropListData]="negativeTags"
-               [cdkDropListConnectedTo]="[positiveList]"
-               class="tag-list"
-               (cdkDropListDropped)="drop($event)">
-            <div class="tag-item" *ngFor="let item of negativeTags" cdkDrag>
-              {{item.name}}
-            </div>
-          </div>
-        </div>
-
-      </div>
-    </div>
-
   </div>
+
 </div>

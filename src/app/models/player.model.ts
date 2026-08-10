@@ -3,7 +3,8 @@ import { PlayerTag } from './player-tag.model';
 
 export interface Player {
   id: number;
-  login: string;
+  firstName: string;
+  lastName: string;
   age?: number;
   nationality?: string;
   ranking?: number;

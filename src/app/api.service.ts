@@ -32,6 +32,14 @@ export class ApiService {
     return this.http.post<Blade>(`${this.baseUrl}/equipment/blades`, payload);
   }
 
+  updateBlade(id: number, payload: any): Observable<Blade> {
+    return this.http.put<Blade>(`${this.baseUrl}/equipment/blades/${id}`, payload);
+  }
+
+  updateRubber(id: number, payload: any): Observable<Rubber> {
+    return this.http.put<Rubber>(`${this.baseUrl}/equipment/rubbers/${id}`, payload);
+  }
+
   getPlayers(): Observable<Player[]> {
     return this.http.get<Player[]>(`${this.baseUrl}/players`);
   }

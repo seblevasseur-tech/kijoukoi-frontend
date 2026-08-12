@@ -6,6 +6,7 @@ import { Brand } from '../../models/brand.model';
 import { RubberType } from '../../models/rubber-type.model';
 import { ToastService } from '../../shared/toast/toast.service';
 import { RubberListComponent } from '../rubber-list/rubber-list.component';
+import { Rubber } from '../../models/rubber.model';
 
 @Component({
   selector: 'app-add-rubber',
@@ -21,6 +22,7 @@ export class AddRubberComponent implements OnInit {
   imagePreview: string | ArrayBuffer | null = null;
   imageBase64: string = '';
   isSubmitting = false;
+  editingRubberId: number | null = null;
 
   @ViewChild(RubberListComponent) rubberListComp!: RubberListComponent;
 
@@ -68,8 +70,25 @@ export class AddRubberComponent implements OnInit {
     }
   }
 
+  onEditRubber(rubber: Rubber) {
+    this.editingRubberId = rubber.id;
+    this.addRubberForm.patchValue({
+      name: rubber.name,
+      brandId: rubber.brand.id,
+      typeId: rubber.rubberType.id,
+      hardness: rubber.hardness,
+      image: null // We don't have the file object, but it's optional for edit
+    });
+    this.addRubberForm.get('image')?.clearValidators();
+    this.addRubberForm.get('image')?.updateValueAndValidity();
+    
+    this.imageBase64 = '';
+    this.imagePreview = this.api.getBaseUrl() + '/equipment/rubbers/' + rubber.id + '/image';
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
   onSubmit() {
-    if (this.addRubberForm.invalid || !this.imageBase64) {
+    if (this.addRubberForm.invalid || (!this.imageBase64 && !this.editingRubberId)) {
       this.toast.show("Veuillez remplir tous les champs obligatoires et ajouter une image.", "error");
       Object.keys(this.addRubberForm.controls).forEach(key => {
         this.addRubberForm.get(key)?.markAsTouched();
@@ -88,24 +107,44 @@ export class AddRubberComponent implements OnInit {
       imageBase64: this.imageBase64
     };
 
-    this.api.createRubber(rubberData).subscribe({
-      next: (rubber) => {
-        this.toast.show("Revêtement ajouté avec succès !", "success");
-        this.resetForm();
-        if (this.rubberListComp) {
-          this.rubberListComp.fetchRubbers();
+    if (this.editingRubberId) {
+      this.api.updateRubber(this.editingRubberId, rubberData).subscribe({
+        next: (rubber) => {
+          this.toast.show("Revêtement modifié avec succès !", "success");
+          this.resetForm();
+          if (this.rubberListComp) {
+            this.rubberListComp.fetchRubbers();
+          }
+        },
+        error: (err) => {
+          console.error(err);
+          this.toast.show("Erreur lors de la modification du revêtement.", "error");
+          this.isSubmitting = false;
         }
-      },
-      error: (err) => {
-        console.error(err);
-        this.toast.show("Erreur lors de l'ajout du revêtement.", "error");
-        this.isSubmitting = false;
-      }
-    });
+      });
+    } else {
+      this.api.createRubber(rubberData).subscribe({
+        next: (rubber) => {
+          this.toast.show("Revêtement ajouté avec succès !", "success");
+          this.resetForm();
+          if (this.rubberListComp) {
+            this.rubberListComp.fetchRubbers();
+          }
+        },
+        error: (err) => {
+          console.error(err);
+          this.toast.show("Erreur lors de l'ajout du revêtement.", "error");
+          this.isSubmitting = false;
+        }
+      });
+    }
   }
 
   resetForm() {
+    this.editingRubberId = null;
     this.addRubberForm.reset();
+    this.addRubberForm.get('image')?.setValidators(Validators.required);
+    this.addRubberForm.get('image')?.updateValueAndValidity();
     this.imagePreview = null;
     this.imageBase64 = '';
     this.isSubmitting = false;

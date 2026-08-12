@@ -1,4 +1,4 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, OnInit, inject, Output, EventEmitter } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { MatSliderModule } from '@angular/material/slider';
@@ -31,6 +31,8 @@ export class BladeListComponent implements OnInit {
   minWeight = 50;
   maxWeight = 110;
   activeDropdown: string | null = null;
+  
+  @Output() itemClicked = new EventEmitter<Blade>();
   
   private filterSubject = new Subject<void>();
 
@@ -106,6 +108,11 @@ export class BladeListComponent implements OnInit {
     event.stopPropagation();
     this[arrayName] = [];
     this.onFilterChange();
+  }
+
+  onBladeClick(blade: Blade, event: Event) {
+    event.preventDefault();
+    this.itemClicked.emit(blade);
   }
 
   get displayBrands() { return this.brands.filter(b => this.selectedBrandIds.includes(b.id)); }

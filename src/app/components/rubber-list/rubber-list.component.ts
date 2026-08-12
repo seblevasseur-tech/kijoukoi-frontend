@@ -1,4 +1,4 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, OnInit, inject, Output, EventEmitter } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { MatSliderModule } from '@angular/material/slider';
@@ -31,6 +31,8 @@ export class RubberListComponent implements OnInit {
   minHardness = 30;
   maxHardness = 65;
   activeDropdown: string | null = null;
+  
+  @Output() itemClicked = new EventEmitter<Rubber>();
   
   private filterSubject = new Subject<void>();
 
@@ -97,6 +99,11 @@ export class RubberListComponent implements OnInit {
     event.stopPropagation();
     this[arrayName] = [];
     this.onFilterChange();
+  }
+
+  onRubberClick(rubber: Rubber, event: Event) {
+    event.preventDefault();
+    this.itemClicked.emit(rubber);
   }
 
   get displayBrands() { return this.brands.filter(b => this.selectedBrandIds.includes(b.id)); }

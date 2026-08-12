@@ -1,8 +1,8 @@
 <div class="add-equipment-page">
   <div class="form-card">
     <div class="header-section">
-      <h2 class="form-title">Ajouter un Bois</h2>
-      <p class="form-subtitle">Renseignez les informations de ce nouveau modèle. Tous les champs sont obligatoires.</p>
+      <h2 class="form-title">{{ editingBladeId ? 'Modifier un Bois' : 'Ajouter un Bois' }}</h2>
+      <p class="form-subtitle">{{ editingBladeId ? 'Modifiez les informations de ce modèle.' : 'Renseignez les informations de ce nouveau modèle. Tous les champs sont obligatoires.' }}</p>
     </div>
 
     <form [formGroup]="bladeForm" (ngSubmit)="onSubmit()" class="modern-form">
@@ -76,10 +76,10 @@
       </div>
 
       <div class="form-actions">
-        <button type="button" class="btn btn-outline" (click)="resetForm()">Réinitialiser</button>
+        <button type="button" class="btn btn-outline" (click)="resetForm()">{{ editingBladeId ? 'Annuler' : 'Réinitialiser' }}</button>
         <button type="submit" class="btn btn-primary" [disabled]="isSubmitting">
           <span *ngIf="isSubmitting" class="spinner"></span>
-          {{ isSubmitting ? 'Ajout en cours...' : 'Ajouter le bois' }}
+          {{ isSubmitting ? 'Enregistrement...' : (editingBladeId ? 'Modifier le bois' : 'Ajouter le bois') }}
         </button>
       </div>
     </form>
@@ -90,5 +90,5 @@
 
 <div class="list-section">
   <h3>Tous les Bois</h3>
-  <app-blade-list #bladeList></app-blade-list>
+  <app-blade-list #bladeList (itemClicked)="onEditBlade($event)"></app-blade-list>
 </div>

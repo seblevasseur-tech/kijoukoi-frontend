@@ -1,8 +1,8 @@
 <div class="add-equipment-page">
   <div class="form-card">
     <div class="header-section">
-      <h2 class="form-title">Ajouter un Revêtement</h2>
-      <p class="form-subtitle">Complétez le formulaire ci-dessous pour ajouter un nouveau revêtement à la base de données. Tous les champs sont obligatoires.</p>
+      <h2 class="form-title">{{ editingRubberId ? 'Modifier un Revêtement' : 'Ajouter un Revêtement' }}</h2>
+      <p class="form-subtitle">{{ editingRubberId ? 'Modifiez les informations de ce modèle.' : 'Complétez le formulaire ci-dessous pour ajouter un nouveau revêtement à la base de données. Tous les champs sont obligatoires.' }}</p>
     </div>
 
     <form [formGroup]="addRubberForm" (ngSubmit)="onSubmit()" class="modern-form">
@@ -82,10 +82,10 @@
       </div>
 
       <div class="form-actions">
-        <button type="button" class="btn btn-outline" (click)="resetForm()">Réinitialiser</button>
+        <button type="button" class="btn btn-outline" (click)="resetForm()">{{ editingRubberId ? 'Annuler' : 'Réinitialiser' }}</button>
         <button type="submit" class="btn btn-primary" [disabled]="isSubmitting">
           <span *ngIf="isSubmitting" class="spinner"></span>
-          {{ isSubmitting ? 'Ajout en cours...' : 'Ajouter le revêtement' }}
+          {{ isSubmitting ? 'Enregistrement...' : (editingRubberId ? 'Modifier le revêtement' : 'Ajouter le revêtement') }}
         </button>
       </div>
 
@@ -97,5 +97,5 @@
 
 <div class="list-section">
   <h3>Tous les Revêtements</h3>
-  <app-rubber-list></app-rubber-list>
+  <app-rubber-list (itemClicked)="onEditRubber($event)"></app-rubber-list>
 </div>

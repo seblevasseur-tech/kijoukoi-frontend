@@ -55,7 +55,7 @@
   </div>
 
   <div class="blades-grid" *ngIf="blades.length > 0; else noBlades">
-    <a class="blade-card" *ngFor="let blade of blades">
+    <a class="blade-card" *ngFor="let blade of blades" (click)="onBladeClick(blade, $event)">
       <div class="card-avatar">
         <img [src]="apiUrl + '/equipment/blades/' + blade.id + '/image'" [alt]="blade.name" loading="lazy" />
       </div>

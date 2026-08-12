@@ -5,6 +5,7 @@ import { ApiService } from '../../api.service';
 import { Brand } from '../../models/brand.model';
 import { BladeType } from '../../models/blade-type.model';
 import { BladeListComponent } from '../blade-list/blade-list.component';
+import { Blade } from '../../models/blade.model';
 import { ToastService } from '../../shared/toast/toast.service';
 
 @Component({
@@ -27,6 +28,7 @@ export class AddBladeComponent implements OnInit {
   imagePreview: string | ArrayBuffer | null = null;
   imageBase64: string = '';
   isSubmitting = false;
+  editingBladeId: number | null = null;
 
   ngOnInit() {
     this.bladeForm = this.fb.group({
@@ -61,6 +63,19 @@ export class AddBladeComponent implements OnInit {
     }
   }
 
+  onEditBlade(blade: Blade) {
+    this.editingBladeId = blade.id;
+    this.bladeForm.patchValue({
+      name: blade.name,
+      brandId: blade.brand.id,
+      weight: blade.weight,
+      typeId: blade.bladeType.id
+    });
+    this.imageBase64 = '';
+    this.imagePreview = this.api.getBaseUrl() + '/equipment/blades/' + blade.id + '/image';
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
   onSubmit() {
     if (this.bladeForm.invalid) {
       this.toastService.show("Veuillez remplir tous les champs obligatoires.", "error");
@@ -76,23 +91,41 @@ export class AddBladeComponent implements OnInit {
       imageBase64: this.imageBase64
     };
 
-    this.api.createBlade(payload).subscribe({
-      next: () => {
-        this.toastService.show('Bois ajouté avec succès !', 'success');
-        this.resetForm();
-        if (this.bladeList) {
-          this.bladeList.fetchBlades();
+    if (this.editingBladeId) {
+      this.api.updateBlade(this.editingBladeId, payload).subscribe({
+        next: () => {
+          this.toastService.show('Bois modifié avec succès !', 'success');
+          this.resetForm();
+          if (this.bladeList) {
+            this.bladeList.fetchBlades();
+          }
+        },
+        error: (err) => {
+          console.error(err);
+          this.toastService.show("Erreur lors de la modification du bois.", "error");
+          this.isSubmitting = false;
         }
-      },
-      error: (err) => {
-        console.error(err);
-        this.toastService.show("Erreur lors de l'ajout du bois.", "error");
-        this.isSubmitting = false;
-      }
-    });
+      });
+    } else {
+      this.api.createBlade(payload).subscribe({
+        next: () => {
+          this.toastService.show('Bois ajouté avec succès !', 'success');
+          this.resetForm();
+          if (this.bladeList) {
+            this.bladeList.fetchBlades();
+          }
+        },
+        error: (err) => {
+          console.error(err);
+          this.toastService.show("Erreur lors de l'ajout du bois.", "error");
+          this.isSubmitting = false;
+        }
+      });
+    }
   }
 
   resetForm() {
+    this.editingBladeId = null;
     this.bladeForm.reset();
     this.imagePreview = null;
     this.imageBase64 = '';

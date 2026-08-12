@@ -55,7 +55,7 @@
   </div>
 
   <div class="rubbers-grid" *ngIf="rubbers.length > 0; else noRubbers">
-    <a class="rubber-card" *ngFor="let rubber of rubbers">
+    <a class="rubber-card" *ngFor="let rubber of rubbers" (click)="onRubberClick(rubber, $event)">
       <div class="card-avatar">
         <img [src]="apiUrl + '/equipment/rubbers/' + rubber.id + '/image'" [alt]="rubber.name" loading="lazy" />
       </div>

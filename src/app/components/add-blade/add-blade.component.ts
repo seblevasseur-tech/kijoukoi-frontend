@@ -24,8 +24,9 @@ export class AddBladeComponent implements OnInit {
   bladeForm!: FormGroup;
   brands: Brand[] = [];
   bladeTypes: BladeType[] = [];
+  imagePreview: string | ArrayBuffer | null = null;
   imageBase64: string = '';
-  imageFileName: string = '';
+  isSubmitting = false;
 
   ngOnInit() {
     this.bladeForm = this.fb.group({
@@ -42,9 +43,18 @@ export class AddBladeComponent implements OnInit {
   onFileSelected(event: any) {
     const file = event.target.files[0];
     if (file) {
-      this.imageFileName = file.name;
+      if (!file.type.match(/image\/(jpeg|png|webp)/)) {
+        this.toastService.show("Format non supporté. Veuillez utiliser JPG, PNG ou WEBP.", "error");
+        return;
+      }
+      if (file.size > 2 * 1024 * 1024) {
+        this.toastService.show("L'image est trop lourde (Max 2MB).", "error");
+        return;
+      }
+      
       const reader = new FileReader();
       reader.onload = (e: any) => {
+        this.imagePreview = reader.result;
         this.imageBase64 = e.target.result;
       };
       reader.readAsDataURL(file);
@@ -52,27 +62,40 @@ export class AddBladeComponent implements OnInit {
   }
 
   onSubmit() {
-    if (this.bladeForm.valid) {
-      const payload = {
-        ...this.bladeForm.value,
-        imageBase64: this.imageBase64
-      };
-
-      this.api.createBlade(payload).subscribe({
-        next: () => {
-          this.toastService.show('Bois ajouté avec succès !');
-          this.bladeForm.reset();
-          this.imageBase64 = '';
-          this.imageFileName = '';
-          if (this.bladeList) {
-            this.bladeList.fetchBlades();
-          }
-        },
-        error: (err) => {
-          console.error(err);
-          this.toastService.show("Erreur lors de l'ajout du bois.");
-        }
+    if (this.bladeForm.invalid) {
+      this.toastService.show("Veuillez remplir tous les champs obligatoires.", "error");
+      Object.keys(this.bladeForm.controls).forEach(key => {
+        this.bladeForm.get(key)?.markAsTouched();
       });
+      return;
     }
+
+    this.isSubmitting = true;
+    const payload = {
+      ...this.bladeForm.value,
+      imageBase64: this.imageBase64
+    };
+
+    this.api.createBlade(payload).subscribe({
+      next: () => {
+        this.toastService.show('Bois ajouté avec succès !', 'success');
+        this.resetForm();
+        if (this.bladeList) {
+          this.bladeList.fetchBlades();
+        }
+      },
+      error: (err) => {
+        console.error(err);
+        this.toastService.show("Erreur lors de l'ajout du bois.", "error");
+        this.isSubmitting = false;
+      }
+    });
+  }
+
+  resetForm() {
+    this.bladeForm.reset();
+    this.imagePreview = null;
+    this.imageBase64 = '';
+    this.isSubmitting = false;
   }
 }

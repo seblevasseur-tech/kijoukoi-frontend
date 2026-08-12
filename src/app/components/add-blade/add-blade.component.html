@@ -1,22 +1,32 @@
-<div class="add-blade-container">
+<div class="add-equipment-page">
   <div class="form-card">
-    <h2 class="form-title">Ajouter un Bois</h2>
-    <p class="form-subtitle">Renseignez les informations de ce nouveau modèle.</p>
+    <div class="header-section">
+      <h2 class="form-title">Ajouter un Bois</h2>
+      <p class="form-subtitle">Renseignez les informations de ce nouveau modèle. Tous les champs sont obligatoires.</p>
+    </div>
 
-    <form [formGroup]="bladeForm" (ngSubmit)="onSubmit()" class="blade-form">
+    <form [formGroup]="bladeForm" (ngSubmit)="onSubmit()" class="modern-form">
       <!-- Ligne 1 : Nom et Marque -->
       <div class="form-row">
         <div class="form-group">
           <label for="name">Nom du modèle *</label>
-          <input type="text" id="name" formControlName="name" placeholder="Ex: Viscaria" />
+          <input type="text" id="name" formControlName="name" placeholder="Ex: Viscaria" 
+                 [class.is-invalid]="bladeForm.get('name')?.invalid && bladeForm.get('name')?.touched" />
+          <div class="error-msg" *ngIf="bladeForm.get('name')?.invalid && bladeForm.get('name')?.touched">
+            Le nom est requis.
+          </div>
         </div>
         
         <div class="form-group">
           <label for="brandId">Marque *</label>
-          <select id="brandId" formControlName="brandId">
-            <option value="" disabled selected>Choisir une marque</option>
+          <select id="brandId" formControlName="brandId"
+                  [class.is-invalid]="bladeForm.get('brandId')?.invalid && bladeForm.get('brandId')?.touched">
+            <option value="" disabled selected>Choisir une marque...</option>
             <option *ngFor="let brand of brands" [value]="brand.id">{{ brand.name }}</option>
           </select>
+          <div class="error-msg" *ngIf="bladeForm.get('brandId')?.invalid && bladeForm.get('brandId')?.touched">
+            La marque est requise.
+          </div>
         </div>
       </div>
 
@@ -24,50 +34,61 @@
       <div class="form-row">
         <div class="form-group">
           <label for="weight">Poids moyen (g) *</label>
-          <input type="number" id="weight" formControlName="weight" placeholder="Ex: 85" min="20" max="200" />
+          <input type="number" id="weight" formControlName="weight" placeholder="Ex: 85" min="20" max="200" 
+                 [class.is-invalid]="bladeForm.get('weight')?.invalid && bladeForm.get('weight')?.touched" />
+          <div class="error-msg" *ngIf="bladeForm.get('weight')?.invalid && bladeForm.get('weight')?.touched">
+            Le poids est requis (entre 20 et 200g).
+          </div>
         </div>
         
         <div class="form-group">
           <label for="typeId">Type de bois *</label>
-          <select id="typeId" formControlName="typeId">
-            <option value="" disabled selected>Choisir un type</option>
+          <select id="typeId" formControlName="typeId"
+                  [class.is-invalid]="bladeForm.get('typeId')?.invalid && bladeForm.get('typeId')?.touched">
+            <option value="" disabled selected>Choisir un type...</option>
             <option *ngFor="let type of bladeTypes" [value]="type.id">{{ type.name }}</option>
           </select>
+          <div class="error-msg" *ngIf="bladeForm.get('typeId')?.invalid && bladeForm.get('typeId')?.touched">
+            Le type est requis.
+          </div>
         </div>
       </div>
 
       <!-- Ligne 3 : Image -->
-      <div class="form-row">
-        <div class="form-group full-width image-upload-group">
-          <label>Image (facultatif)</label>
-          <div class="upload-area" [class.has-image]="imageBase64" (click)="fileInput.click()">
-            <input type="file" #fileInput (change)="onFileSelected($event)" accept="image/jpeg,image/png,image/webp" hidden>
-            
-            <div class="upload-placeholder" *ngIf="!imageBase64">
-              <div class="icon">📷</div>
-              <span>Cliquez pour parcourir ou glissez une image ici</span>
-              <small>JPG, PNG, WEBP (Max 2MB)</small>
-            </div>
+      <div class="form-group image-upload-group">
+        <label>Image du bois (facultatif)</label>
+        <div class="upload-area" [class.has-image]="imagePreview" (click)="fileInput.click()">
+          <input type="file" #fileInput (change)="onFileSelected($event)" accept="image/jpeg,image/png,image/webp" hidden>
+          
+          <div class="upload-placeholder" *ngIf="!imagePreview">
+            <div class="icon">📷</div>
+            <span>Cliquez pour parcourir ou glissez une image ici</span>
+            <small>JPG, PNG, WEBP (Max 2MB)</small>
+          </div>
 
-            <div class="image-preview" *ngIf="imageBase64">
-              <img [src]="imageBase64" alt="Aperçu">
-              <div class="change-overlay">
-                <span>Changer d'image</span>
-              </div>
+          <div class="image-preview" *ngIf="imagePreview">
+            <img [src]="imagePreview" alt="Aperçu">
+            <div class="change-overlay">
+              <span>Changer d'image</span>
             </div>
           </div>
         </div>
       </div>
 
       <div class="form-actions">
-        <button type="submit" class="btn-submit" [disabled]="!bladeForm.valid">
-          Ajouter le bois
+        <button type="button" class="btn btn-outline" (click)="resetForm()">Réinitialiser</button>
+        <button type="submit" class="btn btn-primary" [disabled]="isSubmitting">
+          <span *ngIf="isSubmitting" class="spinner"></span>
+          {{ isSubmitting ? 'Ajout en cours...' : 'Ajouter le bois' }}
         </button>
       </div>
     </form>
   </div>
 </div>
 
+<hr class="section-divider">
+
 <div class="list-section">
+  <h3>Tous les Bois</h3>
   <app-blade-list #bladeList></app-blade-list>
 </div>

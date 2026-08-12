@@ -1,4 +1,4 @@
-.add-blade-container {
+.add-equipment-page {
   padding: 20px;
   display: flex;
   justify-content: center;
@@ -13,6 +13,10 @@
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
 }
 
+.header-section {
+  margin-bottom: 24px;
+}
+
 .form-title {
   font-size: 1.5rem;
   font-weight: 700;
@@ -22,11 +26,11 @@
 
 .form-subtitle {
   color: #888;
-  margin-bottom: 24px;
+  margin-bottom: 0;
   font-size: 0.95rem;
 }
 
-.blade-form {
+.modern-form {
   display: flex;
   flex-direction: column;
   gap: 16px;
@@ -84,9 +88,10 @@
   margin-top: 10px;
   display: flex;
   justify-content: flex-end;
+  gap: 12px;
 }
 
-.btn-submit {
+.btn-primary {
   padding: 12px 24px;
   background: var(--color-primary);
   color: white;
@@ -112,8 +117,50 @@
   }
 }
 
-.list-section {
+.btn-outline {
+  padding: 12px 24px;
+  background: transparent;
+  color: var(--color-text);
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background 0.2s;
+  
+  &:hover {
+    background: rgba(0,0,0,0.05);
+  }
+}
+
+.spinner {
+  display: inline-block;
+  width: 14px;
+  height: 14px;
+  border: 2px solid rgba(255,255,255,0.3);
+  border-radius: 50%;
+  border-top-color: white;
+  animation: spin 1s ease-in-out infinite;
+  margin-right: 8px;
+  vertical-align: middle;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.section-divider {
+  margin: 40px 0;
+  border: none;
   border-top: 1px solid var(--color-background);
-  margin-top: 20px;
-  padding-top: 20px;
+}
+
+.list-section {
+  padding-top: 10px;
+  
+  h3 {
+    margin-bottom: 24px;
+    font-size: 1.5rem;
+    color: var(--color-text);
+  }
 }

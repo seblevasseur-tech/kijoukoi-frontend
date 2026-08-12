@@ -157,14 +157,33 @@
     <h3>Sélectionner un joueur à modifier</h3>
     <input type="text" placeholder="Filtrer par nom..." [value]="searchPlayerText" (input)="filterPlayers($event)" class="profile-input" style="margin-bottom: 15px; width: 100%;">
     
-    <div class="custom-select-container">
-      <div class="custom-select-options" style="position: relative; display: block; border: 1px solid #ccc; max-height: 250px; overflow-y: auto;">
-        <div class="custom-option" *ngFor="let p of filteredPlayers" (click)="loadProfile(p)" style="padding: 10px; cursor: pointer; border-bottom: 1px solid #eee;">
-          <span class="item-name">{{ p.firstName }} {{ p.lastName }} ({{ p.ranking }} pts)</span>
+    <div class="players-grid" *ngIf="filteredPlayers.length > 0; else noPlayers">
+      <a class="player-card" *ngFor="let p of filteredPlayers" (click)="loadProfile(p)" style="cursor: pointer;">
+        <div class="card-avatar">
+          <img [src]="p.avatar || 'https://api.dicebear.com/7.x/avataaars/svg?seed=' + p.firstName + p.lastName" [alt]="p.firstName + ' ' + p.lastName" />
         </div>
-        <div class="no-results" *ngIf="filteredPlayers.length === 0" style="padding: 10px;">Aucun joueur trouvé</div>
-      </div>
+
+        <div class="card-info">
+          <h3 class="player-name">{{ p.firstName }} {{ p.lastName }}</h3>
+          <p style="color: var(--color-text-secondary); margin-top: 4px; font-size: 0.9em;">Classement: {{ p.ranking }}</p>
+          
+          <div *ngIf="p.racket" style="margin-top: 12px; font-size: 0.85em; color: var(--color-text-secondary);">
+            <div *ngIf="p.racket.blade">
+              <strong>Bois:</strong> <span [ngStyle]="{'color': p.racket.blade.name === 'Matériel introuvable' ? '#ff4444' : 'inherit', 'font-weight': p.racket.blade.name === 'Matériel introuvable' ? 'bold' : 'normal'}">{{ p.racket.blade.name }}</span>
+            </div>
+            <div *ngIf="p.racket.forehandRubber">
+              <strong>CD:</strong> <span [ngStyle]="{'color': p.racket.forehandRubber.name === 'Matériel introuvable' ? '#ff4444' : 'inherit', 'font-weight': p.racket.forehandRubber.name === 'Matériel introuvable' ? 'bold' : 'normal'}">{{ p.racket.forehandRubber.name }}</span>
+            </div>
+            <div *ngIf="p.racket.backhandRubber">
+              <strong>RV:</strong> <span [ngStyle]="{'color': p.racket.backhandRubber.name === 'Matériel introuvable' ? '#ff4444' : 'inherit', 'font-weight': p.racket.backhandRubber.name === 'Matériel introuvable' ? 'bold' : 'normal'}">{{ p.racket.backhandRubber.name }}</span>
+            </div>
+          </div>
+        </div>
+      </a>
     </div>
+    <ng-template #noPlayers>
+        <p class="no-players">Aucun joueur trouvé.</p>
+    </ng-template>
   </div>
 
 </div>

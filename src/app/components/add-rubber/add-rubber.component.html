@@ -1,10 +1,10 @@
 <div class="add-equipment-page">
-  <div class="header-section">
-    <h2>Ajouter un Revêtement</h2>
-    <p>Complétez le formulaire ci-dessous pour ajouter un nouveau revêtement à la base de données. Tous les champs sont obligatoires.</p>
-  </div>
-
   <div class="form-card">
+    <div class="header-section">
+      <h2 class="form-title">Ajouter un Revêtement</h2>
+      <p class="form-subtitle">Complétez le formulaire ci-dessous pour ajouter un nouveau revêtement à la base de données. Tous les champs sont obligatoires.</p>
+    </div>
+
     <form [formGroup]="addRubberForm" (ngSubmit)="onSubmit()" class="modern-form">
       
       <div class="form-row">
@@ -91,11 +91,11 @@
 
     </form>
   </div>
+</div>
 
-  <hr class="section-divider">
+<hr class="section-divider">
 
-  <div class="list-section">
-    <h3>Tous les Revêtements</h3>
-    <app-rubber-list></app-rubber-list>
-  </div>
+<div class="list-section">
+  <h3>Tous les Revêtements</h3>
+  <app-rubber-list></app-rubber-list>
 </div>

@@ -78,6 +78,7 @@ private api = inject(ApiService);
     if (!this.player.racket) {
       this.player.racket = {};
     }
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
   filterPlayers(event: any) {

@@ -81,6 +81,29 @@ private api = inject(ApiService);
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
+  onAvatarSelected(event: any) {
+    const file = event.target.files[0];
+    if (file) {
+      if (!file.type.match(/image\/(jpeg|png|webp)/)) {
+        this.toast.show("Format non supporté. Veuillez utiliser JPG, PNG ou WEBP.", "error");
+        return;
+      }
+      if (file.size > 2 * 1024 * 1024) {
+        this.toast.show("L'image est trop lourde (Max 2MB).", "error");
+        return;
+      }
+
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        if (this.player) {
+          this.player.avatar = e.target?.result as string;
+          this.saveProfile();
+        }
+      };
+      reader.readAsDataURL(file);
+    }
+  }
+
   filterPlayers(event: any) {
     const text = event.target.value.toLowerCase();
     this.searchPlayerText = text;

@@ -10,6 +10,19 @@
       <div class="section-card">
         <h3>Informations Générales</h3>
         <div class="profile-form">
+          
+          <div class="avatar-upload-group">
+            <div class="avatar-preview" (click)="avatarInput.click()" title="Modifier l'avatar">
+              <img [src]="player.avatar || 'https://api.dicebear.com/7.x/avataaars/svg?seed=' + player.firstName + player.lastName" alt="Avatar">
+              <div class="overlay">Modifier</div>
+            </div>
+            <div class="avatar-info">
+              <p class="avatar-title">Avatar du joueur</p>
+              <p class="avatar-desc">Cliquez sur l'image pour la modifier (JPG, PNG, WEBP - Max 2MB)</p>
+            </div>
+            <input type="file" #avatarInput (change)="onAvatarSelected($event)" accept="image/jpeg,image/png,image/webp" hidden>
+          </div>
+
           <div class="form-row">
             <div class="form-group">
               <label for="playerFirstName">Prénom :</label>

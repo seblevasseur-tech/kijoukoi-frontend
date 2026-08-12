@@ -1,12 +1,6 @@
 import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import {
-  CdkDragDrop,
-  DragDropModule,
-  moveItemInArray,
-  transferArrayItem,
-} from '@angular/cdk/drag-drop';
 import { ApiService } from '../api.service';
 import { Player } from '../models/player.model';
 import { PlayerTag } from '../models/player-tag.model';
@@ -17,13 +11,13 @@ import { ToastService } from '../shared/toast/toast.service';
 @Component({
   selector: 'app-player-dashboard',
   standalone: true,
-  imports: [CommonModule, FormsModule, DragDropModule],
+  imports: [CommonModule, FormsModule],
   templateUrl: './player-dashboard.component.html',
   styleUrl: './player-dashboard.component.scss'
 })
 export class PlayerDashboardComponent implements OnInit {
   private toast = inject(ToastService);
-private api = inject(ApiService);
+  private api = inject(ApiService);
   apiUrl = this.api.getBaseUrl();
   
   player: Player | null = null;
@@ -32,9 +26,6 @@ private api = inject(ApiService);
   searchPlayerText = '';
   allTags: PlayerTag[] = [];
   
-  positiveTags: PlayerTag[] = [];
-  negativeTags: PlayerTag[] = [];
-
   blades: Blade[] = [];
   filteredBlades: Blade[] = [];
   
@@ -74,9 +65,11 @@ private api = inject(ApiService);
 
   loadProfile(p: Player): void {
     this.player = p;
-    this.distributeTags();
     if (!this.player.racket) {
       this.player.racket = {};
+    }
+    if (!this.player.tags) {
+      this.player.tags = [];
     }
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }
@@ -113,29 +106,20 @@ private api = inject(ApiService);
     );
   }
 
-  distributeTags(): void {
-    if (!this.player) return;
-    const playerTagIds = this.player.tags ? this.player.tags.map(t => t.id) : [];
-    
-    this.positiveTags = this.allTags.filter(t => playerTagIds.includes(t.id));
-    this.negativeTags = this.allTags.filter(t => !playerTagIds.includes(t.id));
+  hasTag(tagId: number): boolean {
+    return !!this.player?.tags?.some(t => t.id === tagId);
   }
 
-  drop(event: CdkDragDrop<PlayerTag[]>) {
-    if (event.previousContainer === event.container) {
-      moveItemInArray(event.container.data, event.previousIndex, event.currentIndex);
+  toggleTag(tag: PlayerTag): void {
+    if (!this.player) return;
+    if (!this.player.tags) this.player.tags = [];
+    
+    if (this.hasTag(tag.id)) {
+      this.player.tags = this.player.tags.filter(t => t.id !== tag.id);
     } else {
-      transferArrayItem(
-        event.previousContainer.data,
-        event.container.data,
-        event.previousIndex,
-        event.currentIndex
-      );
-      if (this.player) {
-        this.player.tags = [...this.positiveTags];
-        this.saveProfile();
-      }
+      this.player.tags.push(tag);
     }
+    this.saveProfile();
   }
   
   toggleBladeDropdown() {
@@ -214,7 +198,6 @@ private api = inject(ApiService);
     if (!this.player) return;
     this.api.updatePlayer(this.player.id, this.player).subscribe(updated => {
       this.player = updated;
-      this.distributeTags();
       this.toast.show('Modifications enregistrées', 'success');
     });
   }

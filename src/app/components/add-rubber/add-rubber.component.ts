@@ -23,6 +23,14 @@ export class AddRubberComponent implements OnInit {
   imageBase64: string = '';
   isSubmitting = false;
   editingRubberId: number | null = null;
+  currentMode: 'add' | 'edit' = 'add';
+
+  switchMode(mode: 'add' | 'edit') {
+    if (this.currentMode !== mode) {
+      this.currentMode = mode;
+      this.resetForm();
+    }
+  }
 
   @ViewChild(RubberListComponent) rubberListComp!: RubberListComponent;
 
@@ -71,6 +79,7 @@ export class AddRubberComponent implements OnInit {
   }
 
   onEditRubber(rubber: Rubber) {
+    this.currentMode = 'edit';
     this.editingRubberId = rubber.id;
     this.addRubberForm.patchValue({
       name: rubber.name,

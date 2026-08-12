@@ -1,5 +1,10 @@
 <div class="add-equipment-page">
-  <div class="form-card">
+  <div class="tabs-container">
+    <button class="tab-btn" [class.active]="currentMode === 'add'" (click)="switchMode('add')">➕ Nouveau Bois</button>
+    <button class="tab-btn" [class.active]="currentMode === 'edit'" (click)="switchMode('edit')">✏️ Gérer les Bois</button>
+  </div>
+
+  <div class="form-card" *ngIf="currentMode === 'add' || (currentMode === 'edit' && editingBladeId)">
     <div class="header-section">
       <h2 class="form-title">{{ editingBladeId ? 'Modifier un Bois' : 'Ajouter un Bois' }}</h2>
       <p class="form-subtitle">{{ editingBladeId ? 'Modifiez les informations de ce modèle.' : 'Renseignez les informations de ce nouveau modèle. Tous les champs sont obligatoires.' }}</p>
@@ -84,11 +89,16 @@
       </div>
     </form>
   </div>
+
+  <div class="placeholder-card" *ngIf="currentMode === 'edit' && !editingBladeId">
+    <div class="placeholder-icon">👆</div>
+    <p>Sélectionnez un bois dans le catalogue ci-dessous pour modifier ses caractéristiques.</p>
+  </div>
 </div>
 
-<hr class="section-divider">
+<hr class="section-divider" *ngIf="currentMode === 'edit'">
 
-<div class="list-section">
-  <h3>Tous les Bois</h3>
+<div class="list-section" *ngIf="currentMode === 'edit'">
+  <h3>Catalogue des Bois</h3>
   <app-blade-list #bladeList (itemClicked)="onEditBlade($event)"></app-blade-list>
 </div>

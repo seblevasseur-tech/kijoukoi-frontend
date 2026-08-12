@@ -1,5 +1,10 @@
 <div class="add-equipment-page">
-  <div class="form-card">
+  <div class="tabs-container">
+    <button class="tab-btn" [class.active]="currentMode === 'add'" (click)="switchMode('add')">➕ Nouveau Revêtement</button>
+    <button class="tab-btn" [class.active]="currentMode === 'edit'" (click)="switchMode('edit')">✏️ Gérer les Revêtements</button>
+  </div>
+
+  <div class="form-card" *ngIf="currentMode === 'add' || (currentMode === 'edit' && editingRubberId)">
     <div class="header-section">
       <h2 class="form-title">{{ editingRubberId ? 'Modifier un Revêtement' : 'Ajouter un Revêtement' }}</h2>
       <p class="form-subtitle">{{ editingRubberId ? 'Modifiez les informations de ce modèle.' : 'Complétez le formulaire ci-dessous pour ajouter un nouveau revêtement à la base de données. Tous les champs sont obligatoires.' }}</p>
@@ -91,11 +96,16 @@
 
     </form>
   </div>
+
+  <div class="placeholder-card" *ngIf="currentMode === 'edit' && !editingRubberId">
+    <div class="placeholder-icon">👆</div>
+    <p>Sélectionnez un revêtement dans le catalogue ci-dessous pour modifier ses caractéristiques.</p>
+  </div>
 </div>
 
-<hr class="section-divider">
+<hr class="section-divider" *ngIf="currentMode === 'edit'">
 
-<div class="list-section">
-  <h3>Tous les Revêtements</h3>
+<div class="list-section" *ngIf="currentMode === 'edit'">
+  <h3>Catalogue des Revêtements</h3>
   <app-rubber-list (itemClicked)="onEditRubber($event)"></app-rubber-list>
 </div>

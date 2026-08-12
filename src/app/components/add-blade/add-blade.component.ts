@@ -29,6 +29,14 @@ export class AddBladeComponent implements OnInit {
   imageBase64: string = '';
   isSubmitting = false;
   editingBladeId: number | null = null;
+  currentMode: 'add' | 'edit' = 'add';
+
+  switchMode(mode: 'add' | 'edit') {
+    if (this.currentMode !== mode) {
+      this.currentMode = mode;
+      this.resetForm();
+    }
+  }
 
   ngOnInit() {
     this.bladeForm = this.fb.group({
@@ -64,6 +72,7 @@ export class AddBladeComponent implements OnInit {
   }
 
   onEditBlade(blade: Blade) {
+    this.currentMode = 'edit';
     this.editingBladeId = blade.id;
     this.bladeForm.patchValue({
       name: blade.name,
@@ -87,7 +96,10 @@ export class AddBladeComponent implements OnInit {
 
     this.isSubmitting = true;
     const payload = {
-      ...this.bladeForm.value,
+      name: this.bladeForm.value.name,
+      brandId: Number(this.bladeForm.value.brandId),
+      weight: Number(this.bladeForm.value.weight),
+      typeId: Number(this.bladeForm.value.typeId),
       imageBase64: this.imageBase64
     };
 

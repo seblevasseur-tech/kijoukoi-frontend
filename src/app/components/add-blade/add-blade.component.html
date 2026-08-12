@@ -38,12 +38,23 @@
 
       <!-- Ligne 3 : Image -->
       <div class="form-row">
-        <div class="form-group full-width">
-          <label for="image">Image (facultatif)</label>
-          <div class="file-input-wrapper">
-            <button type="button" class="btn-file" (click)="fileInput.click()">Sélectionner un fichier</button>
-            <span class="file-name">{{ imageFileName || 'Aucun fichier sélectionné' }}</span>
-            <input type="file" id="image" #fileInput (change)="onFileSelected($event)" accept="image/jpeg, image/png" style="display: none;" />
+        <div class="form-group full-width image-upload-group">
+          <label>Image (facultatif)</label>
+          <div class="upload-area" [class.has-image]="imageBase64" (click)="fileInput.click()">
+            <input type="file" #fileInput (change)="onFileSelected($event)" accept="image/jpeg,image/png,image/webp" hidden>
+            
+            <div class="upload-placeholder" *ngIf="!imageBase64">
+              <div class="icon">📷</div>
+              <span>Cliquez pour parcourir ou glissez une image ici</span>
+              <small>JPG, PNG, WEBP (Max 2MB)</small>
+            </div>
+
+            <div class="image-preview" *ngIf="imageBase64">
+              <img [src]="imageBase64" alt="Aperçu">
+              <div class="change-overlay">
+                <span>Changer d'image</span>
+              </div>
+            </div>
           </div>
         </div>
       </div>

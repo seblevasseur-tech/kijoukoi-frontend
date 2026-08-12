@@ -78,35 +78,7 @@
   }
 }
 
-.file-input-wrapper {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  
-  .btn-file {
-    padding: 8px 16px;
-    background: var(--color-background);
-    border: 1px solid #ddd;
-    border-radius: 6px;
-    cursor: pointer;
-    font-weight: 500;
-    color: var(--color-text);
-    transition: background 0.2s;
-    
-    &:hover {
-      background: #e2e2e2;
-    }
-  }
-  
-  .file-name {
-    font-size: 0.85rem;
-    color: #666;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-    max-width: 250px;
-  }
-}
+.upload-area { border: 2px dashed #ccc; border-radius: 8px; padding: 20px; text-align: center; cursor: pointer; transition: 0.2s; background: var(--color-background); } .upload-area:hover { border-color: var(--color-primary); } .upload-placeholder { display: flex; flex-direction: column; align-items: center; gap: 8px; color: #888; } .image-preview { position: relative; display: flex; justify-content: center; } .image-preview img { max-width: 100%; max-height: 200px; border-radius: 6px; } .error-msg { color: var(--color-primary); font-size: 0.8rem; margin-top: 4px; } .is-invalid { border-color: var(--color-primary) !important; }
 
 .form-actions {
   margin-top: 10px;

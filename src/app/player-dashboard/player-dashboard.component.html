@@ -2,40 +2,44 @@
 
   <div *ngIf="player">
     <div class="dashboard-header">
-      <h2>Modifier le joueur : {{ player.firstName }} {{ player.lastName }}</h2>
-      <div class="profile-inputs">
-        <div class="input-container">
-          <label for="playerFirstName">Prénom :</label>
-          <input type="text" id="playerFirstName" [(ngModel)]="player.firstName" class="profile-input" (blur)="saveProfile()">
-        </div>
-
-        <div class="input-container">
-          <label for="playerLastName">Nom :</label>
-          <input type="text" id="playerLastName" [(ngModel)]="player.lastName" class="profile-input" (blur)="saveProfile()">
-        </div>
-
-        <div class="input-container">
-          <label for="playerAge">&Acirc;ge :</label>
-          <input type="number" id="playerAge" [(ngModel)]="player.age" min="5" max="100" class="profile-input" (blur)="saveProfile()">
-        </div>
-
-        <div class="input-container">
-          <label for="playerGender">Genre :</label>
-          <select id="playerGender" [(ngModel)]="player.gender" class="profile-input" (change)="saveProfile()">
-            <option value="M">Homme</option>
-            <option value="F">Femme</option>
-            <option value="O">Autre</option>
-          </select>
-        </div>
-
-        <div class="input-container">
-          <label for="playerRanking">Classement :</label>
-          <input type="number" id="playerRanking" [(ngModel)]="player.ranking" min="500" max="4000" class="profile-input" (blur)="saveProfile()">
-        </div>
-      </div>
+      <h2>Modifier le profil : {{ player.firstName }} {{ player.lastName }}</h2>
     </div>
 
     <div class="dashboard-content">
+      <!-- SECTION INFORMATIONS GENERALES -->
+      <div class="section-card">
+        <h3>Informations Générales</h3>
+        <div class="profile-form">
+          <div class="form-row">
+            <div class="form-group">
+              <label for="playerFirstName">Prénom :</label>
+              <input type="text" id="playerFirstName" [(ngModel)]="player.firstName" class="profile-input" (blur)="saveProfile()">
+            </div>
+            <div class="form-group">
+              <label for="playerLastName">Nom :</label>
+              <input type="text" id="playerLastName" [(ngModel)]="player.lastName" class="profile-input" (blur)="saveProfile()">
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label for="playerAge">&Acirc;ge :</label>
+              <input type="number" id="playerAge" [(ngModel)]="player.age" min="5" max="100" class="profile-input" (blur)="saveProfile()">
+            </div>
+            <div class="form-group">
+              <label for="playerGender">Genre :</label>
+              <select id="playerGender" [(ngModel)]="player.gender" class="profile-input" (change)="saveProfile()">
+                <option value="M">Homme</option>
+                <option value="F">Femme</option>
+                <option value="O">Autre</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="playerRanking">Classement :</label>
+              <input type="number" id="playerRanking" [(ngModel)]="player.ranking" min="500" max="4000" class="profile-input" (blur)="saveProfile()">
+            </div>
+          </div>
+        </div>
+      </div>
       <!-- SECTION RAQUETTE (Custom Dropdowns) -->
       <div class="section-card racket-section">
         <h3>Sa Raquette</h3>

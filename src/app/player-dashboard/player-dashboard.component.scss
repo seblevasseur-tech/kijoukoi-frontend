@@ -258,48 +258,40 @@
 .auth-modal .btn {
   display: inline-block;
 }
-.profile-inputs {
+.profile-form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.form-row {
   display: flex;
   gap: 16px;
-  margin-top: 10px;
-
-  @media (max-width: 768px) {
-    flex-wrap: wrap;
+  
+  @media (max-width: 600px) {
+    flex-direction: column;
   }
+}
 
-  .input-container {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    font-size: 0.95rem;
-    color: var(--color-text-secondary);
-
-    label {
-      font-weight: 500;
-    }
-
-    .profile-input {
-      background: rgba(30, 41, 59, 0.5);
-      border: 1px solid rgba(255, 255, 255, 0.1);
-      color: var(--color-text);
-      padding: 6px 10px;
-      border-radius: 6px;
-      font-family: inherit;
-      font-size: 0.95rem;
-      min-width: 80px;
-      
-      &:focus {
-        outline: none;
-        border-color: var(--color-primary);
-      }
-    }
-    
-    select.profile-input {
-      appearance: auto;
-      padding-right: 20px;
-      cursor: pointer;
-    }
+.profile-input {
+  background: rgba(30, 41, 59, 0.5);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: var(--color-text);
+  padding: 10px 12px;
+  border-radius: 6px;
+  font-family: inherit;
+  font-size: 0.95rem;
+  transition: border-color 0.2s, box-shadow 0.2s;
+  
+  &:focus {
+    outline: none;
+    border-color: var(--color-primary);
   }
+}
+
+select.profile-input {
+  appearance: auto;
+  cursor: pointer;
 }
 
 .dropdown-search {
